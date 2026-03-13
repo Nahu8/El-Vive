@@ -1,0 +1,30 @@
+<header class="fixed top-0 left-0 right-0 z-50 p-6" [ngClass]="navClasses">
+  <div class="container mx-auto flex justify-between items-center">
+    <div class="text-2xl font-bold text-white tracking-wide">
+      <a routerLink="/" class="hover:text-gray-300 transition-colors inline-flex items-center">
+        <div class="relative h-10 w-10 md:h-12 md:w-12 lg:h-16 lg:w-16 rounded-full overflow-hidden">
+          <img [src]="currentIconUrl" alt="Logo" class="absolute inset-0 w-full h-full object-contain object-center transition-opacity duration-1000">
+        </div>
+      </a>
+    </div>
+    <nav class="hidden md:flex gap-8">
+      <a *ngFor="let link of navLinks" [routerLink]="link.path" routerLinkActive="text-white font-semibold"
+        [routerLinkActiveOptions]="{ exact: link.path === '/' }"
+        class="text-gray-100 hover:text-white transition-colors uppercase text-sm">
+        {{ link.label }}
+      </a>
+    </nav>
+    <button class="md:hidden text-white" (click)="toggleMenu()">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+  </div>
+  <!-- Mobile Menu -->
+  <div *ngIf="isMenuOpen" class="md:hidden bg-black/80 border-t border-transparent">
+    <nav class="flex flex-col p-4 gap-4">
+      <a *ngFor="let link of navLinks" [routerLink]="link.path" (click)="toggleMenu()"
+        class="text-gray-100 hover:text-white transition-colors uppercase text-sm">{{ link.label }}</a>
+    </nav>
+  </div>
+</header>

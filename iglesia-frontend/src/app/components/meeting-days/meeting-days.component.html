@@ -1,0 +1,49 @@
+<section class="relative py-16 bg-black text-white overflow-hidden">
+  <!-- Degradado superior desde ministerios -->
+  <div class="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-black via-black/90 to-transparent z-0 pointer-events-none"></div>
+  <!-- Degradado inferior hacia footer -->
+  <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black to-transparent z-0 pointer-events-none"></div>
+  <div class="container mx-auto px-6 relative z-10">
+    <div #mdHeader class="text-center mb-10" data-meet-header="true">
+      <h2 class="text-3xl md:text-4xl font-black mb-2">{{ sectionTitle }}</h2>
+      <p class="text-gray-300">{{ sectionSubtitle }}</p>
+    </div>
+
+    <!-- Desktop -->
+    <div class="hidden sm:grid sm:grid-cols-2 md:grid-cols-3 gap-6" *ngIf="meetings.length > 0">
+      <ng-container *ngFor="let m of meetings; index as i">
+        <ng-container *ngTemplateOutlet="meetingCard; context: { $implicit: m, i: i }"></ng-container>
+      </ng-container>
+    </div>
+
+    <!-- Mobile horizontal slider -->
+    <div class="sm:hidden overflow-x-auto -mx-6 px-6 pb-4 scrollbar-hide" *ngIf="meetings.length > 0">
+      <div class="flex gap-4" [style.width.px]="meetings.length * 280">
+        <div *ngFor="let m of meetings; index as i" class="w-[260px] flex-shrink-0">
+          <ng-container *ngTemplateOutlet="meetingCard; context: { $implicit: m, i: i }"></ng-container>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #meetingCard let-m let-i="i">
+      <div #mdCard class="meeting-card bg-gray-900 rounded-lg shadow-md overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl h-full">
+        <div class="h-40 flex items-center justify-center text-white font-bold text-xl relative"
+          [ngStyle]="{'background': !m.imageUrl && m.colorFrom && m.colorTo ? 'linear-gradient(to bottom right, ' + m.colorFrom + ', ' + m.colorTo + ')' : (!m.imageUrl ? 'linear-gradient(to bottom right, #4f46e5, #ec4899)' : 'none')}">
+          <img *ngIf="m.imageUrl" [src]="m.imageUrl" alt="" class="absolute inset-0 w-full h-full object-cover">
+          <div *ngIf="m.imageUrl" class="absolute inset-0 bg-black/40"></div>
+          <div class="text-center relative z-10">
+            <div class="text-2xl">{{ m.day }}</div>
+            <div class="text-sm">{{ m.title }}</div>
+          </div>
+        </div>
+        <div class="p-4 bg-gray-900">
+          <div class="flex items-center justify-between mb-2">
+            <div class="text-white font-semibold">{{ m.time }}</div>
+            <div class="text-sm text-gray-300">{{ m.note }}</div>
+          </div>
+          <div class="text-sm text-gray-400">Ubicación: Iglesia principal</div>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+</section>

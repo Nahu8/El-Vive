@@ -1,0 +1,258 @@
+<div class="space-y-0">
+  <!-- Internal Tabs Navigation -->
+  <div class="border-b border-gray-800/60 bg-gray-900/50">
+    <div class="flex overflow-x-auto px-4 md:px-6 gap-1">
+      <button (click)="switchTab('pageContent')"
+        [class]="'px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ' +
+          (activeTab === 'pageContent' ? 'border-indigo-500 text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-300')">
+        Contenido de Pagina
+      </button>
+      <button (click)="switchTab('basic')"
+        [class]="'px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ' +
+          (activeTab === 'basic' ? 'border-indigo-500 text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-300')">
+        Informacion de Contacto
+      </button>
+      <button (click)="switchTab('schedules')"
+        [class]="'px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ' +
+          (activeTab === 'schedules' ? 'border-indigo-500 text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-300')">
+        Horario de Servicios
+      </button>
+    </div>
+  </div>
+
+  <div class="flex items-center justify-between p-4 md:px-6">
+    <div></div>
+    <div class="flex gap-3">
+      <button *ngIf="!isEditing" (click)="toggleEdit()"
+        class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+        Editar
+      </button>
+      <button *ngIf="isEditing" (click)="cancelEdit()"
+        class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white text-sm font-medium rounded-lg transition-colors">
+        Cancelar
+      </button>
+    </div>
+  </div>
+
+  <!-- Contenido segun pestana activa -->
+  <div class="px-4 md:px-6 pb-6">
+
+    <!-- Pestana: Contenido de Pagina (hero, secciones, mapa con imagen) -->
+    <div *ngIf="activeTab === 'pageContent'" class="space-y-8">
+      <p class="text-gray-500 text-sm">Configura el diseno de la pagina de contacto: hero, imagenes, videos, mapa con imagen que redirige a Google Maps.</p>
+
+      <!-- Hero -->
+      <div class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50">
+        <h3 class="text-lg font-semibold text-white mb-4">Hero (encabezado)</h3>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-gray-400 mb-2 text-sm">Titulo</label>
+            <input type="text" [(ngModel)]="pageContent.hero.title" (ngModelChange)="onPageContentChange()"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+          </div>
+          <div>
+            <label class="block text-gray-400 mb-2 text-sm">Subtitulo</label>
+            <input type="text" [(ngModel)]="pageContent.hero.subtitle" (ngModelChange)="onPageContentChange()"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+          </div>
+          <div>
+            <label class="block text-gray-400 mb-2 text-sm">Imagen de fondo (opcional)</label>
+            <input type="file" (change)="onHeroImageSelected($event)" accept="image/*" class="w-full text-gray-400 text-sm file:mr-3 file:py-2 file:px-4 file:rounded file:border-0 file:bg-gray-700 file:text-gray-300">
+            <img *ngIf="pageContent.hero.backgroundImageUrl" [src]="resolvePageContentUrl(pageContent.hero.backgroundImageUrl)" class="mt-2 h-24 object-cover rounded">
+            <input type="text" [(ngModel)]="pageContent.hero.backgroundImageUrl" (ngModelChange)="onPageContentChange()" placeholder="O pega URL"
+              class="mt-1 w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm">
+          </div>
+          <div>
+            <label class="block text-gray-400 mb-2 text-sm">Video de fondo (opcional, URL o subir)</label>
+            <input type="text" [(ngModel)]="pageContent.hero.backgroundVideoUrl" (ngModelChange)="onPageContentChange()" placeholder="URL del video"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+          </div>
+        </div>
+      </div>
+
+      <!-- Intro -->
+      <div class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50">
+        <h3 class="text-lg font-semibold text-white mb-4">Bloque intro</h3>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-gray-400 mb-2 text-sm">Titulo</label>
+            <input type="text" [(ngModel)]="pageContent.intro.title" (ngModelChange)="onPageContentChange()"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+          </div>
+          <div>
+            <label class="block text-gray-400 mb-2 text-sm">Contenido</label>
+            <textarea [(ngModel)]="pageContent.intro.content" (ngModelChange)="onPageContentChange()" rows="4"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mapa: imagen + Google Maps URL -->
+      <div class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50">
+        <h3 class="text-lg font-semibold text-white mb-4">Mapa (imagen que abre Google Maps)</h3>
+        <p class="text-gray-500 text-sm mb-4">Sube una imagen del mapa o ubicacion. Al hacer clic, se abrira Google Maps.</p>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-gray-400 mb-2 text-sm">Titulo de la seccion</label>
+            <input type="text" [(ngModel)]="pageContent.map.title" (ngModelChange)="onPageContentChange()"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" placeholder="Nuestra ubicacion">
+          </div>
+          <div>
+            <label class="block text-gray-400 mb-2 text-sm">Descripcion</label>
+            <input type="text" [(ngModel)]="pageContent.map.description" (ngModelChange)="onPageContentChange()"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+          </div>
+          <div>
+            <label class="block text-gray-400 mb-2 text-sm">Imagen del mapa (clickeable)</label>
+            <input type="file" (change)="onMapImageSelected($event)" accept="image/*" class="w-full text-gray-400 text-sm file:mr-3 file:py-2 file:px-4 file:rounded file:border-0 file:bg-gray-700 file:text-gray-300">
+            <img *ngIf="pageContent.map.imageUrl" [src]="resolvePageContentUrl(pageContent.map.imageUrl)" class="mt-2 max-h-32 object-cover rounded">
+            <input type="text" [(ngModel)]="pageContent.map.imageUrl" (ngModelChange)="onPageContentChange()" placeholder="O pega URL"
+              class="mt-1 w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm">
+          </div>
+          <div>
+            <label class="block text-gray-400 mb-2 text-sm">URL de Google Maps</label>
+            <input type="url" [(ngModel)]="pageContent.map.googleMapsUrl" (ngModelChange)="onPageContentChange()"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" placeholder="https://maps.google.com/...">
+            <p class="text-gray-600 text-xs mt-1">Al hacer clic en la imagen se abrira este enlace.</p>
+          </div>
+          <div>
+            <label class="block text-gray-400 mb-2 text-sm">Codigo embed (alternativa si no usas imagen)</label>
+            <textarea [(ngModel)]="pageContent.map.mapEmbed" (ngModelChange)="onPageContentChange()" rows="4"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white font-mono text-sm"
+              placeholder="Pega el codigo iframe de Google Maps si prefieres el mapa embebido"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Secciones (texto, imagen, video) -->
+      <div class="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50">
+        <h3 class="text-lg font-semibold text-white mb-4">Secciones adicionales</h3>
+        <p class="text-gray-500 text-sm mb-4">Agrega bloques de texto, imagenes o videos para enriquecer la pagina.</p>
+        <div class="space-y-6">
+          <div *ngFor="let s of pageContent.sections; let i = index" class="p-4 bg-gray-900/50 rounded-lg border border-gray-700/50">
+            <div class="flex justify-between items-center mb-3">
+              <span class="text-gray-400 text-sm">Seccion {{ i + 1 }}: {{ s.type || 'text' }}</span>
+              <button type="button" (click)="removeSection(i)" class="text-red-400 hover:text-red-300 text-xs">Eliminar</button>
+            </div>
+            <select [(ngModel)]="s.type" (ngModelChange)="onPageContentChange()" class="mb-3 w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm">
+              <option value="text">Texto</option>
+              <option value="image">Imagen</option>
+              <option value="video">Video (YouTube)</option>
+              <option value="textImage">Texto + Imagen</option>
+            </select>
+            <div class="space-y-3">
+              <input *ngIf="s.type !== 'image'" type="text" [(ngModel)]="s.title" (ngModelChange)="onPageContentChange()" placeholder="Titulo"
+                class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm">
+              <textarea *ngIf="s.type === 'text' || s.type === 'textImage'" [(ngModel)]="s.content" (ngModelChange)="onPageContentChange()" rows="2" placeholder="Contenido"
+                class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm"></textarea>
+              <div *ngIf="s.type === 'image' || s.type === 'textImage'">
+                <input type="file" (change)="onSectionImageSelected($event, i)" accept="image/*" class="text-gray-400 text-xs file:mr-2 file:py-1 file:px-2 file:rounded file:bg-gray-700 file:text-gray-300">
+                <input type="text" [(ngModel)]="s.imageUrl" (ngModelChange)="onPageContentChange()" placeholder="URL de imagen" class="mt-1 w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm">
+              </div>
+              <input *ngIf="s.type === 'video'" type="text" [(ngModel)]="s.videoUrl" (ngModelChange)="onPageContentChange()" placeholder="URL de YouTube"
+                class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm">
+              <select *ngIf="s.type === 'textImage'" [(ngModel)]="s.layout" (ngModelChange)="onPageContentChange()" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm">
+                <option value="left">Imagen a la izquierda</option>
+                <option value="right">Imagen a la derecha</option>
+              </select>
+              <input *ngIf="s.type === 'image'" type="text" [(ngModel)]="s.caption" (ngModelChange)="onPageContentChange()" placeholder="Pie de foto"
+                class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm">
+            </div>
+          </div>
+          <button type="button" (click)="addSection()" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 text-sm rounded-lg">
+            + Agregar seccion
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pestana: Informacion de Contacto -->
+    <div *ngIf="activeTab === 'basic'" class="space-y-6">
+      <div *ngIf="!isEditing" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-gray-800/50 rounded-lg p-5 border border-gray-700/50">
+            <p class="text-gray-500 text-xs uppercase tracking-wider mb-1">Email</p>
+            <p class="text-white break-all">{{ contactInfo.email }}</p>
+          </div>
+          <div class="bg-gray-800/50 rounded-lg p-5 border border-gray-700/50">
+            <p class="text-gray-500 text-xs uppercase tracking-wider mb-1">Telefono</p>
+            <p class="text-white">{{ contactInfo.phone }}</p>
+          </div>
+        </div>
+        <div class="bg-gray-800/50 rounded-lg p-5 border border-gray-700/50">
+          <p class="text-gray-500 text-xs uppercase tracking-wider mb-1">Direccion</p>
+          <p class="text-white">{{ contactInfo.address }}</p>
+          <p class="text-gray-400 text-sm">{{ contactInfo.city }}</p>
+        </div>
+      </div>
+
+      <form *ngIf="isEditing" [formGroup]="basicInfoForm" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-gray-400 mb-2 text-sm">Email Principal *</label>
+            <input type="email" formControlName="email"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 focus:outline-none transition-all"
+              placeholder="contacto@iglesia.com">
+          </div>
+          <div>
+            <label class="block text-gray-400 mb-2 text-sm">Telefono *</label>
+            <input type="tel" formControlName="phone"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 focus:outline-none transition-all"
+              placeholder="+54 (11) 1234-5678">
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-gray-400 mb-2 text-sm">Direccion *</label>
+            <input type="text" formControlName="address"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 focus:outline-none transition-all"
+              placeholder="Av. Principal 1234">
+          </div>
+          <div>
+            <label class="block text-gray-400 mb-2 text-sm">Ciudad / Pais *</label>
+            <input type="text" formControlName="city"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 focus:outline-none transition-all"
+              placeholder="Ciudad, Pais 12345">
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Pestana: Horario de Servicios -->
+    <div *ngIf="activeTab === 'schedules'" class="space-y-4">
+      <div *ngIf="!isEditing" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div *ngFor="let schedule of scheduleItems"
+          class="bg-gray-800/50 rounded-lg p-5 border border-gray-700/50">
+          <p class="text-gray-500 text-xs uppercase tracking-wider mb-1">{{ schedule.title }}</p>
+          <p class="text-white">{{ getScheduleValue(schedule.id) || 'No configurado' }}</p>
+          <p class="text-gray-500 text-xs mt-1">{{ schedule.description }}</p>
+        </div>
+      </div>
+
+      <form *ngIf="isEditing" [formGroup]="schedulesForm" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div *ngFor="let schedule of scheduleItems">
+            <label class="block text-gray-400 mb-2 text-sm">
+              {{ schedule.title }} *
+              <span class="text-gray-600 text-xs block">{{ schedule.description }}</span>
+            </label>
+            <input type="text" [formControlName]="schedule.id"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 focus:outline-none transition-all"
+              placeholder="Ej: 10:00 AM - 12:00 PM">
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast de notificacion -->
+  <div *ngIf="showToast" class="fixed bottom-4 right-4 z-50">
+    <div [class]="'px-5 py-3 rounded-lg shadow-xl text-white text-sm flex items-center gap-3 ' +
+      (toastType === 'success' ? 'bg-emerald-600' : toastType === 'error' ? 'bg-red-600' : 'bg-indigo-600')">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+      <span>{{ toastMessage }}</span>
+      <button type="button" (click)="showToast = false" class="ml-2 text-white/70 hover:text-white">&times;</button>
+    </div>
+  </div>
+</div>

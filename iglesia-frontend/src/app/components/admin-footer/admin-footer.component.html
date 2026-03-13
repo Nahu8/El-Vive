@@ -1,0 +1,167 @@
+<div class="space-y-8">
+  <div class="flex items-center justify-between">
+    <h2 class="text-3xl font-bold text-white mb-2">🦶 Editar Footer</h2>
+    <div class="text-sm text-gray-400">
+      <span class="px-3 py-1 bg-indigo-900 rounded-full">Global</span>
+    </div>
+  </div>
+
+  <div class="bg-gray-900 rounded-xl p-6 border border-gray-800 shadow-lg">
+    <form [formGroup]="footerForm" (ngSubmit)="saveFooter()" class="space-y-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="space-y-6">
+          <div>
+            <label class="block text-gray-300 mb-2 text-sm font-medium">Título de Marca *</label>
+            <input type="text" formControlName="brandTitle"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+          </div>
+
+          <div>
+            <label class="block text-gray-300 mb-2 text-sm font-medium">Descripción</label>
+            <textarea rows="4" formControlName="brandDescription"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"></textarea>
+          </div>
+
+          <div formGroupName="social" class="space-y-4 p-4 bg-gray-800/30 rounded-lg border border-gray-700">
+            <h4 class="text-white font-medium">Redes Sociales</h4>
+            <div>
+              <label class="block text-gray-300 mb-2 text-sm font-medium">Facebook URL</label>
+              <input type="text" formControlName="facebook"
+                class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+            </div>
+            <div>
+              <label class="block text-gray-300 mb-2 text-sm font-medium">Instagram URL</label>
+              <input type="text" formControlName="instagram"
+                class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+            </div>
+            <div>
+              <label class="block text-gray-300 mb-2 text-sm font-medium">YouTube URL</label>
+              <input type="text" formControlName="youtube"
+                class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-6">
+          <div>
+            <label class="block text-gray-300 mb-2 text-sm font-medium">Título Enlaces Rápidos</label>
+            <input type="text" formControlName="quickLinksTitle"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+          </div>
+
+          <div class="space-y-4" formArrayName="quickLinks">
+            <div class="flex items-center justify-between">
+              <h4 class="text-white font-medium">Enlaces</h4>
+              <button type="button" (click)="addQuickLink()"
+                class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg text-sm font-medium">
+                + Agregar
+              </button>
+            </div>
+
+            <div *ngFor="let link of quickLinksArray.controls; let i = index" [formGroupName]="i"
+              class="bg-gray-800/30 rounded-lg border border-gray-700 p-4 space-y-3">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-gray-300 mb-2 text-sm font-medium">Label *</label>
+                  <input type="text" formControlName="label"
+                    class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+                </div>
+                <div>
+                  <label class="block text-gray-300 mb-2 text-sm font-medium">Ruta *</label>
+                  <input type="text" formControlName="route"
+                    class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white"
+                    placeholder="/contacto">
+                </div>
+              </div>
+              <div class="flex justify-end">
+                <button type="button" (click)="removeQuickLink(i)"
+                  class="px-3 py-1 bg-red-900/30 hover:bg-red-900/50 text-red-400 rounded-lg text-sm font-medium">
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-gray-300 mb-2 text-sm font-medium">Título Contacto</label>
+              <input type="text" formControlName="contactTitle"
+                class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+            </div>
+            <div formGroupName="contact">
+              <label class="block text-gray-300 mb-2 text-sm font-medium">Email</label>
+              <input type="text" formControlName="email"
+                class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+            </div>
+          </div>
+
+          <div formGroupName="contact" class="space-y-4 p-4 bg-gray-800/30 rounded-lg border border-gray-700">
+            <div>
+              <label class="block text-gray-300 mb-2 text-sm font-medium">Dirección</label>
+              <input type="text" formControlName="address"
+                class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+            </div>
+            <div>
+              <label class="block text-gray-300 mb-2 text-sm font-medium">Teléfono</label>
+              <input type="text" formControlName="phone"
+                class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+            </div>
+          </div>
+
+          <div formGroupName="bottom" class="space-y-4 p-4 bg-gray-800/30 rounded-lg border border-gray-700">
+            <h4 class="text-white font-medium">Barra inferior</h4>
+            <div>
+              <label class="block text-gray-300 mb-2 text-sm font-medium">Copyright</label>
+              <input type="text" formControlName="copyrightText"
+                class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-gray-300 mb-2 text-sm font-medium">Privacidad (label)</label>
+                <input type="text" formControlName="privacyLabel"
+                  class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+              </div>
+              <div>
+                <label class="block text-gray-300 mb-2 text-sm font-medium">Privacidad (link)</label>
+                <input type="text" formControlName="privacyLink"
+                  class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+              </div>
+              <div>
+                <label class="block text-gray-300 mb-2 text-sm font-medium">Términos (label)</label>
+                <input type="text" formControlName="termsLabel"
+                  class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+              </div>
+              <div>
+                <label class="block text-gray-300 mb-2 text-sm font-medium">Términos (link)</label>
+                <input type="text" formControlName="termsLink"
+                  class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end pt-4 border-t border-gray-800">
+        <button type="submit" [disabled]="!footerForm.valid"
+          class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium rounded-lg transition-all duration-300 disabled:opacity-50 flex items-center gap-2">
+          💾 Guardar Footer
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div *ngIf="showToast" class="fixed bottom-4 right-4 z-50 animate-slideIn">
+    <div
+      class="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-4 rounded-lg shadow-xl border border-green-500/30 flex items-center gap-3">
+      <span class="text-xl">✅</span>
+      <div>
+        <p class="font-medium">{{ toastMessage || 'Guardado exitosamente' }}</p>
+        <p class="text-green-100 text-sm">Los cambios han sido actualizados</p>
+      </div>
+      <button type="button" (click)="showToast = false" class="ml-4 text-green-100 hover:text-white">
+        <span class="text-xl">×</span>
+      </button>
+    </div>
+  </div>
+</div>
+

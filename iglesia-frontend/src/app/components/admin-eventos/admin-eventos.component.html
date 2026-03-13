@@ -1,0 +1,111 @@
+<div class="space-y-6">
+  <div class="flex justify-between items-center">
+    <h2 class="text-3xl font-bold text-white">Gestión de Días de Reunión</h2>
+    <button
+      (click)="openForm()"
+      class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors"
+    >
+      ➕ Agregar Evento
+    </button>
+  </div>
+
+  <!-- Form Modal -->
+  <div *ngIf="showForm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-gray-900 rounded-lg p-8 max-w-2xl w-full border border-gray-800">
+      <h3 class="text-2xl font-bold text-white mb-6">
+        {{ editingId ? 'Editar Evento' : 'Nuevo Evento' }}
+      </h3>
+
+      <form (ngSubmit)="save()" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Día</label>
+          <input
+            [(ngModel)]="form.day"
+            name="day"
+            type="text"
+            class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-indigo-500"
+            placeholder="ej. Lunes, Miércoles, Domingo"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Título</label>
+          <input
+            [(ngModel)]="form.title"
+            name="title"
+            type="text"
+            class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-indigo-500"
+            placeholder="ej. Servicio Dominical"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Hora</label>
+          <input
+            [(ngModel)]="form.time"
+            name="time"
+            type="text"
+            class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-indigo-500"
+            placeholder="ej. 10:00"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Nota</label>
+          <input
+            [(ngModel)]="form.note"
+            name="note"
+            type="text"
+            class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-indigo-500"
+            placeholder="ej. Servicio con alabanza"
+          />
+        </div>
+
+        <div class="flex space-x-4 pt-4">
+          <button
+            type="submit"
+            class="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors"
+          >
+            Guardar
+          </button>
+          <button
+            type="button"
+            (click)="closeForm()"
+            class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors"
+          >
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- List -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div
+      *ngFor="let evento of eventos"
+      class="bg-gray-900 rounded-lg p-6 border border-gray-800 hover:border-indigo-600 transition-colors"
+    >
+      <div class="flex items-center justify-between mb-4">
+        <span class="text-indigo-400 font-bold text-lg">📅 {{ evento.day }}</span>
+        <span class="text-gray-400 text-sm">{{ evento.time }}</span>
+      </div>
+      <h3 class="text-lg font-bold text-white mb-2">{{ evento.title }}</h3>
+      <p class="text-gray-400 text-sm mb-4">{{ evento.note }}</p>
+      <div class="flex space-x-2">
+        <button
+          (click)="openForm(evento)"
+          class="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded transition-colors"
+        >
+          <i class="fas fa-edit mr-1"></i> Editar
+        </button>
+        <button
+          (click)="delete(evento.id)"
+          class="flex-1 px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-sm rounded transition-colors"
+        >
+          <i class="fas fa-trash mr-1"></i> Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

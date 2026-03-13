@@ -1,0 +1,123 @@
+<div class="space-y-0">
+  <div class="border-b border-gray-800/60 bg-gray-900/50">
+    <div class="flex overflow-x-auto px-4 md:px-6 gap-1">
+      <button (click)="activeTab = 'nav'"
+        [class]="'px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ' +
+          (activeTab === 'nav' ? 'border-indigo-500 text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-300')">
+        Navegacion (Header)
+      </button>
+      <button (click)="activeTab = 'footer'"
+        [class]="'px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ' +
+          (activeTab === 'footer' ? 'border-indigo-500 text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-300')">
+        Footer
+      </button>
+    </div>
+  </div>
+
+  <div class="px-4 md:px-6 pb-6">
+    <form [formGroup]="layoutForm">
+
+      <!-- Tab Navegacion -->
+      <div *ngIf="activeTab === 'nav'" class="space-y-4">
+        <p class="text-gray-500 text-sm">Enlaces del menu superior (navbar). El logo se configura desde Inicio / Theme.</p>
+        <div formArrayName="navLinks" class="space-y-3">
+          <div *ngFor="let item of navLinksArray.controls; let i = index" [formGroupName]="i"
+            class="flex gap-3 items-start bg-gray-800/50 rounded-lg p-4 border border-gray-700/50">
+            <input formControlName="label" placeholder="Texto (ej: Inicio)"
+              class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm placeholder-gray-500">
+            <input formControlName="path" placeholder="Ruta (ej: /)"
+              class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm placeholder-gray-500">
+            <button type="button" (click)="removeNavLink(i)" class="text-red-400 hover:text-red-300 text-sm">Quitar</button>
+          </div>
+          <button type="button" (click)="addNavLink()"
+            class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white text-sm rounded-lg">
+            + Agregar enlace
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab Footer -->
+      <div *ngIf="activeTab === 'footer'" class="space-y-6">
+        <div>
+          <label class="block text-gray-400 mb-2 text-sm">Titulo del sitio (Footer)</label>
+          <input formControlName="footerBrandTitle"
+            class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500">
+        </div>
+        <div>
+          <label class="block text-gray-400 mb-2 text-sm">Descripcion (Footer)</label>
+          <textarea formControlName="footerBrandDescription" rows="3"
+            class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500"></textarea>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-gray-400 mb-2 text-sm">Facebook URL</label>
+            <input formControlName="footerFacebookUrl" type="url"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
+          </div>
+          <div>
+            <label class="block text-gray-400 mb-2 text-sm">Instagram URL</label>
+            <input formControlName="footerInstagramUrl" type="url"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
+          </div>
+          <div>
+            <label class="block text-gray-400 mb-2 text-sm">YouTube URL</label>
+            <input formControlName="footerYoutubeUrl" type="url"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
+          </div>
+        </div>
+        <div>
+          <label class="block text-gray-400 mb-2 text-sm">Direccion</label>
+          <input formControlName="footerAddress"
+            class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white text-sm">
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-gray-400 mb-2 text-sm">Email</label>
+            <input formControlName="footerEmail" type="email"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
+          </div>
+          <div>
+            <label class="block text-gray-400 mb-2 text-sm">Telefono</label>
+            <input formControlName="footerPhone"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
+          </div>
+        </div>
+        <div>
+          <label class="block text-gray-400 mb-2 text-sm">Texto copyright</label>
+          <input formControlName="footerCopyright"
+            class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-gray-400 mb-2 text-sm">Enlace Privacidad</label>
+            <input formControlName="footerPrivacyUrl"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
+          </div>
+          <div>
+            <label class="block text-gray-400 mb-2 text-sm">Enlace Terminos</label>
+            <input formControlName="footerTermsUrl"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
+          </div>
+        </div>
+        <div>
+          <p class="text-gray-400 text-sm mb-2">Enlaces rapidos (Footer)</p>
+          <div formArrayName="quickLinks" class="space-y-2">
+            <div *ngFor="let item of quickLinksArray.controls; let i = index" [formGroupName]="i"
+              class="flex gap-3 items-center">
+              <input formControlName="label" placeholder="Texto" class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm">
+              <input formControlName="path" placeholder="Ruta" class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm">
+              <button type="button" (click)="removeQuickLink(i)" class="text-red-400 hover:text-red-300 text-sm">Quitar</button>
+            </div>
+            <button type="button" (click)="addQuickLink()" class="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-white text-sm rounded-lg">+ Enlace</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div *ngIf="showToast" class="fixed bottom-4 right-4 z-50">
+    <div [class]="'px-5 py-3 rounded-lg shadow-xl text-white text-sm ' + (toastType === 'success' ? 'bg-emerald-600' : 'bg-red-600')">
+      {{ toastMessage }}
+    </div>
+  </div>
+</div>

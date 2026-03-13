@@ -1,0 +1,56 @@
+<section class="relative py-20 bg-black text-white overflow-hidden">
+  <!-- Degradado superior desde celebraciones -->
+  <div class="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-black via-black/90 to-transparent z-0 pointer-events-none"></div>
+  <!-- Degradado inferior hacia días de reunión -->
+  <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black via-black/90 to-transparent z-0 pointer-events-none"></div>
+  <div class="container mx-auto px-6 relative z-10">
+    <div class="text-center mb-12">
+      <h2 class="text-4xl md:text-6xl font-black tracking-wider mb-4">{{ sectionTitle }}</h2>
+      <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">{{ sectionSubtitle }}</p>
+    </div>
+
+    <!-- Desktop: grid / Mobile: horizontal scroll -->
+    <div class="hidden sm:grid grid-cols-2 lg:grid-cols-4 gap-6" *ngIf="ministries.length > 0">
+      <a *ngFor="let ministry of ministries; trackBy: trackByIndex"
+        [routerLink]="['/ministerios', ministry.id]"
+        class="group bg-gray-900 rounded-xl overflow-hidden border border-gray-800 hover:border-indigo-500/40 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/10 cursor-pointer">
+        <div class="h-40 w-full bg-cover bg-center relative"
+          [ngStyle]="{'background-image': ministry.image ? 'url(' + ministry.image + ')' : 'none', 'background-color': ministry.image ? 'transparent' : '#1f2937'}">
+          <div class="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent"></div>
+        </div>
+        <div class="p-5 flex items-start gap-3">
+          <div *ngIf="ministry.iconUrl" class="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex-shrink-0 overflow-hidden">
+            <img [src]="ministry.iconUrl" [alt]="ministry.name" class="w-8 h-8 object-contain">
+          </div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-lg font-bold mb-1 group-hover:text-indigo-300 transition-colors">{{ ministry.name }}</h3>
+            <p class="text-gray-400 text-sm leading-relaxed line-clamp-2">{{ ministry.description }}</p>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <!-- Mobile: horizontal scroll carousel -->
+    <div class="sm:hidden overflow-x-auto -mx-6 px-6 pb-4" *ngIf="ministries.length > 0">
+      <div class="flex gap-4" [style.width.px]="ministries.length * 280">
+        <a *ngFor="let ministry of ministries; trackBy: trackByIndex"
+          [routerLink]="['/ministerios', ministry.id]"
+          class="w-[260px] flex-shrink-0 bg-gray-900 rounded-xl overflow-hidden border border-gray-800 cursor-pointer">
+          <div class="h-32 w-full bg-cover bg-center relative"
+            [ngStyle]="{'background-image': ministry.image ? 'url(' + ministry.image + ')' : 'none', 'background-color': ministry.image ? 'transparent' : '#1f2937'}">
+            <div class="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent"></div>
+          </div>
+          <div class="p-4 flex items-start gap-3">
+            <div *ngIf="ministry.iconUrl" class="w-10 h-10 flex items-center justify-center bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex-shrink-0 overflow-hidden">
+              <img [src]="ministry.iconUrl" class="w-6 h-6 object-contain">
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="text-base font-bold mb-1">{{ ministry.name }}</h3>
+              <p class="text-gray-400 text-xs leading-relaxed line-clamp-2">{{ ministry.description }}</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

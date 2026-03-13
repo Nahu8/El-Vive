@@ -1,0 +1,8 @@
+/* simple helpers for ministries cards */
+.ministry-card { transition: transform .3s ease, box-shadow .3s ease; }
+.ministry-image { background-color: #111827; }
+
+@media (prefers-reduced-motion: no-preference) {
+	.hover-card { transition: transform .25s ease, box-shadow .25s ease; }
+	.hover-card:hover { transform: translateY(-6px); box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+}
