@@ -1,0 +1,39 @@
+<section class="py-20 bg-black text-white">
+  <div class="container mx-auto px-6">
+    <div #minHeader class="text-center mb-12" data-min-header="true">
+      <h2 class="text-4xl md:text-6xl font-black tracking-wider mb-4">NUESTROS MINISTERIOS</h2>
+      <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">Descubre cómo puedes servir y crecer en nuestra comunidad.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div #minCard *ngFor="let ministry of ministries; index as i" class="ministry-card bg-gray-900 rounded-lg p-6 flex items-start gap-4 hover:shadow-2xl hover:-translate-y-2">
+        <div class="icon w-14 h-14 flex items-center justify-center bg-gradient-to-br from-purple-600 to-pink-500 rounded-full flex-shrink-0">
+          <!-- Inline icons by key -->
+          <ng-container [ngSwitch]="ministry.icon">
+            <svg *ngSwitchCase="'book'" xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 20H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6v16z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4h6a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2h-6V4z" />
+            </svg>
+            <svg *ngSwitchCase="'people'" xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-1a4 4 0 0 0-4-4h-1" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 20H4v-1a4 4 0 0 1 4-4h1" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
+            </svg>
+            <svg *ngSwitchCase="'spark'" xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v3m0 12v3m9-9h-3M6 12H3m15.364-6.364l-2.121 2.121M8.757 15.243l-2.121 2.121M15.243 15.243l2.121 2.121M6.364 6.636L4.243 4.515" />
+            </svg>
+            <svg *ngSwitchCase="'network'" xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v3m0 12v3M4 7h16M4 17h16M8 7v10M16 7v10" />
+            </svg>
+            <span *ngSwitchDefault class="text-white text-sm">?</span>
+          </ng-container>
+        </div>
+
+        <div class="flex-1">
+          <h3 class="text-xl font-bold mb-1">{{ ministry.name }}</h3>
+          <p class="text-gray-300 leading-relaxed">{{ ministry.description }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

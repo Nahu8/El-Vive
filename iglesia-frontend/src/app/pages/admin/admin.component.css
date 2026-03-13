@@ -1,0 +1,48 @@
+/* Admin component styles - Responsive sidebar fix */
+
+:host {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  z-index: 1000;
+  background-color: #000;
+}
+
+aside {
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Desktop breakpoint: Always show sidebar */
+@media (min-width: 768px) {
+  aside {
+    position: relative !important;
+    transform: translateX(0) !important;
+    -webkit-transform: translateX(0) !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: 16rem !important;
+  }
+  
+  /* Main content should not have left margin on desktop since sidebar is relative */
+  .flex-1.flex.flex-col {
+    margin-left: 0 !important;
+    width: calc(100% - 16rem) !important;
+  }
+}
+
+/* Mobile: Sidebar hidden by default */
+@media (max-width: 767px) {
+  aside {
+    position: fixed !important;
+  }
+}

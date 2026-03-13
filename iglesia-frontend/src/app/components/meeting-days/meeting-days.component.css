@@ -1,0 +1,3 @@
+/* visual helpers for meeting cards */
+.meeting-card { transition: transform .3s ease, box-shadow .3s ease; }
+.meeting-card .h-40 { transition: transform .3s ease; }

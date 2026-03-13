@@ -1,0 +1,664 @@
+<div class="space-y-0">
+    <!-- Internal Tabs Navigation -->
+    <div class="border-b border-gray-800/60 bg-gray-900/50">
+        <div class="flex overflow-x-auto px-4 md:px-6 gap-1">
+            <button (click)="activeTab = 'hero'"
+                [class]="'px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ' +
+                  (activeTab === 'hero' ? 'border-indigo-500 text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-300')">
+                Header
+            </button>
+            <button (click)="activeTab = 'calendar'"
+                [class]="'px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ' +
+                  (activeTab === 'calendar' ? 'border-indigo-500 text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-300')">
+                Calendario ({{ eventsArray.length }})
+            </button>
+            <button (click)="activeTab = 'upcoming'"
+                [class]="'px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ' +
+                  (activeTab === 'upcoming' ? 'border-indigo-500 text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-300')">
+                Proximos Eventos
+            </button>
+            <button (click)="activeTab = 'cta'"
+                [class]="'px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ' +
+                  (activeTab === 'cta' ? 'border-indigo-500 text-indigo-400' : 'border-transparent text-gray-500 hover:text-gray-300')">
+                Programar Evento
+            </button>
+        </div>
+    </div>
+
+    <div class="flex items-center justify-between p-4 md:px-6">
+        <div class="flex gap-4 text-sm text-gray-500">
+            <span>{{ eventsArray.length }} eventos</span>
+            <span>{{ getUpcomingEventsCount() }} proximos</span>
+        </div>
+    </div>
+
+    <!-- Contenido según pestaña activa -->
+    <div class="space-y-8">
+
+    <!-- Pestaña: Hero -->
+    <div *ngIf="activeTab === 'hero'" class="bg-gray-900 rounded-xl p-6 border border-gray-800 shadow-lg">
+        <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center">
+                <span class="text-white">🏆</span>
+            </div>
+            <h3 class="text-xl font-semibold text-white">Hero Section</h3>
+        </div>
+
+        <form [formGroup]="heroForm" class="space-y-6">
+            <div>
+                <label class="block text-gray-300 mb-2 text-sm font-medium">Texto del Badge *</label>
+                <input type="text" formControlName="badgeText"
+                    class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+            </div>
+
+            <div>
+                <label class="block text-gray-300 mb-2 text-sm font-medium">Título Principal *</label>
+                <input type="text" formControlName="title"
+                    class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+            </div>
+
+            <div>
+                <label class="block text-gray-300 mb-2 text-sm font-medium">Subtítulo *</label>
+                <textarea formControlName="subtitle" rows="3"
+                    class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white"></textarea>
+            </div>
+
+            <!-- Imagen de fondo -->
+            <div>
+                <label class="block text-gray-300 mb-2 text-sm font-medium">Imagen de Fondo (se guarda en la base de datos)</label>
+                <div class="border border-dashed border-gray-700/60 rounded-lg p-4 bg-gray-800/20">
+
+                    <div *ngIf="hasHeroImage && !isUploadingImage" class="mb-3 p-3 bg-emerald-900/30 border border-emerald-700/40 rounded-lg">
+                        <div class="flex items-center gap-2 text-emerald-300 text-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            <span>Imagen cargada: <strong>{{ heroImageName }}</strong></span>
+                        </div>
+                    </div>
+
+                    <div *ngIf="isUploadingImage" class="mb-3 p-3 bg-indigo-900/30 border border-indigo-700/40 rounded-lg">
+                        <div class="flex items-center gap-2 text-indigo-300 text-sm">
+                            <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                            </svg>
+                            <span>Subiendo imagen...</span>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <input type="file" id="heroImageInput" (change)="onHeroImageSelected($event)"
+                            accept="image/*" [disabled]="isUploadingImage"
+                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                        <label for="heroImageInput"
+                            class="flex flex-col items-center gap-2 py-4 cursor-pointer text-gray-400 hover:text-gray-200 transition-colors"
+                            [class.opacity-50]="isUploadingImage">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z"/>
+                            </svg>
+                            <span class="text-sm font-medium">{{ hasHeroImage ? 'Reemplazar imagen' : 'Subir imagen de fondo' }}</span>
+                            <span class="text-xs text-gray-500">JPG, PNG, WebP — Se guarda directamente en MySQL</span>
+                        </label>
+                    </div>
+
+                    <div *ngIf="heroImagePreview" class="mt-3">
+                        <img [src]="heroImagePreview" alt="Preview" class="rounded-lg w-full max-h-48 object-cover">
+                        <button type="button" (click)="clearHeroImage()"
+                            class="mt-2 px-3 py-1.5 bg-red-900/40 hover:bg-red-900/60 text-red-400 rounded-lg text-xs font-medium transition-colors">
+                            Eliminar Imagen
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Pestaña: Calendario -->
+    <div *ngIf="activeTab === 'calendar'" id="events-section" class="bg-gray-900 rounded-xl p-6 border border-gray-800 shadow-lg">
+        <h3 class="text-lg font-semibold text-white mb-1">Eventos del Calendario</h3>
+        <p class="text-gray-500 text-sm mb-6">Eventos especificos con fecha y hora definidas</p>
+
+        <div class="mb-8 p-4 bg-gray-800/50 rounded-lg border border-gray-700">
+            <label class="block text-gray-300 mb-2 text-sm font-medium">Ícono PNG para encabezado del calendario (opcional)</label>
+            <div class="flex items-center gap-3">
+                <img *ngIf="calendarIconPreview" [src]="calendarIconPreview" alt="" class="w-10 h-10 object-contain rounded bg-gray-900 p-1">
+                <input type="file" id="calendarIconInput" accept="image/png,image/jpeg,image/webp"
+                    (change)="onCalendarIconSelected($event)" class="hidden">
+                <label for="calendarIconInput"
+                    class="px-3 py-2 bg-blue-900/40 hover:bg-blue-900/60 text-blue-300 rounded-lg text-sm cursor-pointer">
+                    {{ calendarIconPreview ? 'Cambiar' : 'Subir icono' }}
+                </label>
+                <button *ngIf="calendarIconPreview" type="button" (click)="removeCalendarIcon()"
+                    class="px-2 py-1 bg-red-900/40 hover:bg-red-900/60 text-red-400 rounded text-xs">Eliminar</button>
+            </div>
+        </div>
+
+        <form [formGroup]="calendarEventsForm" class="space-y-6">
+            <!-- Configuración de la sección -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div>
+                    <label class="block text-gray-300 mb-2 text-sm font-medium">Título de la Sección *</label>
+                    <input type="text" formControlName="sectionTitle"
+                        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                </div>
+                <div>
+                    <label class="block text-gray-300 mb-2 text-sm font-medium">Subtítulo de la Sección</label>
+                    <input type="text" formControlName="sectionSubtitle"
+                        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                </div>
+            </div>
+
+            <!-- Lista de eventos -->
+            <div formArrayName="events" class="space-y-6">
+                <div *ngFor="let event of eventsArray.controls; let i = index"
+                    class="bg-gray-800/50 rounded-xl p-6 border border-gray-700 hover:border-blue-500/50 transition-colors">
+                    <div [formGroupName]="i" class="space-y-6">
+                        <!-- Encabezado del evento -->
+                        <div class="flex justify-between items-center pb-4 border-b border-gray-700">
+                            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+                                <span
+                                    class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-xs">{{
+                                    i + 1 }}</span>
+                                Evento {{ i + 1 }}
+                                <span *ngIf="event.get('date')?.value" class="text-gray-400 text-sm ml-2">
+                                    ({{ formatDateForDisplay(event.get('date')?.value) }})
+                                </span>
+                            </h3>
+                            <div class="flex items-center gap-2">
+                                <button type="button" (click)="duplicateEvent(i)"
+                                    class="px-3 py-1 bg-blue-900/30 hover:bg-blue-900/50 text-blue-400 rounded-lg text-sm font-medium transition-colors flex items-center gap-1">
+                                    Duplicar
+                                </button>
+                                <button type="button" (click)="removeEvent(i)"
+                                    class="px-3 py-1 bg-red-900/30 hover:bg-red-900/50 text-red-400 rounded-lg text-sm font-medium transition-colors">
+                                    Eliminar
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Contenido del evento -->
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <!-- Columna izquierda -->
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-gray-300 mb-2 text-sm font-medium">Título del Evento
+                                        *</label>
+                                    <input type="text" formControlName="title"
+                                        class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                        placeholder="Ej: Santa Cena">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-300 mb-2 text-sm font-medium">Descripción *</label>
+                                    <textarea formControlName="description" rows="4"
+                                        class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                        placeholder="Descripción detallada del evento..."></textarea>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-gray-300 mb-2 text-sm font-medium">Fecha *</label>
+                                        <input type="date" formControlName="date"
+                                            class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-300 mb-2 text-sm font-medium">Hora *</label>
+                                        <input type="time" formControlName="time"
+                                            class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-300 mb-2 text-sm font-medium">Ubicación *</label>
+                                    <input type="text" formControlName="location"
+                                        class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                        placeholder="Ej: Templo Principal">
+                                </div>
+                            </div>
+
+                            <!-- Columna derecha -->
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-gray-300 mb-2 text-sm font-medium">Tipo de Evento
+                                            *</label>
+                                        <div class="relative">
+                                            <select formControlName="type"
+                                                class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all appearance-none pr-10">
+                                                <option *ngFor="let type of eventTypes" [value]="type.value">
+                                                    {{ type.label }}
+                                                </option>
+                                            </select>
+                                            <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                                                <i *ngIf="getEventTypeIcon(event.get('type')?.value)?.startsWith('fas ') || getEventTypeIcon(event.get('type')?.value)?.startsWith('far ') || getEventTypeIcon(event.get('type')?.value)?.startsWith('fab ')" 
+                                                   [class]="getEventTypeIcon(event.get('type')?.value)" class="text-white"></i>
+                                                <span *ngIf="!getEventTypeIcon(event.get('type')?.value)?.startsWith('fas ') && !getEventTypeIcon(event.get('type')?.value)?.startsWith('far ') && !getEventTypeIcon(event.get('type')?.value)?.startsWith('fab ')">
+                                                    {{ getEventTypeIcon(event.get('type')?.value) }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="mt-2 flex flex-wrap gap-2">
+                                            <button *ngFor="let type of eventTypes" type="button"
+                                                (click)="event.get('type')?.setValue(type.value)"
+                                                [class.bg-blue-600]="event.get('type')?.value === type.value"
+                                                [class.bg-gray-700]="event.get('type')?.value !== type.value"
+                                                class="p-2 rounded-lg hover:bg-blue-500 transition-colors text-xs text-white"
+                                                [title]="type.label">
+                                                {{ type.label }}
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-300 mb-2 text-sm font-medium">Ícono PNG</label>
+                                        <p class="text-gray-500 text-xs mb-2">Sube un icono PNG para el evento (reemplaza emojis)</p>
+                                        <div class="border border-dashed border-gray-600 rounded-lg p-3 bg-gray-800/30">
+                                            <div *ngIf="eventIconPreviews[i]" class="mb-2 flex items-center gap-2">
+                                                <img [src]="eventIconPreviews[i]" alt="Icono" class="w-10 h-10 object-contain rounded">
+                                                <button type="button" (click)="removeEventIcon(i)"
+                                                    class="px-2 py-1 bg-red-900/40 hover:bg-red-900/60 text-red-400 rounded text-xs">Eliminar</button>
+                                            </div>
+                                            <div *ngIf="!eventIconPreviews[i]" class="flex items-center gap-2">
+                                                <input type="file" #iconInput [id]="'eventIcon' + i" accept="image/png,image/jpeg,image/webp"
+                                                    (change)="onEventIconSelected($event, i)" class="hidden">
+                                                <label [for]="'eventIcon' + i"
+                                                    class="px-3 py-2 bg-blue-900/40 hover:bg-blue-900/60 text-blue-300 rounded-lg text-sm cursor-pointer">
+                                                    Subir icono PNG
+                                                </label>
+                                                <span *ngIf="eventIconUploading[i]" class="text-xs text-gray-400">Subiendo...</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-300 mb-2 text-sm font-medium">Imagen de fondo (calendario)</label>
+                                        <p class="text-gray-500 text-xs mb-2">Opcional. Se muestra como fondo cuando hay 1 solo evento en el día</p>
+                                        <div class="border border-dashed border-gray-600 rounded-lg p-3 bg-gray-800/30">
+                                            <div *ngIf="eventBackgroundPreviews[i]" class="mb-2">
+                                                <img [src]="eventBackgroundPreviews[i]" alt="Fondo" class="w-full max-h-24 object-cover rounded">
+                                                <button type="button" (click)="removeEventBackground(i)"
+                                                    class="mt-2 px-2 py-1 bg-red-900/40 hover:bg-red-900/60 text-red-400 rounded text-xs">Eliminar</button>
+                                            </div>
+                                            <div *ngIf="!eventBackgroundPreviews[i]" class="flex items-center gap-2">
+                                                <input type="file" #bgInput [id]="'eventBg' + i" accept="image/*"
+                                                    (change)="onEventBackgroundSelected($event, i)" class="hidden">
+                                                <label [for]="'eventBg' + i"
+                                                    class="px-3 py-2 bg-blue-900/40 hover:bg-blue-900/60 text-blue-300 rounded-lg text-sm cursor-pointer">
+                                                    Subir imagen de fondo
+                                                </label>
+                                                <span *ngIf="eventBackgroundUploading[i]" class="text-xs text-gray-400">Subiendo...</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-gray-300 mb-2 text-sm font-medium">Participantes/Expositores</label>
+                                    <input type="text" formControlName="speakers"
+                                        class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                        placeholder="Separados por coma">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-300 mb-2 text-sm font-medium">Enlace de
+                                        Registro</label>
+                                    <input type="url" formControlName="registrationLink"
+                                        class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                        placeholder="https://...">
+                                </div>
+
+                                <!-- Colores del evento -->
+                                <div>
+                                    <label class="block text-gray-300 mb-2 text-sm font-medium">Colores del
+                                        Evento</label>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-gray-300 mb-2 text-xs font-medium">Color
+                                                desde</label>
+                                            <div class="flex gap-2">
+                                                <input type="color" formControlName="colorFrom"
+                                                    class="w-10 h-10 rounded-lg cursor-pointer border border-gray-600">
+                                                <input type="text" formControlName="colorFrom"
+                                                    class="flex-1 bg-gray-700/50 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-gray-300 mb-2 text-xs font-medium">Color
+                                                hasta</label>
+                                            <div class="flex gap-2">
+                                                <input type="color" formControlName="colorTo"
+                                                    class="w-10 h-10 rounded-lg cursor-pointer border border-gray-600">
+                                                <input type="text" formControlName="colorTo"
+                                                    class="flex-1 bg-gray-700/50 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Presets de colores -->
+                                    <div class="mt-3">
+                                        <label class="block text-gray-300 mb-2 text-xs font-medium">Presets
+                                            rápidos:</label>
+                                        <div class="flex flex-wrap gap-2">
+                                            <button *ngFor="let preset of colorPresets; let pi = index" type="button"
+                                                (click)="applyColorPreset(i, pi)"
+                                                class="px-2 py-1 text-xs rounded border border-gray-600 hover:border-blue-500 transition-colors"
+                                                [style.background]="'linear-gradient(90deg, ' + preset.from + ', ' + preset.to + ')'">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Vista previa del evento -->
+                        <div class="mt-4 pt-4 border-t border-gray-700">
+                            <label class="block text-gray-300 mb-2 text-sm font-medium">Vista previa:</label>
+                            <div class="bg-gray-900 rounded-lg p-4">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-lg flex items-center justify-center text-2xl overflow-hidden"
+                                        [style.background]="'linear-gradient(135deg, ' + event.get('colorFrom')?.value + ', ' + event.get('colorTo')?.value + ')'">
+                                        <img *ngIf="eventIconPreviews[i]" [src]="eventIconPreviews[i]" alt="" class="w-8 h-8 object-contain">
+                                        <i *ngIf="!eventIconPreviews[i] && event.get('icon')?.value && (event.get('icon')?.value.startsWith('fas ') || event.get('icon')?.value.startsWith('far ') || event.get('icon')?.value.startsWith('fab '))" 
+                                           [class]="event.get('icon')?.value" class="text-white"></i>
+                                        <svg *ngIf="!eventIconPreviews[i] && (!event.get('icon')?.value || (!event.get('icon')?.value.startsWith('fas ') && !event.get('icon')?.value.startsWith('far ') && !event.get('icon')?.value.startsWith('fab ')))" class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex items-center justify-between">
+                                            <h4 class="font-semibold text-white">{{ event.get('title')?.value || 'Titulo del evento' }}</h4>
+                                            <span class="px-2 py-1 text-xs rounded"
+                                                [style.background]="'linear-gradient(135deg, ' + event.get('colorFrom')?.value + ', ' + event.get('colorTo')?.value + ')'"
+                                                [style.color]="'white'">
+                                                {{ getEventTypeLabel(event.get('type')?.value) }}
+                                            </span>
+                                        </div>
+                                        <p class="text-gray-300 text-sm mt-1">
+                                            {{ event.get('date')?.value ? formatDateForDisplay(event.get('date')?.value) : 'Fecha' }}
+                                            &middot; {{ event.get('time')?.value || '19:00' }}
+                                            &middot; {{ event.get('location')?.value || 'Ubicacion' }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Acciones -->
+            <div class="flex justify-between items-center pt-4 border-t border-gray-800">
+                <button type="button" (click)="addEvent()"
+                    class="px-5 py-2.5 bg-gradient-to-r from-blue-900/50 to-cyan-900/50 hover:from-blue-900/70 hover:to-cyan-900/70 text-blue-300 font-medium rounded-lg transition-all duration-300 flex items-center gap-2">
+                    <span>+</span>
+                    Agregar Evento
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Pestaña: Próximos Eventos -->
+    <div *ngIf="activeTab === 'upcoming'" id="upcoming-section" class="bg-gray-900 rounded-xl p-6 border border-gray-800 shadow-lg">
+        <h3 class="text-lg font-semibold text-white mb-1">Proximos Eventos</h3>
+        <p class="text-gray-500 text-sm mb-6">Gestiona los eventos destacados que apareceran en esta seccion</p>
+
+        <form [formGroup]="upcomingEventsForm" class="space-y-6">
+            <!-- Configuración de la sección -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div>
+                    <label class="block text-gray-300 mb-2 text-sm font-medium">Título de la Sección *</label>
+                    <input type="text" formControlName="sectionTitle"
+                        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+                </div>
+                <div>
+                    <label class="block text-gray-300 mb-2 text-sm font-medium">Subtítulo *</label>
+                    <input type="text" formControlName="sectionSubtitle"
+                        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+                </div>
+            </div>
+            <div class="mb-8 p-4 bg-gray-800/50 rounded-lg border border-gray-700">
+                <label class="block text-gray-300 mb-2 text-sm font-medium">Ícono PNG para "Próximos Eventos" (opcional)</label>
+                <div class="flex items-center gap-3">
+                    <img *ngIf="upcomingEventsIconPreview" [src]="upcomingEventsIconPreview" alt="" class="w-10 h-10 object-contain rounded bg-gray-900 p-1">
+                    <input type="file" id="upcomingEventsIconInput" accept="image/png,image/jpeg,image/webp"
+                        (change)="onUpcomingEventsIconSelected($event)" class="hidden">
+                    <label for="upcomingEventsIconInput"
+                        class="px-3 py-2 bg-blue-900/40 hover:bg-blue-900/60 text-blue-300 rounded-lg text-sm cursor-pointer">
+                        {{ upcomingEventsIconPreview ? 'Cambiar' : 'Subir icono' }}
+                    </label>
+                    <button *ngIf="upcomingEventsIconPreview" type="button" (click)="removeUpcomingEventsIcon()"
+                        class="px-2 py-1 bg-red-900/40 hover:bg-red-900/60 text-red-400 rounded text-xs">Eliminar</button>
+                </div>
+            </div>
+
+            <!-- Lista de eventos -->
+            <div formArrayName="events" class="space-y-6">
+                <div *ngFor="let event of upcomingEventsArray.controls; let i = index"
+                    class="bg-gray-800/50 rounded-xl p-6 border border-gray-700 hover:border-green-500/50 transition-colors">
+                    <div [formGroupName]="i" class="space-y-6">
+                        <!-- Encabezado del evento -->
+                        <div class="flex justify-between items-center pb-4 border-b border-gray-700">
+                            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+                                <span class="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center text-xs">{{ i + 1 }}</span>
+                                Evento {{ i + 1 }}
+                                <span *ngIf="event.get('date')?.value" class="text-gray-400 text-sm ml-2">
+                                    ({{ formatDateForDisplay(event.get('date')?.value) }})
+                                </span>
+                            </h3>
+                            <div class="flex items-center gap-2">
+                                <button type="button" (click)="duplicateUpcomingEvent(i)"
+                                    class="px-3 py-1 bg-green-900/30 hover:bg-green-900/50 text-green-400 rounded-lg text-sm font-medium transition-colors flex items-center gap-1">
+                                    Duplicar
+                                </button>
+                                <button type="button" (click)="removeUpcomingEvent(i)"
+                                    class="px-3 py-1 bg-red-900/30 hover:bg-red-900/50 text-red-400 rounded-lg text-sm font-medium transition-colors">
+                                    Eliminar
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Contenido del evento -->
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <!-- Columna izquierda -->
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-gray-300 mb-2 text-sm font-medium">Título del Evento *</label>
+                                    <input type="text" formControlName="title"
+                                        class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                                        placeholder="Ej: Santa Cena">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-300 mb-2 text-sm font-medium">Descripción *</label>
+                                    <textarea formControlName="description" rows="4"
+                                        class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                                        placeholder="Descripción detallada del evento..."></textarea>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-gray-300 mb-2 text-sm font-medium">Fecha *</label>
+                                        <input type="date" formControlName="date"
+                                            class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-300 mb-2 text-sm font-medium">Hora *</label>
+                                        <input type="time" formControlName="time"
+                                            class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-300 mb-2 text-sm font-medium">Ubicación *</label>
+                                    <input type="text" formControlName="location"
+                                        class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                                        placeholder="Ej: Templo Principal">
+                                </div>
+                            </div>
+
+                            <!-- Columna derecha -->
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-gray-300 mb-2 text-sm font-medium">Tipo de Evento *</label>
+                                        <div class="relative">
+                                            <select formControlName="type"
+                                                class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all appearance-none pr-10">
+                                                <option *ngFor="let type of eventTypes" [value]="type.value">
+                                                    {{ type.label }}
+                                                </option>
+                                            </select>
+                                            <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                                                <i *ngIf="getEventTypeIcon(event.get('type')?.value)?.startsWith('fas ') || getEventTypeIcon(event.get('type')?.value)?.startsWith('far ') || getEventTypeIcon(event.get('type')?.value)?.startsWith('fab ')" 
+                                                   [class]="getEventTypeIcon(event.get('type')?.value)" class="text-white"></i>
+                                                <span *ngIf="!getEventTypeIcon(event.get('type')?.value)?.startsWith('fas ') && !getEventTypeIcon(event.get('type')?.value)?.startsWith('far ') && !getEventTypeIcon(event.get('type')?.value)?.startsWith('fab ')">
+                                                    {{ getEventTypeIcon(event.get('type')?.value) }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="mt-2 flex flex-wrap gap-2">
+                                            <button *ngFor="let type of eventTypes" type="button"
+                                                (click)="event.get('type')?.setValue(type.value)"
+                                                [class.bg-green-600]="event.get('type')?.value === type.value"
+                                                [class.bg-gray-700]="event.get('type')?.value !== type.value"
+                                                class="p-2 rounded-lg hover:bg-green-500 transition-colors text-xs text-white"
+                                                [title]="type.label">
+                                                {{ type.label }}
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-300 mb-2 text-sm font-medium">Ícono</label>
+                                        <div class="relative">
+                                            <select formControlName="icon"
+                                                class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all appearance-none pr-10">
+                                                <option *ngFor="let icon of eventIcons" [value]="icon.value">
+                                                    {{ icon.label }}
+                                                </option>
+                                            </select>
+                                            <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                                                <i *ngIf="event.get('icon')?.value && (event.get('icon')?.value.startsWith('fas ') || event.get('icon')?.value.startsWith('far ') || event.get('icon')?.value.startsWith('fab '))" 
+                                                   [class]="event.get('icon')?.value" class="text-white"></i>
+                                                <span *ngIf="!event.get('icon')?.value || (!event.get('icon')?.value.startsWith('fas ') && !event.get('icon')?.value.startsWith('far ') && !event.get('icon')?.value.startsWith('fab '))">
+                                                    {{ event.get('icon')?.value }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="mt-2 flex flex-wrap gap-2">
+                                            <button *ngFor="let icon of eventIcons" type="button"
+                                                (click)="event.get('icon')?.setValue(icon.value)"
+                                                [class.bg-green-600]="event.get('icon')?.value === icon.value"
+                                                [class.bg-gray-700]="event.get('icon')?.value !== icon.value"
+                                                class="p-2 rounded-lg hover:bg-green-500 transition-colors text-xs text-white"
+                                                [title]="icon.label">
+                                                {{ icon.label }}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-300 mb-2 text-sm font-medium">Participantes/Expositores</label>
+                                    <input type="text" formControlName="speakers"
+                                        class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                                        placeholder="Separados por coma">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-300 mb-2 text-sm font-medium">Enlace de Registro</label>
+                                    <input type="url" formControlName="registrationLink"
+                                        class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                                        placeholder="https://...">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-300 mb-2 text-sm font-medium">Colores del Evento</label>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-gray-300 mb-2 text-xs font-medium">Color desde</label>
+                                            <div class="flex gap-2">
+                                                <input type="color" formControlName="colorFrom"
+                                                    class="w-10 h-10 rounded-lg cursor-pointer border border-gray-600">
+                                                <input type="text" formControlName="colorFrom"
+                                                    class="flex-1 bg-gray-700/50 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-gray-300 mb-2 text-xs font-medium">Color hasta</label>
+                                            <div class="flex gap-2">
+                                                <input type="color" formControlName="colorTo"
+                                                    class="w-10 h-10 rounded-lg cursor-pointer border border-gray-600">
+                                                <input type="text" formControlName="colorTo"
+                                                    class="flex-1 bg-gray-700/50 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="flex justify-between items-center pt-4 border-t border-gray-800">
+                <div class="flex gap-3">
+                    <button type="button" (click)="addUpcomingEvent()"
+                        class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded-lg transition-colors">
+                        + Agregar Evento
+                    </button>
+                    <button type="button" (click)="selectEventFromCalendar()" *ngIf="eventsArray.length > 0"
+                        class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white text-sm rounded-lg transition-colors">
+                        Agregar desde Calendario
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Pestaña: CTA de Eventos -->
+    <div *ngIf="activeTab === 'cta'" id="cta-section" class="bg-gray-900 rounded-xl p-6 border border-gray-800 shadow-lg">
+        <h3 class="text-lg font-semibold text-white mb-1">Programar Evento</h3>
+        <p class="text-gray-500 text-sm mb-6">Seccion de llamada a la accion para contactar sobre eventos</p>
+
+        <form [formGroup]="eventCtaForm" class="space-y-6">
+            <div>
+                <label class="block text-gray-300 mb-2 text-sm font-medium">Texto del Badge *</label>
+                <input type="text" formControlName="badgeText"
+                    class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+            </div>
+
+            <div>
+                <label class="block text-gray-300 mb-2 text-sm font-medium">Título *</label>
+                <input type="text" formControlName="title"
+                    class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+            </div>
+
+            <div>
+                <label class="block text-gray-300 mb-2 text-sm font-medium">Descripción *</label>
+                <textarea formControlName="description" rows="3"
+                    class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white"></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-gray-300 mb-2 text-sm font-medium">Texto del Botón *</label>
+                    <input type="text" formControlName="buttonText"
+                        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+                </div>
+                <div>
+                    <label class="block text-gray-300 mb-2 text-sm font-medium">Enlace del Botón *</label>
+                    <input type="text" formControlName="buttonLink"
+                        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white"
+                        placeholder="/contacto">
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    </div> <!-- Cierre del div de contenido según pestaña activa -->
+
+    <!-- Toast de notificación -->
+    <div *ngIf="showToast" class="fixed bottom-4 right-4 z-50 animate-slideIn">
+        <div
+            class="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-4 rounded-lg shadow-xl border border-green-500/30 flex items-center gap-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            <div>
+                <p class="font-medium">{{ toastMessage }}</p>
+                <p class="text-green-100 text-sm">Los cambios han sido actualizados</p>
+            </div>
+            <button type="button" (click)="showToast = false" class="ml-4 text-green-100 hover:text-white">
+                <span class="text-xl">×</span>
+            </button>
+        </div>
+    </div>
+</div>

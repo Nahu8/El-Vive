@@ -1,0 +1,7 @@
+<div class="min-h-screen flex flex-col">
+  <app-header *ngIf="showHeaderFooter"></app-header>
+  <main class="flex-grow">
+    <router-outlet></router-outlet>
+  </main>
+  <app-footer *ngIf="showHeaderFooter"></app-footer>
+</div>
