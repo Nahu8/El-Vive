@@ -1,0 +1,65 @@
+<section class="login-section min-h-screen flex items-center justify-center bg-black px-4 overflow-hidden">
+  <div class="login-bg-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+  </div>
+
+  <div class="w-full max-w-md relative z-10 animate-fadeInUp">
+    <div class="login-card bg-gray-900 rounded-2xl shadow-2xl p-8 md:p-10 border border-gray-800 hover:border-indigo-500/30 transition-all duration-500">
+      <div class="text-center mb-8">
+        <h1 class="text-3xl md:text-4xl font-black text-white mb-2 tracking-tight animate-slideDown">ÉL VIVE IGLESIA</h1>
+        <p class="text-gray-400 animate-slideDown" style="animation-delay: 0.1s">Portal de Administración</p>
+      </div>
+
+      <form (ngSubmit)="onSubmit()" class="space-y-6">
+        <div class="animate-fadeIn" style="animation-delay: 0.2s">
+          <label for="username" class="block text-sm font-medium text-gray-300 mb-2">Usuario</label>
+          <input
+            type="text"
+            id="username"
+            [(ngModel)]="username"
+            name="username"
+            class="input-animated w-full px-4 py-3 bg-gray-800/80 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all duration-300"
+            placeholder="admin o editor"
+            [disabled]="isLoading"
+          />
+        </div>
+
+        <div class="animate-fadeIn" style="animation-delay: 0.3s">
+          <label for="password" class="block text-sm font-medium text-gray-300 mb-2">Contraseña</label>
+          <input
+            type="password"
+            id="password"
+            [(ngModel)]="password"
+            name="password"
+            class="input-animated w-full px-4 py-3 bg-gray-800/80 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all duration-300"
+            placeholder="••••••••"
+            [disabled]="isLoading"
+          />
+        </div>
+
+        <div class="animate-fadeIn" style="animation-delay: 0.4s">
+          <button
+            type="submit"
+            class="btn-login w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-[length:200%_100%] text-white font-semibold py-3 rounded-xl hover:shadow-lg hover:shadow-indigo-500/25 transition-all duration-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:animate-none"
+            [disabled]="isLoading"
+          >
+            <span *ngIf="!isLoading">Ingresar</span>
+            <span *ngIf="isLoading" class="flex items-center justify-center gap-2">
+              <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Iniciando sesión...
+            </span>
+          </button>
+        </div>
+
+        <div *ngIf="errorMessage" class="animate-shake bg-red-900/80 border border-red-600 text-red-200 px-4 py-3 rounded-xl text-sm">
+          {{ errorMessage }}
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

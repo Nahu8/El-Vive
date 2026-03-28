@@ -1,0 +1,218 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-primary: #121212;
+    --bg-secondary: #1e1e1e;
+    --text-primary: #ffffff;
+    --text-secondary: #b0b0b0;
+    --accent-color: #4f46e5;
+  }
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+  }
+
+  .hover-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+  }
+}
+
+:root {
+  --theme-primary: #4f46e5;
+  --theme-primary-light: #818cf8;
+  --theme-secondary: #7c3aed;
+  --theme-accent: #06b6d4;
+}
+
+/* ========== MODO NOCHE (dark) ========== */
+html.dark-theme {
+  --page-bg: #0a0a0a;
+  --page-bg-section: #000000;
+  --page-text: #ffffff;
+  --page-text-muted: #9ca3af;
+  --card-bg: rgba(17, 24, 39, 0.9);
+  --border-color: rgba(75, 85, 99, 0.5);
+}
+
+html.dark-theme body,
+html.dark-theme .page-content {
+  background-color: var(--page-bg) !important;
+  color: var(--page-text) !important;
+}
+
+/* ========== MODO DÍA (light) ========== */
+html.light-theme {
+  --page-bg: #faf8f5;
+  --page-bg-section: #faf8f5;
+  --page-text: #1e293b;
+  --page-text-muted: #64748b;
+  --card-bg: rgba(255, 255, 255, 0.95);
+  --border-color: rgba(148, 163, 184, 0.5);
+}
+
+html.light-theme body,
+html.light-theme .page-content {
+  background-color: var(--page-bg) !important;
+  color: var(--page-text) !important;
+}
+
+/* Secciones de contenido: negro o blanco hueso según tema */
+.page-section {
+  background-color: var(--page-bg-section) !important;
+  color: var(--page-text) !important;
+  position: relative;
+}
+
+/* Transición suave entre secciones: degradado de fusión en el borde superior */
+html.dark-theme .page-section + .page-section {
+  background: linear-gradient(to bottom,
+    #141414 0%,
+    #0f0f0f 40px,
+    #000000 80px,
+    #000000 100%) !important;
+}
+
+html.light-theme .page-section + .page-section {
+  background: linear-gradient(to bottom,
+    #ebe8e2 0%,
+    #f3f0ea 40px,
+    #faf8f5 80px,
+    #faf8f5 100%) !important;
+}
+
+.page-section h1, .page-section h2, .page-section h3,
+.page-section h4, .page-section h5, .page-section p,
+.page-section span, .page-section a, .page-section label {
+  color: inherit;
+}
+
+.page-section .font-medium {
+  color: var(--page-text) !important;
+}
+
+.page-section .text-gray-400,
+.page-section .text-gray-300,
+.page-section .text-gray-500 {
+  color: var(--page-text-muted) !important;
+}
+
+.page-heading {
+  color: var(--page-text) !important;
+}
+
+.page-text-muted {
+  color: var(--page-text-muted) !important;
+}
+
+.page-border-color {
+  border-color: var(--border-color) !important;
+}
+
+.page-card-bg {
+  background-color: var(--card-bg) !important;
+}
+
+/* Header siempre transparente, no afectado por modo día/noche */
+app-header header {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
+/* Footer: solo fondo y letras según tema */
+html.dark-theme app-footer footer {
+  background-color: #000000 !important;
+  color: #e5e7eb !important;
+}
+
+html.dark-theme app-footer footer a,
+html.dark-theme app-footer footer span,
+html.dark-theme app-footer footer p {
+  color: #e5e7eb !important;
+}
+
+html.light-theme app-footer footer {
+  background-color: #faf8f5 !important;
+  color: #1e293b !important;
+}
+
+html.light-theme app-footer footer a,
+html.light-theme app-footer footer span,
+html.light-theme app-footer footer p,
+html.light-theme app-footer footer h3,
+html.light-theme app-footer footer h4 {
+  color: #1e293b !important;
+}
+
+html.light-theme app-footer footer .bg-gray-900 {
+  background-color: rgba(30, 41, 59, 0.15) !important;
+}
+
+html.light-theme app-footer footer .border-gray-800 {
+  border-color: rgba(30, 41, 59, 0.2) !important;
+}
+
+html.light-theme app-footer footer .text-gray-600 {
+  color: #475569 !important;
+}
+
+/* Overflow scroll */
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.overflow-x-auto::-webkit-scrollbar {
+  display: none;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--theme-primary-light);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  button, a[role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.theme-toggle {
+  top: 5.5rem;
+}
+
+/* Páginas que deben usar fondo continuo sin corte entre secciones */
+.no-section-gradient .page-section {
+  background-image: none !important;
+  background: transparent !important;
+  background-color: var(--page-bg) !important;
+}
+
+.no-section-gradient .page-section + .page-section {
+  background-image: none !important;
+  background: transparent !important;
+  background-color: var(--page-bg) !important;
+}
+
+/* Tarjetas alineadas al fondo editable de la página (mismo tono que header), sin vidrio */
+.no-section-gradient .page-card-bg {
+  background-color: var(--page-bg) !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}

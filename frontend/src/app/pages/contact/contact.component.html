@@ -1,0 +1,123 @@
+<div class="min-h-screen page-content no-section-gradient" [style.--page-bg]="pageBgColor" [style.--page-bg-section]="pageBgColor">
+  <!-- Hero: única sección con imagen/video/gradiente + degradé a negro -->
+  <section class="page-hero relative min-h-[50vh] flex items-center justify-center overflow-hidden">
+    <div class="absolute inset-0" [style.background-color]="heroBgColor"></div>
+    <video *ngIf="heroVideoUrl" [src]="heroVideoUrl" autoplay muted loop playsinline
+      class="absolute inset-0 w-full h-full object-cover"></video>
+    <div *ngIf="currentHeroImageUrl && !heroVideoUrl" class="absolute inset-0 bg-cover bg-center"
+      [style.background-image]="'url(' + currentHeroImageUrl + ')'"></div>
+    <div *ngIf="!currentHeroImageUrl && !heroVideoUrl" class="absolute inset-0 bg-gradient-to-b from-indigo-950/80 via-indigo-900/60 to-black"></div>
+    <div *ngIf="heroFadeEnabled" class="absolute inset-0" [style.background]="heroFadeStyle"></div>
+    <div class="absolute inset-0 bg-black/40"></div>
+    <div class="relative z-10 text-center px-6 py-20">
+      <h1 class="text-5xl md:text-7xl font-black tracking-wider mb-4 text-white">{{ heroTitle }}</h1>
+      <p class="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto">{{ heroSubtitle }}</p>
+    </div>
+  </section>
+
+  <div class="container mx-auto px-6 pb-24 max-w-6xl page-content">
+    <section *ngIf="introContent" class="page-section py-16">
+      <div class="max-w-3xl mx-auto text-center">
+        <h2 class="page-heading text-2xl md:text-3xl font-bold mb-6">{{ introTitle }}</h2>
+        <p class="text-lg leading-relaxed whitespace-pre-line page-text-muted">{{ introContent }}</p>
+      </div>
+    </section>
+
+    <ng-container *ngFor="let section of pageSections; let i = index">
+      <section *ngIf="section.type === 'textImage'" class="page-section py-16">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
+          [ngClass]="{'lg:grid-flow-dense': section.layout === 'right'}">
+          <div class="order-2 lg:order-1" [ngClass]="{'lg:order-2': section.layout === 'right'}">
+            <h3 class="page-heading text-2xl font-bold mb-4">{{ section.title }}</h3>
+            <p class="leading-relaxed whitespace-pre-line page-text-muted">{{ section.content }}</p>
+          </div>
+          <div class="order-1 lg:order-2" [ngClass]="{'lg:order-1': section.layout === 'right'}">
+            <img *ngIf="section.imageUrl" [src]="section.imageUrl" [alt]="section.title || 'Imagen'"
+              class="w-full rounded-2xl object-cover aspect-video lg:aspect-[4/3] shadow-2xl">
+          </div>
+        </div>
+      </section>
+
+      <section *ngIf="section.type === 'image'" class="page-section py-12">
+        <figure>
+          <img [src]="section.imageUrl" [alt]="section.caption || 'Imagen'"
+            class="w-full rounded-2xl object-cover max-h-[500px] shadow-xl">
+          <figcaption *ngIf="section.caption" class="text-center page-text-muted mt-3 text-sm">{{ section.caption }}</figcaption>
+        </figure>
+      </section>
+
+      <section *ngIf="section.type === 'video'" class="page-section py-16">
+        <div class="max-w-4xl mx-auto">
+          <h3 *ngIf="section.title" class="page-heading text-2xl font-bold mb-6 text-center">{{ section.title }}</h3>
+          <div class="aspect-video rounded-2xl overflow-hidden shadow-2xl bg-gray-900">
+            <iframe *ngIf="section.videoUrl && getSafeVideoUrl(section.videoUrl)" [src]="getSafeVideoUrl(section.videoUrl)!" allowfullscreen
+              class="w-full h-full"></iframe>
+          </div>
+        </div>
+      </section>
+
+      <section *ngIf="section.type === 'text'" class="page-section py-12">
+        <div class="max-w-3xl mx-auto">
+          <h3 *ngIf="section.title" class="page-heading text-2xl font-bold mb-4">{{ section.title }}</h3>
+          <p class="leading-relaxed whitespace-pre-line page-text-muted">{{ section.content }}</p>
+        </div>
+      </section>
+    </ng-container>
+
+    <section class="page-section py-16 border-t page-border-color">
+      <h2 class="page-heading text-3xl font-bold mb-10 text-center">¿Cómo contactarnos?</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        <a *ngIf="contactInfo.email" [href]="'mailto:' + contactInfo.email"
+          class="group flex flex-col items-center text-center p-6 rounded-2xl border page-border-color hover:border-indigo-500/40 transition-all hover:opacity-90">
+          <span class="text-4xl mb-3">✉</span>
+          <span class="text-sm page-text-muted mb-1">Email</span>
+          <span class="font-medium group-hover:text-indigo-400 transition-colors break-all">{{ contactInfo.email }}</span>
+        </a>
+        <a *ngIf="contactInfo.phone" [href]="'tel:' + contactInfo.phone"
+          class="group flex flex-col items-center text-center p-6 rounded-2xl border page-border-color hover:border-indigo-500/40 transition-all hover:opacity-90">
+          <span class="text-4xl mb-3">📞</span>
+          <span class="text-sm page-text-muted mb-1">Teléfono</span>
+          <span class="font-medium group-hover:text-indigo-400 transition-colors">{{ contactInfo.phone }}</span>
+        </a>
+        <div *ngIf="contactInfo.address" class="flex flex-col items-center text-center p-6 rounded-2xl border page-border-color">
+          <span class="text-4xl mb-3">📍</span>
+          <span class="text-sm page-text-muted mb-1">Dirección</span>
+          <span class="font-medium">{{ contactInfo.address }}</span>
+          <span *ngIf="contactInfo.city" class="page-text-muted text-sm mt-1">{{ contactInfo.city }}</span>
+        </div>
+      </div>
+    </section>
+
+    <section *ngIf="mapImageUrl || contactInfo.mapEmbed" class="page-section py-16">
+      <h2 class="page-heading text-3xl font-bold mb-4 text-center">{{ mapTitle }}</h2>
+      <p *ngIf="mapDescription" class="page-text-muted text-center mb-8 max-w-2xl mx-auto">{{ mapDescription }}</p>
+
+      <!-- Opción 1: Imagen que redirige a Google Maps -->
+      <a *ngIf="mapImageUrl && googleMapsUrl" [href]="googleMapsUrl" target="_blank" rel="noopener noreferrer"
+        class="block relative group overflow-hidden rounded-2xl aspect-video md:aspect-[21/9] shadow-2xl">
+        <img [src]="mapImageUrl" alt="Ver en Google Maps" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+        <div class="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+          <span class="px-6 py-3 bg-white/90 text-gray-900 font-semibold rounded-full shadow-lg group-hover:bg-white transition-colors">
+            Abrir en Google Maps →
+          </span>
+        </div>
+      </a>
+
+      <div *ngIf="(!mapImageUrl || !googleMapsUrl) && contactInfo.mapEmbed" class="rounded-2xl overflow-hidden border page-border-color shadow-xl">
+        <div class="aspect-video w-full" [innerHTML]="getSafeMapEmbed()"></div>
+      </div>
+    </section>
+
+    <section class="page-section py-16 border-t page-border-color">
+      <h2 class="page-heading text-3xl font-bold mb-8 text-center">Horario de servicios</h2>
+      <div class="max-w-2xl mx-auto space-y-4">
+        <div *ngFor="let item of scheduleItems" class="flex justify-between items-center py-4 border-b page-border-color last:border-0"
+          [class.hidden]="!getScheduleValue(item.key)">
+          <span class="page-text-muted">{{ item.label }}</span>
+          <span class="font-medium">{{ getScheduleValue(item.key) }}</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>

@@ -1,0 +1,218 @@
+<div class="space-y-6 px-4 md:px-6 pb-6">
+  <div class="bg-gray-900 rounded-xl p-6 border border-gray-800">
+    <h3 class="text-xl font-semibold text-white mb-6">{{ pageTitle }}</h3>
+
+    <div class="space-y-6">
+      <div class="bg-gray-800/50 rounded-lg p-4">
+        <h4 class="text-gray-300 font-medium mb-3">Hero</h4>
+        <div class="space-y-3">
+          <input type="text" [(ngModel)]="pageContent.hero.title" placeholder="Título"
+            class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white">
+          <input type="text" [(ngModel)]="pageContent.hero.subtitle" placeholder="Subtítulo"
+            class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white">
+          <input *ngIf="pageKey === 'donaciones'" type="text" [(ngModel)]="pageContent.hero.badge" placeholder="Etiqueta sobre el título (ej. Generosidad que sostiene la misión)"
+            class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-gray-500 text-sm mb-1">Imagen modo día</label>
+              <input type="file" (change)="onHeroImageSelected($event, 'light')" accept="image/*" class="text-gray-400 text-sm file:mr-2 file:py-1 file:px-2 file:rounded file:bg-gray-700 file:text-gray-300">
+              <img *ngIf="pageContent.hero.backgroundImageUrlLight" [src]="resolveUrl(pageContent.hero.backgroundImageUrlLight)" class="mt-2 h-20 object-cover rounded">
+            </div>
+            <div>
+              <label class="block text-gray-500 text-sm mb-1">Imagen modo noche</label>
+              <input type="file" (change)="onHeroImageSelected($event, 'dark')" accept="image/*" class="text-gray-400 text-sm file:mr-2 file:py-1 file:px-2 file:rounded file:bg-gray-700 file:text-gray-300">
+              <img *ngIf="pageContent.hero.backgroundImageUrlDark" [src]="resolveUrl(pageContent.hero.backgroundImageUrlDark)" class="mt-2 h-20 object-cover rounded">
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-gray-500 text-sm mb-1">Fondo header - modo día</label>
+              <div class="flex gap-2 items-center">
+                <input type="color" [(ngModel)]="pageContent.hero.bgColorLight" class="w-10 h-10 rounded border border-gray-600 cursor-pointer">
+                <input type="text" [(ngModel)]="pageContent.hero.bgColorLight" class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm">
+              </div>
+            </div>
+            <div>
+              <label class="block text-gray-500 text-sm mb-1">Fondo header - modo noche</label>
+              <div class="flex gap-2 items-center">
+                <input type="color" [(ngModel)]="pageContent.hero.bgColorDark" class="w-10 h-10 rounded border border-gray-600 cursor-pointer">
+                <input type="text" [(ngModel)]="pageContent.hero.bgColorDark" class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm">
+              </div>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div class="md:col-span-2">
+              <label class="inline-flex items-center gap-2 text-sm text-gray-400 cursor-pointer">
+                <input type="checkbox" [(ngModel)]="pageContent.hero.fadeEnabled" class="rounded border-gray-600 bg-gray-800">
+                Activar degradé inferior
+              </label>
+            </div>
+            <div>
+              <label class="block text-gray-500 text-sm mb-1">Degradé - modo día</label>
+              <div class="flex gap-2 items-center">
+                <input type="color" [(ngModel)]="pageContent.hero.fadeColorLight" [disabled]="!pageContent.hero.fadeEnabled" class="w-10 h-10 rounded border border-gray-600 cursor-pointer">
+                <input type="text" [(ngModel)]="pageContent.hero.fadeColorLight" [disabled]="!pageContent.hero.fadeEnabled" class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm">
+              </div>
+            </div>
+            <div>
+              <label class="block text-gray-500 text-sm mb-1">Degradé - modo noche</label>
+              <div class="flex gap-2 items-center">
+                <input type="color" [(ngModel)]="pageContent.hero.fadeColorDark" [disabled]="!pageContent.hero.fadeEnabled" class="w-10 h-10 rounded border border-gray-600 cursor-pointer">
+                <input type="text" [(ngModel)]="pageContent.hero.fadeColorDark" [disabled]="!pageContent.hero.fadeEnabled" class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm">
+              </div>
+            </div>
+          </div>
+          <input type="text" [(ngModel)]="pageContent.hero.backgroundVideoUrl" placeholder="URL video de fondo (opcional)"
+            class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
+        </div>
+      </div>
+
+      <div class="bg-gray-800/50 rounded-lg p-4">
+        <h4 class="text-gray-300 font-medium mb-3">Intro</h4>
+        <input type="text" [(ngModel)]="pageContent.intro.title" placeholder="Título" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white mb-3">
+        <textarea [(ngModel)]="pageContent.intro.content" rows="4" placeholder="Contenido"
+          class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white"></textarea>
+      </div>
+
+      <div *ngIf="pageKey === 'donaciones'" class="bg-gray-800/50 rounded-lg p-4 border border-emerald-900/40">
+        <h4 class="text-emerald-300 font-medium mb-3">Por qué damos (3 tarjetas con imagen)</h4>
+        <p class="text-gray-500 text-sm mb-4">Se muestran en la página pública en un grid moderno. Podés subir imagen o pegar URL.</p>
+        <div class="space-y-4">
+          <div *ngFor="let w of pageContent.whyGive; let i = index" class="p-4 bg-gray-900 rounded-lg border border-gray-700">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-gray-400 text-sm">Tarjeta {{ i + 1 }}</span>
+              <button type="button" (click)="removeWhyGive(i)" class="text-red-400 text-xs">Eliminar</button>
+            </div>
+            <input type="text" [(ngModel)]="w.title" placeholder="Título" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2">
+            <textarea [(ngModel)]="w.content" rows="2" placeholder="Texto" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2"></textarea>
+            <input type="file" (change)="onWhyGiveImageSelected($event, i)" accept="image/*" class="text-xs text-gray-400 file:mr-2 file:py-1 file:rounded file:bg-gray-700 mb-1">
+            <input type="text" [(ngModel)]="w.imageUrl" placeholder="URL imagen (opcional)" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-1 text-white text-xs">
+            <img *ngIf="w.imageUrl" [src]="resolveUrl(w.imageUrl)" alt="" class="mt-2 h-24 w-full object-cover rounded">
+          </div>
+          <button type="button" (click)="addWhyGive()" class="px-4 py-2 bg-emerald-900/50 hover:bg-emerald-900/70 text-emerald-200 text-sm rounded-lg">+ Agregar tarjeta</button>
+        </div>
+      </div>
+
+      <div *ngIf="pageKey === 'donaciones'" class="bg-gray-800/50 rounded-lg p-4 border border-indigo-900/40">
+        <h4 class="text-indigo-300 font-medium mb-3">Medios de pago</h4>
+        <p class="text-gray-500 text-sm mb-4">CBU, alias, links de Mercado Pago, etc. El visitante podrá copiar el texto con un botón.</p>
+        <div class="space-y-4">
+          <div *ngFor="let pm of pageContent.paymentMethods; let i = index" class="p-4 bg-gray-900 rounded-lg border border-gray-700">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-gray-400 text-sm">Método {{ i + 1 }}</span>
+              <button type="button" (click)="removePaymentMethod(i)" class="text-red-400 text-xs">Eliminar</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
+              <input type="text" [(ngModel)]="pm.label" placeholder="Título (ej. Transferencia bancaria)" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm">
+              <input type="text" [(ngModel)]="pm.icon" placeholder="Emoji / ícono (ej. 🏦)" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm">
+            </div>
+            <textarea [(ngModel)]="pm.description" rows="2" placeholder="Descripción corta" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2"></textarea>
+            <textarea [(ngModel)]="pm.detail" rows="4" placeholder="Datos para copiar: CBU, alias, link..." class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2 font-mono text-xs"></textarea>
+            <input type="file" (change)="onPaymentMethodImageSelected($event, i)" accept="image/*" class="text-xs text-gray-400 file:mr-2 file:py-1 file:rounded file:bg-gray-700 mb-1">
+            <input type="text" [(ngModel)]="pm.imageUrl" placeholder="URL imagen lateral (opcional)" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-1 text-white text-xs">
+            <img *ngIf="pm.imageUrl" [src]="resolveUrl(pm.imageUrl)" alt="" class="mt-2 h-20 object-cover rounded max-w-xs">
+          </div>
+          <button type="button" (click)="addPaymentMethod()" class="px-4 py-2 bg-indigo-900/50 hover:bg-indigo-900/70 text-indigo-200 text-sm rounded-lg">+ Agregar medio de pago</button>
+        </div>
+      </div>
+
+      <div *ngIf="pageKey === 'donaciones'" class="bg-gray-800/50 rounded-lg p-4 border border-amber-900/30">
+        <h4 class="text-amber-200 font-medium mb-3">Bloque final (CTA)</h4>
+        <input type="text" [(ngModel)]="pageContent.donacionesCta!.title" placeholder="Título" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white mb-2">
+        <textarea [(ngModel)]="pageContent.donacionesCta!.subtitle" rows="2" placeholder="Subtítulo" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white mb-2"></textarea>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
+          <input type="text" [(ngModel)]="pageContent.donacionesCta!.buttonText" placeholder="Texto del botón" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
+          <input type="text" [(ngModel)]="pageContent.donacionesCta!.buttonUrl" placeholder="Ruta (ej. /contacto)" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
+        </div>
+        <label class="block text-gray-500 text-sm mb-1">Imagen de fondo / lateral del CTA</label>
+        <input type="file" (change)="onDonacionesCtaImageSelected($event)" accept="image/*" class="text-xs text-gray-400 file:mr-2 file:py-1 file:rounded file:bg-gray-700 mb-1">
+        <input type="text" [(ngModel)]="pageContent.donacionesCta!.imageUrl" placeholder="URL imagen" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-1 text-white text-xs">
+        <img *ngIf="pageContent.donacionesCta?.imageUrl" [src]="resolveUrl(pageContent.donacionesCta!.imageUrl!)" alt="" class="mt-2 h-24 object-cover rounded max-w-sm">
+      </div>
+
+      <div *ngIf="pageKey === 'nosotros'" class="bg-gray-800/50 rounded-lg p-4">
+        <h4 class="text-gray-300 font-medium mb-3">Bloque 3 columnas (Creencias / Valores / Equipo)</h4>
+        <div class="space-y-3">
+          <div *ngFor="let h of pageContent.highlights; let i = index" class="p-3 bg-gray-900 rounded border border-gray-700">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-gray-400 text-sm">Columna {{ i + 1 }}</span>
+              <button type="button" (click)="removeHighlight(i)" class="text-red-400 text-xs">Eliminar</button>
+            </div>
+            <input type="text" [(ngModel)]="h.title" placeholder="Título" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2">
+            <textarea [(ngModel)]="h.content" rows="3" placeholder="Descripción" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2"></textarea>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <input type="text" [(ngModel)]="h.linkText" placeholder="Texto link (ej. Leer más)" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm">
+              <input type="text" [(ngModel)]="h.linkUrl" placeholder="URL link (opcional)" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm">
+            </div>
+          </div>
+          <button type="button" (click)="addHighlight()" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white text-sm rounded-lg">+ Agregar columna</button>
+        </div>
+      </div>
+
+      <div *ngIf="pageKey === 'nosotros'" class="bg-gray-800/50 rounded-lg p-4">
+        <h4 class="text-gray-300 font-medium mb-3">Presentación pastoral (Pastor / Pastora / Grupo)</h4>
+        <div class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="p-3 bg-gray-900 rounded border border-gray-700">
+              <label class="block text-gray-500 text-sm mb-2">Pastor</label>
+              <input type="text" [(ngModel)]="pageContent.leadership!.pastorName" placeholder="Nombre" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2">
+              <input type="text" [(ngModel)]="pageContent.leadership!.pastorRole" placeholder="Rol" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2">
+              <input type="file" (change)="onLeadershipImageSelected($event, 'pastorImageUrl')" accept="image/*" class="text-xs text-gray-400 file:mr-2 file:py-1 file:rounded file:bg-gray-700">
+              <img *ngIf="pageContent.leadership!.pastorImageUrl" [src]="resolveUrl(pageContent.leadership!.pastorImageUrl!)" class="mt-2 h-20 w-20 rounded-full object-cover">
+            </div>
+            <div class="p-3 bg-gray-900 rounded border border-gray-700">
+              <label class="block text-gray-500 text-sm mb-2">Pastora</label>
+              <input type="text" [(ngModel)]="pageContent.leadership!.pastoraName" placeholder="Nombre" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2">
+              <input type="text" [(ngModel)]="pageContent.leadership!.pastoraRole" placeholder="Rol" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2">
+              <input type="file" (change)="onLeadershipImageSelected($event, 'pastoraImageUrl')" accept="image/*" class="text-xs text-gray-400 file:mr-2 file:py-1 file:rounded file:bg-gray-700">
+              <img *ngIf="pageContent.leadership!.pastoraImageUrl" [src]="resolveUrl(pageContent.leadership!.pastoraImageUrl!)" class="mt-2 h-20 w-20 rounded-full object-cover">
+            </div>
+            <div class="p-3 bg-gray-900 rounded border border-gray-700">
+              <label class="block text-gray-500 text-sm mb-2">Grupo</label>
+              <input type="text" [(ngModel)]="pageContent.leadership!.groupTitle" placeholder="Título" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2">
+              <input type="text" [(ngModel)]="pageContent.leadership!.groupRole" placeholder="Subtítulo" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2">
+              <input type="file" (change)="onLeadershipImageSelected($event, 'groupImageUrl')" accept="image/*" class="text-xs text-gray-400 file:mr-2 file:py-1 file:rounded file:bg-gray-700">
+              <img *ngIf="pageContent.leadership!.groupImageUrl" [src]="resolveUrl(pageContent.leadership!.groupImageUrl!)" class="mt-2 h-20 w-20 rounded-full object-cover">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-gray-800/50 rounded-lg p-4">
+        <h4 class="text-gray-300 font-medium mb-3">Secciones</h4>
+        <div class="space-y-4">
+          <div *ngFor="let s of pageContent.sections; let i = index" class="p-3 bg-gray-900 rounded border border-gray-700">
+            <div class="flex justify-between mb-2">
+              <span class="text-gray-500 text-sm">Sección {{ i + 1 }}</span>
+              <button type="button" (click)="removeSection(i)" class="text-red-400 text-xs">Eliminar</button>
+            </div>
+            <select [(ngModel)]="s.type" class="mb-2 w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm">
+              <option value="text">Texto</option>
+              <option value="image">Imagen</option>
+              <option value="video">Video (YouTube)</option>
+              <option value="textImage">Texto + Imagen</option>
+            </select>
+            <input *ngIf="s.type !== 'image'" type="text" [(ngModel)]="s.title" placeholder="Título" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2">
+            <textarea *ngIf="s.type === 'text' || s.type === 'textImage'" [(ngModel)]="s.content" rows="2" placeholder="Contenido" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2"></textarea>
+            <div *ngIf="s.type === 'image' || s.type === 'textImage'">
+              <input type="file" (change)="onSectionImageSelected($event, i)" accept="image/*" class="text-xs text-gray-400 file:mr-2 file:py-1 file:rounded file:bg-gray-700">
+              <img *ngIf="s.imageUrl" [src]="resolveUrl(s.imageUrl)" alt="" class="mt-2 max-h-24 object-cover rounded">
+              <input type="text" [(ngModel)]="s.imageUrl" placeholder="URL" class="mt-1 w-full bg-gray-800 border border-gray-700 rounded px-3 py-1 text-white text-sm">
+            </div>
+            <input *ngIf="s.type === 'video'" type="text" [(ngModel)]="s.videoUrl" placeholder="URL YouTube" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm">
+            <select *ngIf="s.type === 'textImage'" [(ngModel)]="s.layout" class="mt-2 w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm">
+              <option value="left">Imagen izquierda</option>
+              <option value="right">Imagen derecha</option>
+            </select>
+          </div>
+          <button type="button" (click)="addSection()" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white text-sm rounded-lg">+ Agregar sección</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="showToast" class="fixed bottom-4 right-4 z-50 px-5 py-3 rounded-lg shadow-xl text-white text-sm"
+    [class.bg-emerald-600]="toastType === 'success'" [class.bg-red-600]="toastType === 'error'">
+    {{ toastMessage }}
+  </div>
+</div>

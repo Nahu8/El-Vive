@@ -1,0 +1,158 @@
+<div class="min-h-screen page-content animate-fadeIn no-section-gradient donaciones-page" [style.--page-bg]="pageBgColor" [style.--page-bg-section]="pageBgColor">
+  <!-- Hero -->
+  <section class="page-hero relative min-h-[58vh] flex items-center justify-center overflow-hidden pt-20 md:pt-24">
+    <div class="absolute inset-0" [style.background-color]="heroBgColor"></div>
+    <video *ngIf="heroVideoUrl" [src]="heroVideoUrl" autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover"></video>
+    <div *ngIf="currentHeroImageUrl && !heroVideoUrl" class="absolute inset-0 bg-cover bg-center scale-105" [style.background-image]="'url(' + currentHeroImageUrl + ')'"></div>
+    <div *ngIf="!currentHeroImageUrl && !heroVideoUrl" class="absolute inset-0 bg-gradient-to-br from-emerald-950 via-teal-950/90 to-black"></div>
+    <div *ngIf="heroFadeEnabled" class="absolute inset-0" [style.background]="heroFadeStyle"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/35 to-black/25"></div>
+    <div class="relative z-10 text-center px-6 py-20 max-w-4xl mx-auto">
+      <p *ngIf="heroBadge" class="donaciones-hero-badge inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium text-emerald-100 bg-emerald-500/20 border border-emerald-400/30 backdrop-blur-sm mb-6">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        {{ heroBadge }}
+      </p>
+      <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-white mb-5 drop-shadow-lg">
+        {{ heroTitle }}
+      </h1>
+      <p class="text-lg md:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed font-medium">
+        {{ heroSubtitle }}
+      </p>
+    </div>
+  </section>
+
+  <div class="container mx-auto px-4 sm:px-6 pb-24 max-w-6xl page-content">
+    <!-- Intro -->
+    <section *ngIf="introTitle || introContent" class="page-section py-16 md:py-20">
+      <div class="max-w-3xl mx-auto text-center donaciones-glass rounded-3xl px-6 py-10 md:px-10 md:py-12 border page-border-color">
+        <h2 *ngIf="introTitle" class="page-heading text-2xl md:text-3xl font-bold mb-5">{{ introTitle }}</h2>
+        <p *ngIf="introContent" class="text-base md:text-lg leading-relaxed whitespace-pre-line page-text-muted">{{ introContent }}</p>
+      </div>
+    </section>
+
+    <!-- Por qué damos -->
+    <section *ngIf="whyGive.length" class="page-section py-6 md:py-10">
+      <h2 class="page-heading text-2xl md:text-3xl font-bold text-center mb-3">Cómo impacta tu donación</h2>
+      <p class="text-center page-text-muted max-w-2xl mx-auto mb-12 text-sm md:text-base">
+        Tres pilares que guían el uso responsable de cada aporte.
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        <article *ngFor="let card of whyGive; let i = index"
+          class="donaciones-card group rounded-2xl overflow-hidden border page-border-color bg-[var(--card-bg)] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+          <div class="aspect-[4/3] overflow-hidden bg-gray-900">
+            <img *ngIf="card.imageUrl" [src]="card.imageUrl" [alt]="card.title" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+            <div *ngIf="!card.imageUrl" class="w-full h-full flex items-center justify-center text-5xl opacity-40">✨</div>
+          </div>
+          <div class="p-6 md:p-7">
+            <span class="text-xs font-semibold uppercase tracking-wider text-emerald-500/90 mb-2 block">0{{ i + 1 }}</span>
+            <h3 class="text-xl font-bold mb-3 page-heading">{{ card.title }}</h3>
+            <p class="text-sm md:text-base leading-relaxed page-text-muted whitespace-pre-line">{{ card.content }}</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Medios de pago -->
+    <section *ngIf="paymentMethods.length" class="page-section py-12 md:py-16">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
+        <div>
+          <h2 class="page-heading text-2xl md:text-3xl font-bold mb-2">Formas de aportar</h2>
+          <p class="page-text-muted text-sm md:text-base max-w-xl">
+            Elegí el medio que te resulte más cómodo. Podés copiar los datos con un clic.
+          </p>
+        </div>
+      </div>
+      <div class="space-y-8">
+        <article *ngFor="let pm of paymentMethods; let pi = index"
+          class="donaciones-pay-card rounded-2xl border page-border-color overflow-hidden flex flex-col lg:flex-row bg-[var(--card-bg)] shadow-lg">
+          <div *ngIf="pm.imageUrl" class="lg:w-[38%] min-h-[200px] lg:min-h-0 relative">
+            <img [src]="pm.imageUrl" [alt]="pm.label" class="absolute inset-0 w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent lg:block hidden"></div>
+          </div>
+          <div class="flex-1 p-6 md:p-8 lg:p-10 flex flex-col justify-center">
+            <div class="flex items-start gap-4 mb-4">
+              <span class="text-4xl flex-shrink-0 w-14 h-14 rounded-xl bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center" aria-hidden="true">{{ pm.icon }}</span>
+              <div>
+                <h3 class="text-xl md:text-2xl font-bold page-heading">{{ pm.label }}</h3>
+                <p *ngIf="pm.description" class="text-sm md:text-base page-text-muted mt-2 leading-relaxed">{{ pm.description }}</p>
+              </div>
+            </div>
+            <div class="rounded-xl bg-black/20 dark:bg-white/5 border page-border-color p-4 md:p-5 mt-2">
+              <pre class="text-xs md:text-sm font-mono whitespace-pre-wrap break-all page-text-muted m-0">{{ pm.detail }}</pre>
+            </div>
+            <button type="button" (click)="copyDetail('pm-' + pi, pm.detail)"
+              class="mt-5 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold text-sm transition-all
+                bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-lg shadow-emerald-900/30">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+              {{ isCopied('pm-' + pi) ? '¡Copiado!' : 'Copiar datos' }}
+            </button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- CMS sections -->
+    <ng-container *ngFor="let section of pageSections; let i = index">
+      <section *ngIf="section.type === 'textImage'" class="page-section py-10 md:py-16">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center"
+          [ngClass]="{'lg:grid-flow-dense': section.layout === 'right'}">
+          <div class="order-2" [ngClass]="{'lg:order-2': section.layout === 'right', 'lg:order-1': section.layout !== 'right'}">
+            <h3 class="text-2xl md:text-3xl font-bold mb-4 page-heading">{{ section.title }}</h3>
+            <p class="leading-relaxed whitespace-pre-line page-text-muted">{{ section.content }}</p>
+          </div>
+          <div class="order-1" [ngClass]="{'lg:order-1': section.layout === 'right', 'lg:order-2': section.layout !== 'right'}">
+            <div *ngIf="section.imageUrl" class="donacion-media-frame rounded-2xl overflow-hidden shadow-2xl ring-1 ring-black/10 dark:ring-white/10 aspect-video">
+              <img [src]="section.imageUrl" [alt]="section.title || 'Imagen'" class="w-full h-full object-cover">
+            </div>
+            <div *ngIf="!section.imageUrl" class="rounded-2xl aspect-video min-h-[200px] flex items-center justify-center bg-gray-900/50 border page-border-color text-4xl opacity-50">✨</div>
+          </div>
+        </div>
+      </section>
+
+      <section *ngIf="section.type === 'image'" class="page-section py-10 md:py-14">
+        <figure class="max-w-5xl mx-auto">
+          <div *ngIf="section.imageUrl" class="donacion-media-frame rounded-2xl overflow-hidden shadow-2xl aspect-video">
+            <img [src]="section.imageUrl" [alt]="section.caption || 'Imagen'" class="w-full h-full object-cover">
+          </div>
+          <figcaption *ngIf="section.caption" class="text-center page-text-muted mt-4 text-sm">{{ section.caption }}</figcaption>
+        </figure>
+      </section>
+
+      <section *ngIf="section.type === 'video'" class="page-section py-10 md:py-16">
+        <div class="max-w-4xl mx-auto">
+          <h3 *ngIf="section.title" class="text-2xl md:text-3xl font-bold mb-6 text-center page-heading">{{ section.title }}</h3>
+          <div class="donacion-media-frame aspect-video rounded-2xl overflow-hidden shadow-2xl bg-gray-900 ring-1 ring-black/10 dark:ring-white/10">
+            <iframe *ngIf="section.videoUrl && getSafeVideoUrl(section.videoUrl)" [src]="getSafeVideoUrl(section.videoUrl)!" allowfullscreen class="w-full h-full border-0"></iframe>
+          </div>
+        </div>
+      </section>
+
+      <section *ngIf="section.type === 'text'" class="page-section py-10 md:py-12">
+        <div class="max-w-3xl mx-auto donaciones-glass rounded-2xl p-8 border page-border-color">
+          <h3 *ngIf="section.title" class="text-2xl md:text-3xl font-bold mb-4 page-heading">{{ section.title }}</h3>
+          <p class="leading-relaxed whitespace-pre-line page-text-muted">{{ section.content }}</p>
+        </div>
+      </section>
+    </ng-container>
+
+    <!-- CTA -->
+    <section *ngIf="donacionesCta?.title" class="page-section py-12 md:py-16">
+      <div class="relative rounded-3xl overflow-hidden border page-border-color min-h-[280px] flex items-center">
+        <div *ngIf="donacionesCta?.imageUrl" class="absolute inset-0">
+          <img [src]="donacionesCta!.imageUrl!" alt="" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-black/70 to-black/40"></div>
+        </div>
+        <div *ngIf="!donacionesCta?.imageUrl" class="absolute inset-0 bg-gradient-to-br from-indigo-950 via-emerald-950/80 to-black"></div>
+        <div class="relative z-10 px-8 py-12 md:px-14 md:py-14 max-w-xl">
+          <h2 class="text-2xl md:text-3xl font-bold text-white mb-3">{{ donacionesCta!.title }}</h2>
+          <p *ngIf="donacionesCta?.subtitle" class="text-white/85 text-base md:text-lg mb-8 leading-relaxed">{{ donacionesCta!.subtitle }}</p>
+          <a *ngIf="donacionesCta?.buttonText" [routerLink]="donacionesCta!.buttonUrl || '/contacto'"
+            class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-semibold bg-white text-gray-900 hover:bg-emerald-50 transition-colors shadow-lg">
+            {{ donacionesCta!.buttonText }}
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

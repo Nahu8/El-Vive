@@ -1,0 +1,501 @@
+<!-- Internal Tabs Navigation -->
+<div class="border-b border-gray-800/60 bg-gray-900/50">
+  <div class="flex overflow-x-auto px-4 md:px-6 gap-1">
+    <button *ngFor="let tab of tabs"
+      (click)="switchTab(tab.id)"
+      [class]="'px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ' +
+        (activeTab === tab.id
+          ? 'border-indigo-500 text-indigo-400'
+          : 'border-transparent text-gray-500 hover:text-gray-300 hover:border-gray-700')">
+      {{ tab.label }}
+    </button>
+  </div>
+</div>
+
+<div class="p-4 md:p-6 space-y-6 max-w-5xl">
+
+  <!-- ===== TAB: HEADER ===== -->
+  <div *ngIf="activeTab === 'header'">
+    <div class="bg-gray-900/80 rounded-xl p-6 border border-gray-800/50">
+      <h3 class="text-lg font-semibold text-white mb-6">Seccion Hero</h3>
+
+      <form [formGroup]="heroForm" (ngSubmit)="saveHero()" class="space-y-5">
+        <div>
+          <label class="block text-gray-400 mb-1.5 text-sm">Titulo Principal *</label>
+          <input type="text" formControlName="heroTitle"
+            class="w-full bg-gray-800/60 border border-gray-700/60 rounded-lg px-4 py-2.5 text-white text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all">
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="space-y-3 p-4 bg-gray-800/30 rounded-lg border border-gray-700/40">
+            <p class="text-sm text-gray-300 font-medium">Boton 1</p>
+            <div>
+              <label class="block text-gray-500 mb-1 text-xs">Texto *</label>
+              <input type="text" formControlName="heroButton1Text"
+                class="w-full bg-gray-800/60 border border-gray-700/60 rounded-lg px-3 py-2 text-white text-sm focus:ring-2 focus:ring-indigo-500/50">
+            </div>
+            <div>
+              <label class="block text-gray-500 mb-1 text-xs">Enlace *</label>
+              <input type="text" formControlName="heroButton1Link"
+                class="w-full bg-gray-800/60 border border-gray-700/60 rounded-lg px-3 py-2 text-white text-sm focus:ring-2 focus:ring-indigo-500/50">
+            </div>
+          </div>
+
+          <div class="space-y-3 p-4 bg-gray-800/30 rounded-lg border border-gray-700/40">
+            <p class="text-sm text-gray-300 font-medium">Boton 2</p>
+            <div>
+              <label class="block text-gray-500 mb-1 text-xs">Texto *</label>
+              <input type="text" formControlName="heroButton2Text"
+                class="w-full bg-gray-800/60 border border-gray-700/60 rounded-lg px-3 py-2 text-white text-sm focus:ring-2 focus:ring-indigo-500/50">
+            </div>
+            <div>
+              <label class="block text-gray-500 mb-1 text-xs">Enlace *</label>
+              <input type="text" formControlName="heroButton2Link"
+                class="w-full bg-gray-800/60 border border-gray-700/60 rounded-lg px-3 py-2 text-white text-sm focus:ring-2 focus:ring-indigo-500/50">
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="space-y-2 p-4 bg-gray-800/30 rounded-lg border border-gray-700/40">
+            <label class="block text-gray-400 text-sm">Fondo header - Modo día</label>
+            <div class="flex gap-2 items-center">
+              <input type="color" formControlName="heroBgLightColor" class="w-10 h-10 rounded border border-gray-600 cursor-pointer">
+              <input type="text" formControlName="heroBgLightColor"
+                class="flex-1 bg-gray-800/60 border border-gray-700/60 rounded-lg px-3 py-2 text-white text-sm">
+            </div>
+          </div>
+          <div class="space-y-2 p-4 bg-gray-800/30 rounded-lg border border-gray-700/40">
+            <label class="block text-gray-400 text-sm">Fondo header - Modo noche</label>
+            <div class="flex gap-2 items-center">
+              <input type="color" formControlName="heroBgDarkColor" class="w-10 h-10 rounded border border-gray-600 cursor-pointer">
+              <input type="text" formControlName="heroBgDarkColor"
+                class="flex-1 bg-gray-800/60 border border-gray-700/60 rounded-lg px-3 py-2 text-white text-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="md:col-span-2 p-4 bg-gray-800/30 rounded-lg border border-gray-700/40">
+            <label class="inline-flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
+              <input type="checkbox" formControlName="heroFadeEnabled" class="rounded border-gray-600 bg-gray-800 text-indigo-500 focus:ring-indigo-500/50">
+              Activar degradé inferior
+            </label>
+          </div>
+          <div class="space-y-2 p-4 bg-gray-800/30 rounded-lg border border-gray-700/40">
+            <label class="block text-gray-400 text-sm">Degradé inferior - Modo día</label>
+            <div class="flex gap-2 items-center">
+              <input type="color" formControlName="heroFadeLightColor" [disabled]="!heroForm.get('heroFadeEnabled')?.value" class="w-10 h-10 rounded border border-gray-600 cursor-pointer">
+              <input type="text" formControlName="heroFadeLightColor"
+                [disabled]="!heroForm.get('heroFadeEnabled')?.value"
+                class="flex-1 bg-gray-800/60 border border-gray-700/60 rounded-lg px-3 py-2 text-white text-sm">
+            </div>
+          </div>
+          <div class="space-y-2 p-4 bg-gray-800/30 rounded-lg border border-gray-700/40">
+            <label class="block text-gray-400 text-sm">Degradé inferior - Modo noche</label>
+            <div class="flex gap-2 items-center">
+              <input type="color" formControlName="heroFadeDarkColor" [disabled]="!heroForm.get('heroFadeEnabled')?.value" class="w-10 h-10 rounded border border-gray-600 cursor-pointer">
+              <input type="text" formControlName="heroFadeDarkColor"
+                [disabled]="!heroForm.get('heroFadeEnabled')?.value"
+                class="flex-1 bg-gray-800/60 border border-gray-700/60 rounded-lg px-3 py-2 text-white text-sm">
+            </div>
+          </div>
+        </div>
+
+        <!-- Videos de fondo (día x modo) -->
+        <div>
+          <label class="block text-gray-400 mb-1.5 text-sm">Videos de Fondo (por día y modo)</label>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="border border-dashed border-indigo-700/40 rounded-lg p-4 bg-gray-800/20">
+              <p class="text-sm font-medium text-indigo-400 mb-3">Domingo - Modo día</p>
+              <div *ngIf="hasVideoDomLight && !isUploadingDomLight" class="mb-2 p-2 bg-emerald-900/30 border border-emerald-700/40 rounded text-emerald-300 text-xs flex items-center gap-1">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                {{ videoDomLightName }}
+              </div>
+              <div *ngIf="isUploadingDomLight" class="mb-2 p-2 bg-indigo-900/30 border border-indigo-700/40 rounded text-indigo-300 text-xs flex items-center gap-1">
+                <svg class="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                Subiendo...
+              </div>
+              <input type="file" (change)="onVideoDomLightSelected($event)" accept="video/*" [disabled]="isUploadingDomLight"
+                class="w-full text-xs text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-gray-700 file:text-gray-300 hover:file:bg-gray-600">
+              <div *ngIf="videoDomLightPreview" class="mt-2">
+                <video [src]="videoDomLightPreview" controls class="rounded w-full max-h-32"></video>
+                <button type="button" (click)="clearVideoDomLight()" class="mt-1 px-2 py-1 bg-red-900/40 hover:bg-red-900/60 text-red-400 rounded text-xs">Eliminar</button>
+              </div>
+            </div>
+            <div class="border border-dashed border-purple-700/40 rounded-lg p-4 bg-gray-800/20">
+              <p class="text-sm font-medium text-purple-400 mb-3">Domingo - Modo noche</p>
+              <div *ngIf="hasVideoDomDark && !isUploadingDomDark" class="mb-2 p-2 bg-emerald-900/30 border border-emerald-700/40 rounded text-emerald-300 text-xs flex items-center gap-1">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                {{ videoDomDarkName }}
+              </div>
+              <div *ngIf="isUploadingDomDark" class="mb-2 p-2 bg-indigo-900/30 border border-indigo-700/40 rounded text-indigo-300 text-xs flex items-center gap-1">
+                <svg class="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                Subiendo...
+              </div>
+              <input type="file" (change)="onVideoDomDarkSelected($event)" accept="video/*" [disabled]="isUploadingDomDark"
+                class="w-full text-xs text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-gray-700 file:text-gray-300 hover:file:bg-gray-600">
+              <div *ngIf="videoDomDarkPreview" class="mt-2">
+                <video [src]="videoDomDarkPreview" controls class="rounded w-full max-h-32"></video>
+                <button type="button" (click)="clearVideoDomDark()" class="mt-1 px-2 py-1 bg-red-900/40 hover:bg-red-900/60 text-red-400 rounded text-xs">Eliminar</button>
+              </div>
+            </div>
+            <div class="border border-dashed border-indigo-700/40 rounded-lg p-4 bg-gray-800/20">
+              <p class="text-sm font-medium text-indigo-400 mb-3">Miércoles - Modo día</p>
+              <div *ngIf="hasVideoMierLight && !isUploadingMierLight" class="mb-2 p-2 bg-emerald-900/30 border border-emerald-700/40 rounded text-emerald-300 text-xs flex items-center gap-1">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                {{ videoMierLightName }}
+              </div>
+              <div *ngIf="isUploadingMierLight" class="mb-2 p-2 bg-indigo-900/30 border border-indigo-700/40 rounded text-indigo-300 text-xs flex items-center gap-1">
+                <svg class="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                Subiendo...
+              </div>
+              <input type="file" (change)="onVideoMierLightSelected($event)" accept="video/*" [disabled]="isUploadingMierLight"
+                class="w-full text-xs text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-gray-700 file:text-gray-300 hover:file:bg-gray-600">
+              <div *ngIf="videoMierLightPreview" class="mt-2">
+                <video [src]="videoMierLightPreview" controls class="rounded w-full max-h-32"></video>
+                <button type="button" (click)="clearVideoMierLight()" class="mt-1 px-2 py-1 bg-red-900/40 hover:bg-red-900/60 text-red-400 rounded text-xs">Eliminar</button>
+              </div>
+            </div>
+            <div class="border border-dashed border-purple-700/40 rounded-lg p-4 bg-gray-800/20">
+              <p class="text-sm font-medium text-purple-400 mb-3">Miércoles - Modo noche</p>
+              <div *ngIf="hasVideoMierDark && !isUploadingMierDark" class="mb-2 p-2 bg-emerald-900/30 border border-emerald-700/40 rounded text-emerald-300 text-xs flex items-center gap-1">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                {{ videoMierDarkName }}
+              </div>
+              <div *ngIf="isUploadingMierDark" class="mb-2 p-2 bg-indigo-900/30 border border-indigo-700/40 rounded text-indigo-300 text-xs flex items-center gap-1">
+                <svg class="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                Subiendo...
+              </div>
+              <input type="file" (change)="onVideoMierDarkSelected($event)" accept="video/*" [disabled]="isUploadingMierDark"
+                class="w-full text-xs text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-gray-700 file:text-gray-300 hover:file:bg-gray-600">
+              <div *ngIf="videoMierDarkPreview" class="mt-2">
+                <video [src]="videoMierDarkPreview" controls class="rounded w-full max-h-32"></video>
+                <button type="button" (click)="clearVideoMierDark()" class="mt-1 px-2 py-1 bg-red-900/40 hover:bg-red-900/60 text-red-400 rounded text-xs">Eliminar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Íconos (día x modo) -->
+        <div>
+          <label class="block text-gray-400 mb-1.5 text-sm">Ícono sobre el título (por día y modo)</label>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="border border-dashed border-indigo-700/40 rounded-lg p-4 bg-gray-800/20">
+              <p class="text-sm font-medium text-indigo-400 mb-2">Domingo - Modo día</p>
+              <div *ngIf="hasIconDomLight && !isUploadingIconDomLight" class="mb-2 flex items-center gap-3">
+                <img [src]="iconDomLightPreview" class="w-12 h-12 object-contain bg-gray-800 rounded border border-gray-700 p-1">
+                <span class="text-xs text-emerald-300">{{ iconDomLightName }}</span>
+              </div>
+              <div *ngIf="isUploadingIconDomLight" class="mb-2 p-2 bg-indigo-900/30 border border-indigo-700/40 rounded text-indigo-300 text-xs flex items-center gap-1">
+                <svg class="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                Subiendo...
+              </div>
+              <input type="file" (change)="onIconDomLightSelected($event)" accept="image/png,image/webp,image/svg+xml" [disabled]="isUploadingIconDomLight"
+                class="w-full text-xs text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-gray-700 file:text-gray-300 hover:file:bg-gray-600">
+              <button *ngIf="hasIconDomLight" type="button" (click)="clearIconDomLight()" class="mt-2 px-2 py-1 bg-red-900/40 hover:bg-red-900/60 text-red-400 rounded text-xs">Eliminar</button>
+            </div>
+            <div class="border border-dashed border-purple-700/40 rounded-lg p-4 bg-gray-800/20">
+              <p class="text-sm font-medium text-purple-400 mb-2">Domingo - Modo noche</p>
+              <div *ngIf="hasIconDomDark && !isUploadingIconDomDark" class="mb-2 flex items-center gap-3">
+                <img [src]="iconDomDarkPreview" class="w-12 h-12 object-contain bg-gray-800 rounded border border-gray-700 p-1">
+                <span class="text-xs text-emerald-300">{{ iconDomDarkName }}</span>
+              </div>
+              <div *ngIf="isUploadingIconDomDark" class="mb-2 p-2 bg-indigo-900/30 border border-indigo-700/40 rounded text-indigo-300 text-xs flex items-center gap-1">
+                <svg class="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                Subiendo...
+              </div>
+              <input type="file" (change)="onIconDomDarkSelected($event)" accept="image/png,image/webp,image/svg+xml" [disabled]="isUploadingIconDomDark"
+                class="w-full text-xs text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-gray-700 file:text-gray-300 hover:file:bg-gray-600">
+              <button *ngIf="hasIconDomDark" type="button" (click)="clearIconDomDark()" class="mt-2 px-2 py-1 bg-red-900/40 hover:bg-red-900/60 text-red-400 rounded text-xs">Eliminar</button>
+            </div>
+            <div class="border border-dashed border-indigo-700/40 rounded-lg p-4 bg-gray-800/20">
+              <p class="text-sm font-medium text-indigo-400 mb-2">Miércoles - Modo día</p>
+              <div *ngIf="hasIconMierLight && !isUploadingIconMierLight" class="mb-2 flex items-center gap-3">
+                <img [src]="iconMierLightPreview" class="w-12 h-12 object-contain bg-gray-800 rounded border border-gray-700 p-1">
+                <span class="text-xs text-emerald-300">{{ iconMierLightName }}</span>
+              </div>
+              <div *ngIf="isUploadingIconMierLight" class="mb-2 p-2 bg-indigo-900/30 border border-indigo-700/40 rounded text-indigo-300 text-xs flex items-center gap-1">
+                <svg class="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                Subiendo...
+              </div>
+              <input type="file" (change)="onIconMierLightSelected($event)" accept="image/png,image/webp,image/svg+xml" [disabled]="isUploadingIconMierLight"
+                class="w-full text-xs text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-gray-700 file:text-gray-300 hover:file:bg-gray-600">
+              <button *ngIf="hasIconMierLight" type="button" (click)="clearIconMierLight()" class="mt-2 px-2 py-1 bg-red-900/40 hover:bg-red-900/60 text-red-400 rounded text-xs">Eliminar</button>
+            </div>
+            <div class="border border-dashed border-purple-700/40 rounded-lg p-4 bg-gray-800/20">
+              <p class="text-sm font-medium text-purple-400 mb-2">Miércoles - Modo noche</p>
+              <div *ngIf="hasIconMierDark && !isUploadingIconMierDark" class="mb-2 flex items-center gap-3">
+                <img [src]="iconMierDarkPreview" class="w-12 h-12 object-contain bg-gray-800 rounded border border-gray-700 p-1">
+                <span class="text-xs text-emerald-300">{{ iconMierDarkName }}</span>
+              </div>
+              <div *ngIf="isUploadingIconMierDark" class="mb-2 p-2 bg-indigo-900/30 border border-indigo-700/40 rounded text-indigo-300 text-xs flex items-center gap-1">
+                <svg class="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                Subiendo...
+              </div>
+              <input type="file" (change)="onIconMierDarkSelected($event)" accept="image/png,image/webp,image/svg+xml" [disabled]="isUploadingIconMierDark"
+                class="w-full text-xs text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-gray-700 file:text-gray-300 hover:file:bg-gray-600">
+              <button *ngIf="hasIconMierDark" type="button" (click)="clearIconMierDark()" class="mt-2 px-2 py-1 bg-red-900/40 hover:bg-red-900/60 text-red-400 rounded text-xs">Eliminar</button>
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== TAB: VIDEOS YT ===== -->
+  <div *ngIf="activeTab === 'videos'">
+    <!-- Celebraciones / Videos YT embebidos -->
+    <div class="bg-gray-900/80 rounded-xl p-6 border border-gray-800/50">
+      <h3 class="text-lg font-semibold text-white mb-6">Celebraciones (Videos YouTube)</h3>
+
+      <form [formGroup]="celebrationsForm" (ngSubmit)="saveCelebrations()" class="space-y-4">
+        <div formArrayName="celebrations" class="space-y-4">
+          <div *ngFor="let c of celebrationsArray.controls; let i = index"
+            class="bg-gray-800/40 rounded-lg p-5 border border-gray-700/40">
+            <div [formGroupName]="i" class="space-y-4">
+              <div class="flex justify-between items-center pb-3 border-b border-gray-700/40">
+                <span class="text-sm font-medium text-white">Celebracion {{ i + 1 }}</span>
+                <button type="button" (click)="removeCelebration(i)"
+                  class="text-xs text-red-400 hover:text-red-300 px-2 py-1 rounded transition-colors">
+                  Eliminar
+                </button>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-3">
+                  <div>
+                    <label class="block text-gray-500 mb-1 text-xs">Titulo *</label>
+                    <input type="text" formControlName="title"
+                      class="w-full bg-gray-800/60 border border-gray-700/60 rounded-lg px-3 py-2 text-white text-sm focus:ring-2 focus:ring-purple-500/50">
+                  </div>
+                  <div>
+                    <label class="block text-gray-500 mb-1 text-xs">Subtitulo</label>
+                    <input type="text" formControlName="subtitle"
+                      class="w-full bg-gray-800/60 border border-gray-700/60 rounded-lg px-3 py-2 text-white text-sm focus:ring-2 focus:ring-purple-500/50">
+                  </div>
+                  <div>
+                    <label class="block text-gray-500 mb-1 text-xs">ID o URL de YouTube *</label>
+                    <input type="text" formControlName="videoId"
+                      class="w-full bg-gray-800/60 border border-gray-700/60 rounded-lg px-3 py-2 text-white text-sm focus:ring-2 focus:ring-purple-500/50"
+                      placeholder="jRq2LCrdCa8 o URL completa">
+                  </div>
+                  <div>
+                    <label class="block text-gray-500 mb-1 text-xs">Inicio (seg)</label>
+                    <input type="number" formControlName="startTime"
+                      class="w-full bg-gray-800/60 border border-gray-700/60 rounded-lg px-3 py-2 text-white text-sm focus:ring-2 focus:ring-purple-500/50">
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-gray-500 mb-1 text-xs">Descripcion</label>
+                  <textarea formControlName="description" rows="8"
+                    class="w-full bg-gray-800/60 border border-gray-700/60 rounded-lg px-3 py-2 text-white text-sm focus:ring-2 focus:ring-purple-500/50"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center pt-4 border-t border-gray-800/40">
+          <button type="button" (click)="addCelebration()"
+            class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm font-medium rounded-lg transition-colors">
+            + Agregar Celebracion
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== TAB: MINISTERIOS ===== -->
+  <div *ngIf="activeTab === 'ministries'">
+    <div class="bg-gray-900/80 rounded-xl p-6 border border-gray-800/50">
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-white">Ministerios (Resumen Home)</h3>
+        <p class="text-sm text-gray-500 mt-1">Selecciona hasta 4 ministerios de la pagina Ministerios para mostrar en la home. El orden se respeta.</p>
+      </div>
+
+      <form [formGroup]="ministriesForm" (ngSubmit)="saveMinistries()" class="space-y-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-gray-400 mb-1.5 text-sm">Titulo de seccion *</label>
+            <input type="text" formControlName="sectionTitle"
+              class="w-full bg-gray-800/60 border border-gray-700/60 rounded-lg px-3 py-2 text-white text-sm focus:ring-2 focus:ring-emerald-500/50">
+          </div>
+          <div>
+            <label class="block text-gray-400 mb-1.5 text-sm">Subtitulo</label>
+            <input type="text" formControlName="sectionSubtitle"
+              class="w-full bg-gray-800/60 border border-gray-700/60 rounded-lg px-3 py-2 text-white text-sm focus:ring-2 focus:ring-emerald-500/50">
+          </div>
+        </div>
+
+        <!-- Lista de ministerios seleccionados (orden) -->
+        <div>
+          <label class="block text-gray-400 mb-2 text-sm">Ministerios en la home (max 4)</label>
+          <div class="space-y-2">
+            <div *ngFor="let item of selectedMinistriesForDisplay; let i = index"
+              class="flex items-center gap-3 p-3 bg-gray-800/40 rounded-lg border border-gray-700/40">
+              <span class="text-gray-500 text-sm w-6">{{ i + 1 }}.</span>
+              <span class="flex-1 font-medium text-white">{{ item.name }}</span>
+              <button type="button" (click)="moveMinistryUp(i)" [disabled]="i === 0"
+                class="p-1.5 rounded bg-gray-700 hover:bg-gray-600 disabled:opacity-40 disabled:cursor-not-allowed text-gray-300" title="Subir">
+                &#9650;
+              </button>
+              <button type="button" (click)="moveMinistryDown(i)" [disabled]="i === selectedMinistriesForDisplay.length - 1"
+                class="p-1.5 rounded bg-gray-700 hover:bg-gray-600 disabled:opacity-40 disabled:cursor-not-allowed text-gray-300" title="Bajar">
+                &#9660;
+              </button>
+              <button type="button" (click)="removeMinistryFromSelection(i)"
+                class="text-xs text-red-400 hover:text-red-300 px-2 py-1 rounded transition-colors">
+                Quitar
+              </button>
+            </div>
+            <p *ngIf="selectedMinistriesForDisplay.length === 0" class="text-gray-500 text-sm py-2">Ningun ministerio seleccionado. Agrega desde la lista abajo.</p>
+          </div>
+
+          <!-- Agregar ministerio -->
+          <div *ngIf="selectedMinistriesForDisplay.length < 4" class="mt-4">
+            <label class="block text-gray-400 mb-1.5 text-sm">Agregar ministerio</label>
+            <select (change)="addMinistryToSelection($event)" class="w-full bg-gray-800/60 border border-gray-700/60 rounded-lg px-3 py-2 text-white text-sm focus:ring-2 focus:ring-emerald-500/50">
+              <option value="">-- Elegir ministerio --</option>
+              <option *ngFor="let m of availableMinistriesForSelect" [value]="m.id">{{ m.name }}</option>
+            </select>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-gray-800/40">
+            <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors">
+              Guardar Ministerios
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== TAB: DIAS DE REUNION ===== -->
+  <div *ngIf="activeTab === 'meetings'">
+    <div class="bg-gray-900/80 rounded-xl p-6 border border-gray-800/50">
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-white">Dias de Reunion (Resumen Home)</h3>
+        <p class="text-sm text-gray-500 mt-1">Cards de horarios que aparecen en la pagina de inicio</p>
+      </div>
+
+      <form [formGroup]="meetingDaysForm" (ngSubmit)="saveMeetingDays()" class="space-y-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-gray-400 mb-1.5 text-sm">Titulo de seccion *</label>
+            <input type="text" formControlName="sectionTitle"
+              class="w-full bg-gray-800/60 border border-gray-700/60 rounded-lg px-3 py-2 text-white text-sm focus:ring-2 focus:ring-blue-500/50">
+          </div>
+          <div>
+            <label class="block text-gray-400 mb-1.5 text-sm">Subtitulo</label>
+            <input type="text" formControlName="sectionSubtitle"
+              class="w-full bg-gray-800/60 border border-gray-700/60 rounded-lg px-3 py-2 text-white text-sm focus:ring-2 focus:ring-blue-500/50">
+          </div>
+        </div>
+
+        <div formArrayName="meetings" class="space-y-4">
+          <div *ngFor="let m of meetingsArray.controls; let i = index"
+            class="bg-gray-800/40 rounded-lg p-5 border border-gray-700/40">
+            <div [formGroupName]="i" class="space-y-4">
+              <div class="flex justify-between items-center pb-3 border-b border-gray-700/40">
+                <span class="text-sm font-medium text-white">Reunion {{ i + 1 }}</span>
+                <button type="button" (click)="removeMeeting(i)"
+                  class="text-xs text-red-400 hover:text-red-300 px-2 py-1 rounded transition-colors">
+                  Eliminar
+                </button>
+              </div>
+
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                <div>
+                  <label class="block text-gray-500 mb-1 text-xs">Dia *</label>
+                  <input type="text" formControlName="day"
+                    class="w-full bg-gray-800/60 border border-gray-700/60 rounded-lg px-3 py-2 text-white text-sm focus:ring-2 focus:ring-blue-500/50"
+                    placeholder="Miercoles">
+                </div>
+                <div>
+                  <label class="block text-gray-500 mb-1 text-xs">Titulo *</label>
+                  <input type="text" formControlName="title"
+                    class="w-full bg-gray-800/60 border border-gray-700/60 rounded-lg px-3 py-2 text-white text-sm focus:ring-2 focus:ring-blue-500/50">
+                </div>
+                <div>
+                  <label class="block text-gray-500 mb-1 text-xs">Hora *</label>
+                  <input type="text" formControlName="time"
+                    class="w-full bg-gray-800/60 border border-gray-700/60 rounded-lg px-3 py-2 text-white text-sm focus:ring-2 focus:ring-blue-500/50"
+                    placeholder="19:00">
+                </div>
+                <div>
+                  <label class="block text-gray-500 mb-1 text-xs">Nota</label>
+                  <input type="text" formControlName="note"
+                    class="w-full bg-gray-800/60 border border-gray-700/60 rounded-lg px-3 py-2 text-white text-sm focus:ring-2 focus:ring-blue-500/50">
+                </div>
+                <div>
+                  <label class="block text-gray-500 mb-1 text-xs">Color desde</label>
+                  <div class="flex gap-2">
+                    <input type="color" formControlName="colorFrom" class="w-10 h-9 rounded cursor-pointer border border-gray-600">
+                    <input type="text" formControlName="colorFrom" class="flex-1 bg-gray-800/60 border border-gray-700/60 rounded-lg px-2 py-1.5 text-white text-xs">
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-gray-500 mb-1 text-xs">Color hasta</label>
+                  <div class="flex gap-2">
+                    <input type="color" formControlName="colorTo" class="w-10 h-9 rounded cursor-pointer border border-gray-600">
+                    <input type="text" formControlName="colorTo" class="flex-1 bg-gray-800/60 border border-gray-700/60 rounded-lg px-2 py-1.5 text-white text-xs">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Imagen de fondo de la card -->
+              <div class="mt-3 pt-3 border-t border-gray-700/40">
+                <label class="block text-gray-500 mb-1 text-xs">Imagen de fondo de la card</label>
+                <div class="flex items-center gap-3">
+                  <div *ngIf="cardImages[i]" class="w-20 h-12 rounded overflow-hidden flex-shrink-0">
+                    <img [src]="cardImages[i].url" class="w-full h-full object-cover">
+                  </div>
+                  <div class="flex-1">
+                    <input type="file" (change)="onCardImageSelected($event, i)" accept="image/*"
+                      class="w-full text-xs text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-gray-700 file:text-gray-300 hover:file:bg-gray-600">
+                  </div>
+                  <button *ngIf="cardImages[i]" type="button" (click)="clearCardImage(i)"
+                    class="px-2 py-1 bg-red-900/40 hover:bg-red-900/60 text-red-400 rounded text-xs flex-shrink-0">
+                    Eliminar
+                  </button>
+                </div>
+                <div *ngIf="uploadingCardIndex === i" class="text-xs text-indigo-300 mt-1">Subiendo imagen...</div>
+                <div *ngIf="cardImages[i]" class="text-xs text-emerald-400 mt-1">{{ cardImages[i].name }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center pt-4 border-t border-gray-800/40">
+          <button type="button" (click)="addMeeting()"
+            class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm font-medium rounded-lg transition-colors">
+            + Agregar Reunion
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div *ngIf="showToast" class="fixed bottom-4 right-4 z-50 animate-slideIn">
+  <div [class]="'px-5 py-3 rounded-lg shadow-xl border flex items-center gap-3 text-sm ' +
+    (toastType === 'success'
+      ? 'bg-emerald-900/90 border-emerald-700/40 text-emerald-200'
+      : 'bg-red-900/90 border-red-700/40 text-red-200')">
+    <svg *ngIf="toastType === 'success'" class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+    </svg>
+    <svg *ngIf="toastType === 'error'" class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+    </svg>
+    <span>{{ toastMessage }}</span>
+    <button (click)="showToast = false" class="ml-2 opacity-60 hover:opacity-100">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+</div>

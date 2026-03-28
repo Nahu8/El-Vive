@@ -1,0 +1,12 @@
+@keyframes pulse-subtle {
+  0%, 100% { transform: scale(1); box-shadow: 0 4px 14px rgba(37, 211, 102, 0.5); }
+  50% { transform: scale(1.05); box-shadow: 0 6px 20px rgba(37, 211, 102, 0.7); }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s ease-in-out infinite;
+}
+
+.whatsapp-float:hover {
+  animation: none;
+}

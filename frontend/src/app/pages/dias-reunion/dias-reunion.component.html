@@ -1,0 +1,364 @@
+<div class="min-h-screen page-content no-section-gradient" [style.--page-bg]="pageBgColor" [style.--page-bg-section]="pageBgColor" [style.--card-bg]="pageBgColor">
+<!-- Hero: única sección con imagen/gradiente + degradé a negro -->
+<section class="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden">
+    <div class="absolute inset-0 z-0" [style.background-color]="heroBgColor"></div>
+    <div *ngIf="currentHeroImageUrl" class="absolute inset-0 z-0">
+        <img [src]="currentHeroImageUrl" alt="" class="w-full h-full object-cover">
+        <div *ngIf="heroFadeEnabled" class="absolute inset-0" [style.background]="heroFadeStyle"></div>
+    </div>
+    <div *ngIf="!currentHeroImageUrl" class="absolute inset-0 bg-gradient-to-br from-indigo-900/30 via-purple-900/20 to-black z-0">
+        <div *ngIf="heroFadeEnabled" class="absolute inset-0" [style.background]="heroFadeStyle"></div>
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="max-w-4xl mx-auto text-center">
+            <!-- Badge animado -->
+            <div
+                class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-full border border-indigo-500/30 mb-6 animate-pulse">
+                <span class="w-2 h-2 bg-indigo-400 rounded-full animate-ping"></span>
+                <span class="text-sm font-medium text-indigo-300">{{ heroBadgeText }}</span>
+            </div>
+
+            <!-- Título principal -->
+            <h1
+                class="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
+                {{ heroTitle }}
+            </h1>
+
+            <!-- Subtítulo -->
+            <p class="text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+                {{ heroSubtitle }}
+            </p>
+
+            <!-- Estadísticas -->
+            <div class="flex flex-wrap justify-center gap-8 mb-12">
+                <div class="text-center group cursor-pointer">
+                    <div class="text-3xl font-bold text-white mb-1 group-hover:scale-110 transition-transform">{{
+                        calendarEvents.length }}</div>
+                    <div class="text-sm text-gray-400">Eventos programados</div>
+                </div>
+                <div class="text-center group cursor-pointer">
+                    <div class="text-3xl font-bold text-white mb-1 group-hover:scale-110 transition-transform">{{
+                        upcomingEvents.length }}</div>
+                    <div class="text-sm text-gray-400">Próximos 7 días</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="page-section relative py-16 overflow-hidden">
+    <div class="container mx-auto px-6 relative z-10">
+        <!-- Encabezado del calendario -->
+        <div class="flex flex-col md:flex-row justify-between items-center mb-12">
+            <div class="mb-6 md:mb-0">
+                <h2 class="page-heading text-3xl font-bold mb-2 flex items-center gap-2">
+                    <img *ngIf="calendarIconUrl" [src]="calendarIconUrl" alt="" class="w-8 h-8 object-contain">
+                    {{ currentMonth }} {{ currentYear }}
+                </h2>
+                <p class="page-text-muted">Selecciona una fecha para ver los eventos</p>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <!-- Navegación -->
+                <div class="flex items-center gap-2">
+                    <button (click)="previousMonth()"
+                        class="p-3 rounded-xl bg-gray-900 hover:bg-gray-800 text-white transition-all hover:scale-105">
+                        ←
+                    </button>
+                    <button (click)="goToToday()"
+                        class="px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium transition-all hover:scale-105">
+                        Hoy
+                    </button>
+                    <button (click)="nextMonth()"
+                        class="p-3 rounded-xl bg-gray-900 hover:bg-gray-800 text-white transition-all hover:scale-105">
+                        →
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtros de eventos -->
+        <div class="mb-8">
+            <h3 class="page-heading text-lg font-semibold mb-4">Filtrar por tipo:</h3>
+            <div class="flex flex-wrap gap-3">
+                <button *ngFor="let type of eventTypes" (click)="setFilter(type.id)"
+                    [class]="'px-4 py-3 rounded-xl transition-all duration-300 hover:scale-105 flex items-center gap-2 ' + 
+                         (filterType === type.id ? 'bg-gradient-to-r ' + type.color + ' text-white' : 'bg-gray-900 text-gray-300 hover:bg-gray-800')">
+                    <img *ngIf="type.iconUrl" [src]="type.iconUrl" alt="" class="w-5 h-5 object-contain">
+                    <span>{{ type.name }}</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Grid del calendario -->
+        <div
+            class="page-card-bg backdrop-blur-sm rounded-2xl border page-border-color p-6 mb-8">
+            <!-- Días de la semana -->
+            <div class="grid grid-cols-7 gap-2 mb-4">
+                <div *ngFor="let day of weekDays" class="text-center py-3 text-sm font-semibold text-gray-400">
+                    {{ day }}
+                </div>
+            </div>
+
+            <!-- Días del mes -->
+            <div class="grid grid-cols-7 gap-2">
+                <div *ngFor="let day of daysInMonth; let i = index" (click)="selectDate(day)" [class]="'min-h-16 md:min-h-32 p-1.5 md:p-3 rounded-lg md:rounded-xl border transition-all duration-300 cursor-pointer hover:scale-[1.02] overflow-hidden relative ' +
+                      (isToday(day) ? 'border-indigo-500 bg-indigo-500/10' : 'border-gray-800 hover:border-indigo-500/50') +
+                      (!isCurrentMonth(day) ? ' opacity-40' : '')">
+
+                    <!-- Fondo de evento (solo desktop: 1 evento con imagen) -->
+                    <div *ngIf="getEventsForDate(day).length === 1 && getEventsForDate(day)[0].backgroundUrl" 
+                        class="absolute inset-0 z-0 hidden md:block">
+                        <img [src]="getEventsForDate(day)[0].backgroundUrl" alt="" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-black/50"></div>
+                    </div>
+
+                    <!-- Número del día -->
+                    <div class="flex justify-between items-start mb-2 relative z-10">
+                        <span
+                            [class]="'text-xs md:text-lg font-semibold ' + 
+                          (isToday(day) ? 'text-indigo-300' : 
+                           selectedDate?.getDate() === day.getDate() && isCurrentMonth(day) ? 'text-white' : 'text-gray-400')">
+                            {{ day.getDate() }}
+                        </span>
+
+                        <!-- Indicador de eventos: círculos en mobile y desktop -->
+                        <div *ngIf="hasEvents(day) && isCurrentMonth(day)" class="flex gap-1">
+                            <div *ngFor="let event of getEventsForDate(day).slice(0, 3)" class="w-2 h-2 rounded-full"
+                                [style.background]="event.type === 'reunion' ? '#3b82f6' : 
+                                      event.type === 'especial' ? '#ec4899' : 
+                                      event.type === 'celebración' ? '#f59e0b' : '#10b981'">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Eventos del día: solo en desktop (md+). En mobile solo círculos arriba -->
+                    <div class="space-y-2 relative z-10 hidden md:block">
+                        <ng-container *ngIf="getEventsForDate(day).length === 1; else multipleEvents">
+                            <div *ngFor="let event of getEventsForDate(day)"
+                                class="text-xs p-2 rounded-lg text-white truncate" [style.background]="event.backgroundUrl ? 'transparent' : (event.type === 'reunion' ? 'linear-gradient(135deg, #3b82f6, #06b6d4)' : 
+                                  event.type === 'especial' ? 'linear-gradient(135deg, #ec4899, #f472b6)' : 
+                                  event.type === 'celebración' ? 'linear-gradient(135deg, #f59e0b, #f97316)' : 
+                                  'linear-gradient(135deg, #10b981, #059669)')">
+                                <div class="flex items-center gap-1">
+                                    <img *ngIf="event.iconUrl" [src]="event.iconUrl" alt="" class="w-4 h-4 object-contain">
+                                    <span class="font-medium">{{ event.time }}</span>
+                                </div>
+                                <div class="truncate">{{ event.title }}</div>
+                            </div>
+                        </ng-container>
+                        <ng-template #multipleEvents>
+                            <div *ngFor="let event of getEventsForDate(day).slice(0, 3)"
+                                class="flex items-center gap-1.5 text-xs p-1.5 rounded-lg truncate" 
+                                [style.background]="event.type === 'reunion' ? 'rgba(59, 130, 246, 0.8)' : 
+                                  event.type === 'especial' ? 'rgba(236, 72, 153, 0.8)' : 
+                                  event.type === 'celebración' ? 'rgba(245, 158, 11, 0.8)' : 
+                                  'rgba(16, 185, 129, 0.8)'">
+                                <img *ngIf="event.iconUrl" [src]="event.iconUrl" alt="" class="w-3.5 h-3.5 flex-shrink-0 object-contain">
+                                <span class="truncate text-white font-medium">{{ event.title }}</span>
+                            </div>
+                            <div *ngIf="getEventsForDate(day).length > 3" class="text-xs text-gray-400 text-center">
+                                +{{ getEventsForDate(day).length - 3 }} más
+                            </div>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Eventos del día seleccionado -->
+        <div *ngIf="selectedDate"
+            class="page-card-bg rounded-2xl border page-border-color p-6 mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h3 class="text-2xl font-bold text-white mb-2">Eventos del {{ formatDate(selectedDate) }}</h3>
+                    <p class="text-gray-300">{{ eventsForSelectedDate.length }} evento{{ eventsForSelectedDate.length
+                        !== 1 ? 's' : '' }} programado{{ eventsForSelectedDate.length !== 1 ? 's' : '' }}</p>
+                </div>
+                <div *ngIf="isToday(selectedDate)"
+                    class="px-4 py-2 bg-gradient-to-r from-green-500/20 to-emerald-500/20 text-green-300 rounded-full text-sm font-medium">
+                    ¡Hoy!
+                </div>
+            </div>
+
+            <div *ngIf="eventsForSelectedDate.length > 0; else noEvents" class="space-y-4">
+                <div *ngFor="let event of eventsForSelectedDate"
+                    class="page-card-bg rounded-xl border page-border-color p-6 hover:border-indigo-500/50 transition-all duration-300 hover:scale-[1.01]">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                        <div class="flex items-start gap-4 mb-4 md:mb-0">
+                            <div class="p-3 rounded-xl text-2xl flex items-center justify-center min-w-[48px] min-h-[48px]" [style.background]="event.type === 'reunion' ? 'linear-gradient(135deg, #3b82f6, #06b6d4)' : 
+                                    event.type === 'especial' ? 'linear-gradient(135deg, #ec4899, #f472b6)' : 
+                                    event.type === 'celebración' ? 'linear-gradient(135deg, #f59e0b, #f97316)' : 
+                                    'linear-gradient(135deg, #10b981, #059669)'">
+                                <img *ngIf="event.iconUrl" [src]="event.iconUrl" alt="" class="w-8 h-8 object-contain">
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-white mb-1">{{ event.title }}</h4>
+                                <div class="flex items-center gap-4 text-gray-300">
+                                    <span class="flex items-center gap-1">
+                                        <span>{{ event.time }}</span>
+                                    </span>
+                                    <span class="flex items-center gap-1">
+                                        <span>{{ event.location }}</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="px-4 py-2 rounded-lg text-sm font-medium" [style.background]="event.type === 'reunion' ? 'rgba(59, 130, 246, 0.2)' : 
+                                  event.type === 'especial' ? 'rgba(236, 72, 153, 0.2)' : 
+                                  event.type === 'celebración' ? 'rgba(245, 158, 11, 0.2)' : 
+                                  'rgba(16, 185, 129, 0.2)'" [style.color]="event.type === 'reunion' ? '#93c5fd' : 
+                               event.type === 'especial' ? '#f9a8d4' : 
+                               event.type === 'celebración' ? '#fcd34d' : 
+                               '#6ee7b7'">
+                            {{ event.type.charAt(0).toUpperCase() + event.type.slice(1) }}
+                        </div>
+                    </div>
+
+                    <p class="text-gray-300 mb-4">{{ event.description }}</p>
+
+                    <div class="flex flex-wrap items-center justify-between gap-4">
+                        <div *ngIf="event.speakers" class="flex-1">
+                            <p class="text-sm text-gray-400 mb-2">Dirigido por:</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span *ngFor="let speaker of event.speakers"
+                                    class="px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">
+                                    {{ speaker }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div *ngIf="event.registrationLink" class="flex gap-3">
+                            <a [href]="event.registrationLink" target="_blank" rel="noopener"
+                                class="px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-lg transition-all hover:scale-105 inline-block">
+                                Registrarse
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <ng-template #noEvents>
+                <div class="text-center py-12">
+                    <h4 class="text-xl font-semibold text-white mb-2">No hay eventos programados</h4>
+                    <p class="text-gray-400">No hay eventos para esta fecha. Revisa otros días del calendario.</p>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</section>
+
+<section class="page-section relative py-16 overflow-hidden">
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-12">
+            <div>
+                <h2 class="page-heading text-3xl font-bold mb-2 flex items-center gap-2">
+                    <img *ngIf="upcomingEventsIconUrl" [src]="upcomingEventsIconUrl" alt="" class="w-8 h-8 object-contain">
+                    {{ upcomingEventsTitle }}
+                </h2>
+                <p class="page-text-muted">{{ upcomingEventsSubtitle }}</p>
+            </div>
+            <div class="mt-4 md:mt-0">
+                <div
+                    class="px-4 py-2 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 text-indigo-300 rounded-full text-sm font-medium">
+                    Próximos 7 días
+                </div>
+            </div>
+        </div>
+
+        <!-- Desktop grid -->
+        <div class="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <div *ngFor="let event of upcomingEvents"
+                class="page-card-bg rounded-2xl border page-border-color overflow-hidden hover:border-indigo-500/50 transition-all duration-300 hover:scale-[1.02]">
+                <div class="p-6 border-b page-border-color relative min-h-[140px] overflow-hidden" 
+                    [style.background]="event.backgroundUrl ? 'none' : ('linear-gradient(135deg, ' + 
+          (event.type === 'reunion' ? '#1e40af, #0e7490' : 
+           event.type === 'especial' ? '#be185d, #db2777' : 
+           event.type === 'celebración' ? '#b45309, #ea580c' : 
+           '#047857, #0d9488') + ')')">
+                    <img *ngIf="event.backgroundUrl" [src]="event.backgroundUrl" alt="" class="absolute inset-0 w-full h-full object-cover z-0">
+                    <div *ngIf="event.backgroundUrl" class="absolute inset-0 bg-black/40 z-[1]"></div>
+                    <div class="relative z-10">
+                        <div class="flex items-center justify-between mb-2">
+                            <img *ngIf="event.iconUrl" [src]="event.iconUrl" alt="" class="w-8 h-8 object-contain">
+                            <span class="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-sm text-white">
+                                {{ event.date.getDate() }} {{ months[event.date.getMonth()].substring(0, 3) }}
+                            </span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">{{ event.title }}</h3>
+                        <p class="text-gray-200 text-sm mt-1">{{ event.time }} &middot; {{ event.location }}</p>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <p class="page-text-muted mb-4 line-clamp-2">{{ event.description }}</p>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm page-text-muted">Faltan:</span>
+                        <span class="font-semibold">{{ getDaysUntil(event.date) }} dias</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile horizontal carousel -->
+        <div class="md:hidden overflow-x-auto -mx-6 px-6 pb-4 mb-12">
+            <div class="flex gap-4" [style.width.px]="upcomingEvents.length * 300">
+                <div *ngFor="let event of upcomingEvents"
+                    class="w-[280px] flex-shrink-0 page-card-bg rounded-2xl border page-border-color overflow-hidden">
+                    <div class="p-5 border-b page-border-color relative min-h-[120px] overflow-hidden"
+                        [style.background]="event.backgroundUrl ? 'none' : ('linear-gradient(135deg, ' + 
+              (event.type === 'reunion' ? '#1e40af, #0e7490' : 
+               event.type === 'especial' ? '#be185d, #db2777' : 
+               event.type === 'celebración' ? '#b45309, #ea580c' : 
+               '#047857, #0d9488') + ')')">
+                        <img *ngIf="event.backgroundUrl" [src]="event.backgroundUrl" alt="" class="absolute inset-0 w-full h-full object-cover z-0">
+                        <div *ngIf="event.backgroundUrl" class="absolute inset-0 bg-black/40 z-[1]"></div>
+                        <div class="relative z-10">
+                            <div class="flex items-center justify-between mb-2">
+                            <img *ngIf="event.iconUrl" [src]="event.iconUrl" alt="" class="w-6 h-6 object-contain">
+                            <span class="px-2 py-1 bg-white/10 rounded-full text-xs text-white">
+                                    {{ event.date.getDate() }} {{ months[event.date.getMonth()].substring(0, 3) }}
+                                </span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white">{{ event.title }}</h3>
+                            <p class="text-gray-200 text-xs mt-1">{{ event.time }} &middot; {{ event.location }}</p>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <p class="page-text-muted text-sm mb-3 line-clamp-2">{{ event.description }}</p>
+                        <span class="text-xs page-text-muted">Faltan {{ getDaysUntil(event.date) }} dias</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="page-section relative py-16 overflow-hidden">
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="max-w-3xl mx-auto text-center">
+            <div
+                class="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-full border border-green-500/30 mb-8">
+                <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                <span class="text-sm font-medium text-green-300">{{ eventCtaBadge }}</span>
+            </div>
+
+            <h3 class="page-heading text-2xl font-bold mb-4">{{ eventCtaTitle }}</h3>
+            <p class="page-text-muted mb-8 max-w-2xl mx-auto">
+                {{ eventCtaDescription }}
+            </p>
+
+            <div class="flex justify-center">
+                <a [routerLink]="eventCtaButtonLink"
+                    class="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-indigo-500/30">
+                    {{ eventCtaButtonText }}
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+</div>
