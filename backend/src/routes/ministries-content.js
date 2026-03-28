@@ -1,86 +1,68 @@
 import { Router } from 'express';
-import { getDb, parseJson, stringifyJson } from '../db/index.js';
+import { dbGet, dbRun, parseJson, stringifyJson } from '../db/index.js';
+import { asyncHandler } from '../lib/async-handler.js';
 
 const router = Router();
 
-function getMinistriesContent() {
-  const db = getDb();
-  let row = db.prepare('SELECT * FROM ministries_content LIMIT 1').get();
+async function getMinistriesContent() {
+  let row = await dbGet('SELECT * FROM ministries_content LIMIT 1');
   if (!row) {
-    db.prepare('INSERT INTO ministries_content (id) VALUES (1)').run();
-    row = db.prepare('SELECT * FROM ministries_content LIMIT 1').get();
+    await dbRun('INSERT INTO ministries_content (id) VALUES (1)');
+    row = await dbGet('SELECT * FROM ministries_content LIMIT 1');
   }
   return row;
 }
 
-router.get('/', (req, res) => {
-  const m = getMinistriesContent();
-  const db = getDb();
-  const heroLightIcon = db.prepare('SELECT 1 FROM section_icons WHERE page_key=? AND section_key=?').get('ministries', 'hero-light');
-  const heroDarkIcon = db.prepare('SELECT 1 FROM section_icons WHERE page_key=? AND section_key=?').get('ministries', 'hero-dark');
-  res.json({
-    id: m.id,
-    hero: {
-      ...(parseJson(m.hero) || {}),
-      heroImageUrlLight: heroLightIcon ? '/api/section-icon/ministries/hero-light' : null,
-      heroImageUrlDark: heroDarkIcon ? '/api/section-icon/ministries/hero-dark' : null,
-    },
-    ministries: parseJson(m.ministries),
-    statistics: parseJson(m.statistics),
-    process: parseJson(m.process),
-    testimonials: parseJson(m.testimonials),
-    faqs: parseJson(m.faqs),
-    pageContent: parseJson(m.pageContent),
-  });
-});
+router.get(
+  '/',
+  asyncHandler(async (req, res) => {
+    const m = await getMinistriesContent();
+    const heroLightIcon = await dbGet('SELECT 1 FROM section_icons WHERE page_key=? AND section_key=?', ['ministries', 'hero-light']);
+    const heroDarkIcon = await dbGet('SELECT 1 FROM section_icons WHERE page_key=? AND section_key=?', ['ministries', 'hero-dark']);
+    res.json({
+      id: m.id,
+      hero: {
+        ...(parseJson(m.hero) || {}),
+        heroImageUrlLight: heroLightIcon ? '/api/section-icon/ministries/hero-light' : null,
+        heroImageUrlDark: heroDarkIcon ? '/api/section-icon/ministries/hero-dark' : null,
+      },
+      ministries: parseJson(m.ministries),
+      statistics: parseJson(m.statistics),
+      process: parseJson(m.process),
+      testimonials: parseJson(m.testimonials),
+      faqs: parseJson(m.faqs),
+      pageContent: parseJson(m.pageContent),
+    });
+  })
+);
 
-router.put('/', (req, res) => {
-  const m = getMinistriesContent();
-  const body = req.body || {};
-  const fields = ['hero', 'ministries', 'statistics', 'process', 'testimonials', 'faqs', 'pageContent'];
-  const db = getDb();
-  for (const f of fields) {
-    if (body[f] !== undefined) {
-      db.prepare(`UPDATE ministries_content SET ${f}=?, updated_at=datetime('now') WHERE id=?`).run(stringifyJson(body[f]), m.id);
+router.put(
+  '/',
+  asyncHandler(async (req, res) => {
+    const m = await getMinistriesContent();
+    const body = req.body || {};
+    const fields = ['hero', 'ministries', 'statistics', 'process', 'testimonials', 'faqs', 'pageContent'];
+    for (const f of fields) {
+      if (body[f] !== undefined) {
+        await dbRun(`UPDATE ministries_content SET ${f}=?, updated_at=datetime('now') WHERE id=?`, [stringifyJson(body[f]), m.id]);
+      }
     }
-  }
-  res.json(getDb().prepare('SELECT * FROM ministries_content WHERE id=?').get(m.id));
-});
+    res.json(await dbGet('SELECT * FROM ministries_content WHERE id=?', [m.id]));
+  })
+);
 
-router.patch('/hero', (req, res) => {
-  const m = getMinistriesContent();
-  getDb().prepare('UPDATE ministries_content SET hero=?, updated_at=datetime(\'now\') WHERE id=?').run(stringifyJson(req.body.hero), m.id);
-  res.json(getDb().prepare('SELECT * FROM ministries_content WHERE id=?').get(m.id));
-});
+const patchField = (field, bodyKey) =>
+  asyncHandler(async (req, res) => {
+    const m = await getMinistriesContent();
+    await dbRun(`UPDATE ministries_content SET ${field}=?, updated_at=datetime('now') WHERE id=?`, [stringifyJson(req.body[bodyKey]), m.id]);
+    res.json(await dbGet('SELECT * FROM ministries_content WHERE id=?', [m.id]));
+  });
 
-router.patch('/ministries', (req, res) => {
-  const m = getMinistriesContent();
-  getDb().prepare('UPDATE ministries_content SET ministries=?, updated_at=datetime(\'now\') WHERE id=?').run(stringifyJson(req.body.ministries), m.id);
-  res.json(getDb().prepare('SELECT * FROM ministries_content WHERE id=?').get(m.id));
-});
-
-router.patch('/process', (req, res) => {
-  const m = getMinistriesContent();
-  getDb().prepare('UPDATE ministries_content SET process=?, updated_at=datetime(\'now\') WHERE id=?').run(stringifyJson(req.body.process), m.id);
-  res.json(getDb().prepare('SELECT * FROM ministries_content WHERE id=?').get(m.id));
-});
-
-router.patch('/testimonials', (req, res) => {
-  const m = getMinistriesContent();
-  getDb().prepare('UPDATE ministries_content SET testimonials=?, updated_at=datetime(\'now\') WHERE id=?').run(stringifyJson(req.body.testimonials), m.id);
-  res.json(getDb().prepare('SELECT * FROM ministries_content WHERE id=?').get(m.id));
-});
-
-router.patch('/faqs', (req, res) => {
-  const m = getMinistriesContent();
-  getDb().prepare('UPDATE ministries_content SET faqs=?, updated_at=datetime(\'now\') WHERE id=?').run(stringifyJson(req.body.faqs), m.id);
-  res.json(getDb().prepare('SELECT * FROM ministries_content WHERE id=?').get(m.id));
-});
-
-router.patch('/page-content', (req, res) => {
-  const m = getMinistriesContent();
-  getDb().prepare('UPDATE ministries_content SET pageContent=?, updated_at=datetime(\'now\') WHERE id=?').run(stringifyJson(req.body.pageContent), m.id);
-  res.json(getDb().prepare('SELECT * FROM ministries_content WHERE id=?').get(m.id));
-});
+router.patch('/hero', patchField('hero', 'hero'));
+router.patch('/ministries', patchField('ministries', 'ministries'));
+router.patch('/process', patchField('process', 'process'));
+router.patch('/testimonials', patchField('testimonials', 'testimonials'));
+router.patch('/faqs', patchField('faqs', 'faqs'));
+router.patch('/page-content', patchField('pageContent', 'pageContent'));
 
 export default router;
