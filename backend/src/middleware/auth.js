@@ -1,6 +1,13 @@
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'elvive-iglesia-secret-2024';
+function jwtSecret() {
+  const s = process.env.JWT_SECRET;
+  if (s && String(s).length >= 32) return s;
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('JWT_SECRET no configurado o demasiado corto');
+  }
+  return 'dev-only-NO-USAR-EN-PRODUCCION-minimo-32-chars-xx';
+}
 
 /**
  * Middleware que exige JWT en Authorization: Bearer <token>.
@@ -15,7 +22,7 @@ export function requireAuth(req, res, next) {
   }
 
   try {
-    const payload = jwt.verify(token, JWT_SECRET);
+    const payload = jwt.verify(token, jwtSecret());
     req.user = { id: payload.id, username: payload.username, role: payload.role };
     next();
   } catch {
@@ -31,7 +38,7 @@ export function optionalAuth(req, res, next) {
   const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
   if (!token) return next();
   try {
-    const payload = jwt.verify(token, JWT_SECRET);
+    const payload = jwt.verify(token, jwtSecret());
     req.user = { id: payload.id, username: payload.username, role: payload.role };
   } catch {}
   next();
@@ -40,7 +47,7 @@ export function optionalAuth(req, res, next) {
 export function signToken(payload) {
   return jwt.sign(
     { ...payload, iat: Math.floor(Date.now() / 1000), exp: Math.floor(Date.now() / 1000) + 8 * 3600 },
-    JWT_SECRET,
+    jwtSecret(),
     { algorithm: 'HS256' }
   );
 }

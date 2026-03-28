@@ -1,6 +1,13 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { requireAuth } from './middleware/auth.js';
+import { validateEnv, getCorsOptions } from './config/env.js';
+import { initDatabase, useMysql } from './db/index.js';
 import authRoutes from './routes/auth.js';
 import publicRoutes from './routes/public.js';
 import homeRoutes from './routes/home.js';
@@ -16,56 +23,78 @@ import contactMessagesRoutes from './routes/contact-messages.js';
 import ministryMediaRoutes from './routes/ministry-media.js';
 import mediaRoutes from './routes/media.js';
 import genericPagesRoutes from './routes/generic-pages.js';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { getDb } from './db/index.js';
 import { getUploadsDir } from './lib/uploads.js';
+import { resolveAngularStaticRoot, isApiOrAssetPath } from './lib/angular-static.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const app = express();
-const PORT = process.env.PORT || 4100;
 
-app.use(cors({ origin: true }));
+validateEnv();
+
+const app = express();
+const PORT = Number(process.env.PORT) || 4100;
+
+if (process.env.TRUST_PROXY === '1' || process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
+
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    // Angular en producción suele usar estilos/scripts que CSP estricto bloquea
+    contentSecurityPolicy: false,
+  })
+);
+app.use(cors(getCorsOptions()));
 app.use(express.json({ limit: '10mb' }));
 
-// Archivos subidos (imágenes, etc.) - público para previews
-app.use('/uploads', express.static(path.join(getUploadsDir())));
-
-// Rutas públicas (sin JWT)
-app.use('/auth', authRoutes);
-app.use('/public', publicRoutes);
-
-// Health sin auth
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'API funcionando correctamente', database: 'SQLite' });
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: Number(process.env.AUTH_RATE_LIMIT_MAX || 30),
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Demasiados intentos de acceso. Probá de nuevo más tarde.' },
 });
 
-// GET que sirven archivos (imágenes/videos) son públicos; el resto de /api exige JWT
+app.use('/uploads', express.static(path.join(getUploadsDir())));
+
+app.use('/auth', authLimiter, authRoutes);
+app.use('/public', publicRoutes);
+
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'OK',
+    message: 'API funcionando correctamente',
+    database: useMysql() ? 'mysql' : 'sqlite',
+  });
+});
+
 function isPublicApiGet(req) {
   if (req.method !== 'GET') return false;
-  // Usamos originalUrl para tener el path completo bajo /api, sin querystring
   const p = (req.originalUrl || req.path || '').split('?')[0];
   if (p === '/api/health') return true;
-  if ([
-    '/api/home/current-video',
-    '/api/home/current-icon',
-    '/api/home/video',
-    '/api/home/video2',
-    '/api/home/icon-dom',
-    '/api/home/icon-mier',
-    '/api/home/video-light',
-    '/api/home/video-dark',
-    '/api/home/icon-light',
-    '/api/home/icon-dark',
-    '/api/home/video-dom-light',
-    '/api/home/video-dom-dark',
-    '/api/home/video-mier-light',
-    '/api/home/video-mier-dark',
-    '/api/home/icon-dom-light',
-    '/api/home/icon-dom-dark',
-    '/api/home/icon-mier-light',
-    '/api/home/icon-mier-dark',
-  ].includes(p)) return true;
+  if (
+    [
+      '/api/home/current-video',
+      '/api/home/current-icon',
+      '/api/home/video',
+      '/api/home/video2',
+      '/api/home/icon-dom',
+      '/api/home/icon-mier',
+      '/api/home/video-light',
+      '/api/home/video-dark',
+      '/api/home/icon-light',
+      '/api/home/icon-dark',
+      '/api/home/video-dom-light',
+      '/api/home/video-dom-dark',
+      '/api/home/video-mier-light',
+      '/api/home/video-mier-dark',
+      '/api/home/icon-dom-light',
+      '/api/home/icon-dom-dark',
+      '/api/home/icon-mier-light',
+      '/api/home/icon-mier-dark',
+    ].includes(p)
+  )
+    return true;
   if (p.startsWith('/api/home/card-image/')) return true;
   if (p === '/api/meeting-days/hero-image') return true;
   if (/^\/api\/event\/[^/]+\/(icon|background)$/.test(p)) return true;
@@ -76,8 +105,15 @@ function isPublicApiGet(req) {
   return false;
 }
 
+/** POST del formulario de contacto (sitio público, sin JWT). */
+function isPublicContactPost(req) {
+  if (req.method !== 'POST') return false;
+  const p = (req.originalUrl || req.path || '').split('?')[0];
+  return p === '/api/contact' || p === '/api/contact/';
+}
+
 app.use('/api', (req, res, next) => {
-  if (isPublicApiGet(req)) return next();
+  if (isPublicApiGet(req) || isPublicContactPost(req)) return next();
   return requireAuth(req, res, next);
 });
 
@@ -95,14 +131,37 @@ app.use('/api/ministry/:ministryId', ministryMediaRoutes);
 app.use('/api/media', mediaRoutes);
 app.use('/api/generic-pages', genericPagesRoutes);
 
-// 404
+const spaRoot = resolveAngularStaticRoot();
+if (spaRoot) {
+  app.use(express.static(spaRoot));
+  app.use((req, res, next) => {
+    if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+    if (isApiOrAssetPath(req.path)) return next();
+    res.sendFile(path.join(spaRoot, 'index.html'), (err) => (err ? next(err) : undefined));
+  });
+} else if (process.env.NODE_ENV === 'production') {
+  console.warn(
+    '[angular] No hay build del front (index.html). Subí el contenido de dist/.../browser a backend/public o definí ANGULAR_DIST.'
+  );
+}
+
 app.use((req, res) => res.status(404).json({ error: 'No encontrado' }));
 
-// Iniciar (getDb inicializa la BD)
-getDb();
+app.use((err, req, res, next) => {
+  if (err && err.message === 'CORS: origen no permitido') {
+    return res.status(403).json({ error: 'Origen no permitido' });
+  }
+  console.error(err);
+  const status = err.statusCode || 500;
+  res.status(status).json({ error: err.message || 'Error interno del servidor' });
+});
+
+await initDatabase();
 
 app.listen(PORT, () => {
   console.log(`Backend Él Vive (Node.js) escuchando en http://127.0.0.1:${PORT}`);
+  console.log(`  - BD: ${useMysql() ? 'MySQL' : 'SQLite'}`);
+  if (spaRoot) console.log(`  - Angular:  ${spaRoot}`);
   console.log('  - Auth:     POST /auth/login');
   console.log('  - API:      /api/* (con JWT)');
   console.log('  - Público:  /public/*');

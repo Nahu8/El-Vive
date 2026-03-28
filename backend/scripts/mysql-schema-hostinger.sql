@@ -1,0 +1,265 @@
+-- Esquema MySQL alineado con backend Node (mismas tablas/columnas que SQLite local).
+-- Importar en phpMyAdmin: seleccionar la base u477860139_eviddbb → Importar → este archivo.
+
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(191) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  role VARCHAR(32) NOT NULL DEFAULT 'admin',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS homes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  heroTitle TEXT NULL,
+  heroButton1Text TEXT NULL,
+  heroButton1Link TEXT NULL,
+  heroButton2Text TEXT NULL,
+  heroButton2Link TEXT NULL,
+  heroVideoUrl TEXT NULL,
+  heroVideoPath TEXT NULL,
+  heroVideoMime TEXT NULL,
+  heroVideoName TEXT NULL,
+  heroVideo2Path TEXT NULL,
+  heroVideo2Mime TEXT NULL,
+  heroVideo2Name TEXT NULL,
+  heroIconDomPath TEXT NULL,
+  heroIconDomMime TEXT NULL,
+  heroIconDomName TEXT NULL,
+  heroIconMierPath TEXT NULL,
+  heroIconMierMime TEXT NULL,
+  heroIconMierName TEXT NULL,
+  currentTheme INT NULL,
+  celebrations LONGTEXT NULL,
+  meetingDaysSummary LONGTEXT NULL,
+  ministriesSummary LONGTEXT NULL,
+  heroVideoDomLightPath TEXT NULL,
+  heroVideoDomLightMime TEXT NULL,
+  heroVideoDomLightName TEXT NULL,
+  heroVideoDomDarkPath TEXT NULL,
+  heroVideoDomDarkMime TEXT NULL,
+  heroVideoDomDarkName TEXT NULL,
+  heroVideoMierLightPath TEXT NULL,
+  heroVideoMierLightMime TEXT NULL,
+  heroVideoMierLightName TEXT NULL,
+  heroVideoMierDarkPath TEXT NULL,
+  heroVideoMierDarkMime TEXT NULL,
+  heroVideoMierDarkName TEXT NULL,
+  heroIconDomLightPath TEXT NULL,
+  heroIconDomLightMime TEXT NULL,
+  heroIconDomLightName TEXT NULL,
+  heroIconDomDarkPath TEXT NULL,
+  heroIconDomDarkMime TEXT NULL,
+  heroIconDomDarkName TEXT NULL,
+  heroIconMierLightPath TEXT NULL,
+  heroIconMierLightMime TEXT NULL,
+  heroIconMierLightName TEXT NULL,
+  heroIconMierDarkPath TEXT NULL,
+  heroIconMierDarkMime TEXT NULL,
+  heroIconMierDarkName TEXT NULL,
+  heroFadeEnabled TINYINT(1) NULL DEFAULT 1,
+  heroFadeLightColor TEXT NULL,
+  heroFadeDarkColor TEXT NULL,
+  heroBgLightColor TEXT NULL,
+  heroBgDarkColor TEXT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS meeting_card_images (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  cardIndex INT NOT NULL,
+  imagePath TEXT NULL,
+  imageMime TEXT NULL,
+  imageName TEXT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uk_meeting_card_images_cardIndex (cardIndex)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS contacts (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  email TEXT NULL,
+  phone TEXT NULL,
+  address TEXT NULL,
+  city TEXT NULL,
+  socialMedia LONGTEXT NULL,
+  schedules LONGTEXT NULL,
+  departments LONGTEXT NULL,
+  mapEmbed TEXT NULL,
+  additionalInfo TEXT NULL,
+  pageContent LONGTEXT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS layouts (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  navLinks LONGTEXT NULL,
+  footerBrandTitle TEXT NULL,
+  footerBrandDescription TEXT NULL,
+  footerFacebookUrl TEXT NULL,
+  footerInstagramUrl TEXT NULL,
+  footerYoutubeUrl TEXT NULL,
+  footerAddress TEXT NULL,
+  footerEmail TEXT NULL,
+  footerPhone TEXT NULL,
+  footerCopyright TEXT NULL,
+  footerPrivacyUrl TEXT NULL,
+  footerTermsUrl TEXT NULL,
+  quickLinks LONGTEXT NULL,
+  whatsappNumber VARCHAR(64) NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS meeting_days (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  calendarEvents LONGTEXT NULL,
+  recurringMeetings LONGTEXT NULL,
+  hero LONGTEXT NULL,
+  upcomingEvents LONGTEXT NULL,
+  eventCta LONGTEXT NULL,
+  eventSettings LONGTEXT NULL,
+  heroImagePath TEXT NULL,
+  heroImageMime TEXT NULL,
+  heroImageName TEXT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS ministries_content (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  hero LONGTEXT NULL,
+  ministries LONGTEXT NULL,
+  statistics LONGTEXT NULL,
+  process LONGTEXT NULL,
+  testimonials LONGTEXT NULL,
+  faqs LONGTEXT NULL,
+  pageContent LONGTEXT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS ministry_items (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name TEXT NULL,
+  description TEXT NULL,
+  contact TEXT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS events (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title TEXT NOT NULL,
+  `date` TEXT NULL,
+  `time` TEXT NULL,
+  location TEXT NULL,
+  category TEXT NULL,
+  description TEXT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS contact_messages (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  subject TEXT NOT NULL,
+  message TEXT NOT NULL,
+  ministry TEXT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS section_icons (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  page_key VARCHAR(191) NOT NULL,
+  section_key VARCHAR(191) NOT NULL,
+  imagePath TEXT NULL,
+  imageMime TEXT NULL,
+  imageName TEXT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uk_section_icons_page_section (page_key, section_key)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS event_media (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  eventId VARCHAR(191) NOT NULL,
+  mediaType VARCHAR(32) NOT NULL DEFAULT 'icon',
+  imagePath TEXT NULL,
+  imageMime TEXT NULL,
+  imageName TEXT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS ministry_media (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  ministryId VARCHAR(191) NOT NULL,
+  mediaType VARCHAR(32) NOT NULL,
+  imagePath TEXT NULL,
+  imageMime TEXT NULL,
+  imageName TEXT NULL,
+  sortOrder INT NOT NULL DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS ministry_card_images (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  ministryId VARCHAR(191) NOT NULL,
+  imagePath TEXT NULL,
+  imageMime TEXT NULL,
+  imageName TEXT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS ministry_videos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  ministryId VARCHAR(191) NOT NULL,
+  videoPath TEXT NULL,
+  videoMime TEXT NULL,
+  videoName TEXT NULL,
+  sortOrder INT NOT NULL DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS media (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  filename TEXT NOT NULL,
+  originalName TEXT NOT NULL,
+  path TEXT NOT NULL,
+  type VARCHAR(32) NOT NULL DEFAULT 'image',
+  size INT NOT NULL DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS generic_pages (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  page_key VARCHAR(191) NOT NULL UNIQUE,
+  page_content LONGTEXT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS ministry_pdfs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  ministryId VARCHAR(191) NOT NULL UNIQUE,
+  filePath TEXT NULL,
+  fileMime VARCHAR(255) NULL,
+  fileName VARCHAR(512) NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+SET FOREIGN_KEY_CHECKS = 1;
