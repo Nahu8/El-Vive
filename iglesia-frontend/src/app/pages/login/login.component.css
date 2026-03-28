@@ -1,9 +1,0 @@
-/* Login component styles */
-input:focus {
-  outline: none;
-}
-
-input:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}

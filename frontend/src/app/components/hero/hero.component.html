@@ -1,0 +1,39 @@
+<div class="relative h-screen overflow-hidden">
+  <div class="absolute inset-0" [style.background-color]="headerBgColor"></div>
+  <!-- Video de fondo (solo si hay video) -->
+  <video *ngIf="videoSrc && videoSrc.trim() !== ''" #videoElement class="absolute inset-0 w-full h-full object-cover" autoplay preload="auto" loop muted playsinline
+    (loadedmetadata)="onVideoLoaded()" (canplay)="onVideoLoaded()" (error)="onVideoError()" (click)="playVideo()">
+    <source [src]="videoSrc">
+    Tu navegador no soporta videos HTML5.
+  </video>
+
+  <!-- Degradé hacia negro para legibilidad -->
+  <div *ngIf="videoSrc && videoSrc.trim() !== ''" class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent pointer-events-none"></div>
+
+  <!-- Contenido -->
+  <div class="absolute inset-0 flex items-center justify-center z-10">
+    <div class="text-center text-white max-w-4xl px-6 transform -translate-y-0 md:-translate-y-12">
+      <div *ngIf="heroIconUrl" class="mb-4 flex justify-center">
+        <img [src]="heroIconUrl" alt="" class="h-20 md:h-28 lg:h-36 w-auto object-contain drop-shadow-lg">
+      </div>
+      <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight -translate-y-0">
+          {{ heroTitle }}
+      </h1>
+<!--       <p class="text-lg md:text-xl leading-relaxed mb-8 text-gray-200">
+        Una comunidad de fe, esperanza y amor. Únete a nosotros en nuestro viaje espiritual
+        mientras buscamos crecer juntos en la palabra de Dios.
+      </p> -->
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a [routerLink]="heroButton1Link"
+          class="px-8 py-3 bg-white text-blue-900 font-bold rounded-md transition-all duration-300 hover:bg-gray-100 cursor-pointer">
+          {{ heroButton1Text }}
+        </a>
+        <a [routerLink]="heroButton2Link"
+          class="px-8 py-3 border-2 border-white bg-transparent text-white font-bold rounded-md transition-all duration-300 hover:bg-white hover:text-blue-900 cursor-pointer">
+          {{ heroButton2Text }}
+        </a>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="heroFadeEnabled" class="absolute bottom-0 left-0 right-0 h-32 z-10" [style.background]="headerFadeStyle"></div>
+</div>

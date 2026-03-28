@@ -1,0 +1,79 @@
+/* Modo noche: enlaces claros */
+:host-context(html.dark-theme) .header-nav-link {
+  color: rgba(243, 244, 246, 0.95);
+}
+
+:host-context(html.dark-theme) .header-nav-link:hover {
+  color: #ffffff;
+}
+
+:host-context(html.dark-theme) .header-nav-link.header-nav-active {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+:host-context(html.dark-theme) .header-logo-link {
+  color: #ffffff;
+}
+
+:host-context(html.dark-theme) .header-menu-btn {
+  color: #ffffff;
+}
+
+:host-context(html.dark-theme) .header-mobile-panel {
+  background-color: rgba(0, 0, 0, 0.8);
+  border-color: transparent;
+}
+
+:host-context(html.dark-theme) .header-nav-link-mobile {
+  color: rgba(243, 244, 246, 0.95);
+}
+
+:host-context(html.dark-theme) .header-nav-link-mobile:hover {
+  color: #ffffff;
+}
+
+:host-context(html.dark-theme) .header-nav-link-mobile.header-nav-active-mobile {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Modo día: enlaces oscuros */
+:host-context(html.light-theme) .header-nav-link {
+  color: rgba(15, 23, 42, 0.92);
+}
+
+:host-context(html.light-theme) .header-nav-link:hover {
+  color: #020617;
+}
+
+:host-context(html.light-theme) .header-nav-link.header-nav-active {
+  color: #020617;
+  font-weight: 600;
+}
+
+:host-context(html.light-theme) .header-logo-link {
+  color: #0f172a;
+}
+
+:host-context(html.light-theme) .header-menu-btn {
+  color: #0f172a;
+}
+
+:host-context(html.light-theme) .header-mobile-panel {
+  background-color: rgba(255, 255, 255, 0.92);
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+:host-context(html.light-theme) .header-nav-link-mobile {
+  color: rgba(15, 23, 42, 0.92);
+}
+
+:host-context(html.light-theme) .header-nav-link-mobile:hover {
+  color: #020617;
+}
+
+:host-context(html.light-theme) .header-nav-link-mobile.header-nav-active-mobile {
+  color: #020617;
+  font-weight: 600;
+}
