@@ -31,7 +31,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 validateEnv();
 
 const app = express();
-const PORT = Number(process.env.PORT) || 4100;
+const PORT = Number(process.env.PORT) || 3000;
 
 if (process.env.TRUST_PROXY === '1' || process.env.NODE_ENV === 'production') {
   app.set('trust proxy', 1);
@@ -131,7 +131,7 @@ app.use('/api/ministry/:ministryId', ministryMediaRoutes);
 app.use('/api/media', mediaRoutes);
 app.use('/api/generic-pages', genericPagesRoutes);
 
-// Angular: después de API. Build → backend/public/browser (angular outputPath ../public).
+// Angular: después de API. `npm run build` → public/browser (ng) y copy:spa → public/index.html.
 const spaRoot = resolveAngularStaticRoot(__dirname);
 if (spaRoot) {
   app.use(express.static(spaRoot));
@@ -159,8 +159,8 @@ app.use((err, req, res, next) => {
 
 await initDatabase();
 
-app.listen(PORT, () => {
-  console.log(`Backend Él Vive (Node.js) escuchando en http://127.0.0.1:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Backend Él Vive (Node.js) escuchando en 0.0.0.0:${PORT}`);
   console.log(`  - BD: ${useMysql() ? 'MySQL' : 'SQLite'}`);
   if (spaRoot) console.log(`  - Angular:  ${spaRoot}`);
   console.log('  - Auth:     POST /auth/login');
