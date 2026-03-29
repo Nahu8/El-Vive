@@ -132,7 +132,7 @@ app.use('/api/media', mediaRoutes);
 app.use('/api/generic-pages', genericPagesRoutes);
 
 // Angular: solo después de /api, /auth, /public y /uploads (el * no debe capturar la API).
-// distPath desde backend/src: path.join(__dirname, '..', '..', 'frontend', 'dist', 'frontend', 'browser')
+// dist: backend/frontend/dist/frontend/browser
 const spaRoot = resolveAngularStaticRoot(__dirname);
 if (spaRoot) {
   app.use(express.static(spaRoot));
