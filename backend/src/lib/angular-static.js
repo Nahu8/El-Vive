@@ -3,7 +3,7 @@ import path from 'path';
 
 /**
  * @param {string} serverSrcDir - Directorio donde está index.js del servidor: backend/src
- *   Desde ahí: ../.. = raíz del monorepo → frontend/dist/frontend/browser
+ *   Angular vive en backend/frontend → dist en backend/frontend/dist/frontend/browser
  */
 export function resolveAngularStaticRoot(serverSrcDir) {
   const envPath = process.env.ANGULAR_DIST?.trim();
@@ -13,15 +13,7 @@ export function resolveAngularStaticRoot(serverSrcDir) {
     return null;
   }
 
-  const monorepoBrowser = path.join(
-    serverSrcDir,
-    '..',
-    '..',
-    'frontend',
-    'dist',
-    'frontend',
-    'browser'
-  );
+  const monorepoBrowser = path.join(serverSrcDir, '..', 'frontend', 'dist', 'frontend', 'browser');
   if (fs.existsSync(path.join(monorepoBrowser, 'index.html'))) {
     return monorepoBrowser;
   }

@@ -1,0 +1,9 @@
+{
+  "name": "el-vive",
+  "private": true,
+  "description": "El-Vive: app en backend/ (Angular en backend/frontend). Hostinger root = backend.",
+  "scripts": {
+    "start": "node backend/src/index.js",
+    "build": "npm install --prefix backend && npm run build --prefix backend"
+  }
+}
