@@ -131,8 +131,7 @@ app.use('/api/ministry/:ministryId', ministryMediaRoutes);
 app.use('/api/media', mediaRoutes);
 app.use('/api/generic-pages', genericPagesRoutes);
 
-// Angular: solo después de /api, /auth, /public y /uploads (el * no debe capturar la API).
-// dist: backend/frontend/dist/frontend/browser
+// Angular: después de API. Build → backend/public/browser (angular outputPath ../public).
 const spaRoot = resolveAngularStaticRoot(__dirname);
 if (spaRoot) {
   app.use(express.static(spaRoot));
