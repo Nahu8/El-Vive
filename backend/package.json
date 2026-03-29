@@ -11,7 +11,7 @@
     "check-mysql": "node scripts/check-mysql.mjs",
     "build:frontend": "npm --prefix ./frontend install && npm --prefix ./frontend run build",
     "copy:spa": "node scripts/copy-spa-to-public.mjs",
-    "build": "npm run build:frontend"
+    "build": "npm run build:frontend && npm run copy:spa"
   },
   "dependencies": {
     "better-sqlite3": "^11.6.0",
