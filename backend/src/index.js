@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import './load-env.js';
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -28,7 +28,12 @@ import { resolveAngularStaticRoot, isApiOrAssetPath } from './lib/angular-static
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-validateEnv();
+try {
+  validateEnv();
+} catch (e) {
+  console.error('[startup] Variables de entorno:', e?.message || e);
+  process.exit(1);
+}
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
