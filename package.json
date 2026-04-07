@@ -1,0 +1,9 @@
+{
+  "name": "el-vive",
+  "private": true,
+  "description": "Monorepo: frontend/ (Angular) + backend/ (Express). Hostinger: root = backend, build copia el dist a backend/public.",
+  "scripts": {
+    "start": "node backend/src/index.js",
+    "build": "npm install --prefix frontend && npm install --prefix backend && npm run build --prefix backend"
+  }
+}
