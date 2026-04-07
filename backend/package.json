@@ -9,7 +9,7 @@
     "dev": "node --watch src/index.js",
     "init-db": "node src/db/init.js",
     "check-mysql": "node scripts/check-mysql.mjs",
-    "build:frontend": "npm --prefix ../frontend install && npm --prefix ../frontend run build",
+    "build:frontend": "npm --prefix ../frontend install --include=dev && npm --prefix ../frontend run build",
     "copy:spa": "node scripts/copy-spa-to-public.mjs",
     "build": "npm run build:frontend && npm run copy:spa"
   },
