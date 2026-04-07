@@ -1,9 +1,6 @@
 /**
- * Tras `ng build` (outputPath ../public) puede quedar:
- * - `public/browser/` (application builder) → subimos todo a `public/` y borramos `browser/`
- * - `public/index.html` ya en la raíz → no hace falta copiar
- *
- * No borrar `public/browser` antes de leerla (error típico al limpiar todo `public/`).
+ * Copia el build del Angular (monorepo: frontend/ hermano de backend/)
+ * desde frontend/dist/frontend/browser → backend/public/ (index.html en raíz).
  */
 import fs from 'fs';
 import path from 'path';
@@ -11,33 +8,26 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const backendRoot = path.join(__dirname, '..');
-const browserDir = path.join(backendRoot, 'public', 'browser');
+const repoRoot = path.join(backendRoot, '..');
+const distBrowser = path.join(repoRoot, 'frontend', 'dist', 'frontend', 'browser');
 const publicDir = path.join(backendRoot, 'public');
-const indexAtRoot = path.join(publicDir, 'index.html');
-const indexInBrowser = path.join(browserDir, 'index.html');
 
-if (fs.existsSync(indexAtRoot) && !fs.existsSync(indexInBrowser)) {
-  console.log('copy:spa: index.html ya está en public/, sin carpeta browser — omitido.');
-  process.exit(0);
-}
-
-if (!fs.existsSync(indexInBrowser)) {
-  console.error('copy:spa: no existe', indexInBrowser);
-  console.error('Ejecutá antes: npm run build:frontend');
+if (!fs.existsSync(path.join(distBrowser, 'index.html'))) {
+  console.error('copy:spa: no existe', path.join(distBrowser, 'index.html'));
+  console.error('Ejecutá antes: npm run build:frontend (desde backend) o ng build en frontend/');
   process.exit(1);
 }
 
 fs.mkdirSync(publicDir, { recursive: true });
 
-const keepInPublic = new Set(['.gitkeep', 'browser']);
+const keepInPublic = new Set(['.gitkeep']);
 for (const name of fs.readdirSync(publicDir)) {
   if (keepInPublic.has(name)) continue;
   fs.rmSync(path.join(publicDir, name), { recursive: true, force: true });
 }
 
-for (const name of fs.readdirSync(browserDir)) {
-  fs.cpSync(path.join(browserDir, name), path.join(publicDir, name), { recursive: true });
+for (const name of fs.readdirSync(distBrowser)) {
+  fs.cpSync(path.join(distBrowser, name), path.join(publicDir, name), { recursive: true });
 }
 
-fs.rmSync(browserDir, { recursive: true, force: true });
-console.log('copy:spa: contenido de public/browser copiado a public/ (index.html en raíz)');
+console.log('copy:spa: frontend/dist/frontend/browser → backend/public/');

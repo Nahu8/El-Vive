@@ -131,7 +131,7 @@ app.use('/api/ministry/:ministryId', ministryMediaRoutes);
 app.use('/api/media', mediaRoutes);
 app.use('/api/generic-pages', genericPagesRoutes);
 
-// Angular: después de API. `npm run build` → public/browser (ng) y copy:spa → public/index.html.
+// Angular: después de API (no capturar /api con fallback). Build → frontend/dist/.../browser y copy:spa → backend/public/.
 const spaRoot = resolveAngularStaticRoot(__dirname);
 if (spaRoot) {
   app.use(express.static(spaRoot));

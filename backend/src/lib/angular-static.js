@@ -8,11 +8,13 @@ function dirWithIndex(dir) {
 /**
  * @param {string} serverSrcDir - backend/src (donde está index.js de Express)
  *
- * Orden (Hostinger, Root = backend):
- * 1. ANGULAR_DIST si está definido
- * 2. ../public/browser — salida de ng build con outputPath "../public" (application builder)
- * 3. ../public — si index.html está en la raíz (copia manual antigua)
- * 4. ../frontend/dist/frontend/browser — legado
+ * Monorepo: frontend/ hermano de backend/. Tras `npm run build` en backend: estáticos en ../public.
+ *
+ * Orden:
+ * 1. ANGULAR_DIST
+ * 2. ../public/browser — si quedó subcarpeta browser
+ * 3. ../public — típico tras copy:spa (index en raíz)
+ * 4. ../../frontend/dist/frontend/browser — sin copiar a public (desarrollo)
  */
 export function resolveAngularStaticRoot(serverSrcDir) {
   const envPath = process.env.ANGULAR_DIST?.trim();
@@ -31,9 +33,9 @@ export function resolveAngularStaticRoot(serverSrcDir) {
   const fromPublic = dirWithIndex(backendPublic);
   if (fromPublic) return fromPublic;
 
-  const legacyDist = path.join(serverSrcDir, '..', 'frontend', 'dist', 'frontend', 'browser');
-  const fromLegacy = dirWithIndex(legacyDist);
-  if (fromLegacy) return fromLegacy;
+  const siblingDist = path.join(serverSrcDir, '..', '..', 'frontend', 'dist', 'frontend', 'browser');
+  const fromSibling = dirWithIndex(siblingDist);
+  if (fromSibling) return fromSibling;
 
   return null;
 }
