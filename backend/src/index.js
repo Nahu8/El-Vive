@@ -162,7 +162,13 @@ app.use((err, req, res, next) => {
   res.status(status).json({ error: err.message || 'Error interno del servidor' });
 });
 
-await initDatabase();
+try {
+  await initDatabase();
+} catch (err) {
+  console.error('[startup] Falló la base de datos:', err?.message || err);
+  if (err?.code) console.error('[startup] código MySQL:', err.code);
+  process.exit(1);
+}
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Backend Él Vive (Node.js) escuchando en 0.0.0.0:${PORT}`);
