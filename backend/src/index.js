@@ -65,11 +65,15 @@ app.use('/uploads', express.static(path.join(getUploadsDir())));
 app.use('/auth', authLimiter, authRoutes);
 app.use('/public', publicRoutes);
 
+const skipDbInit =
+  process.env.SKIP_DB_INIT === '1' || String(process.env.SKIP_DB_INIT || '').toLowerCase() === 'true';
+
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'OK',
     message: 'API funcionando correctamente',
     database: useMysql() ? 'mysql' : 'sqlite',
+    ...(skipDbInit && { dbInitSkipped: true }),
   });
 });
 
@@ -162,12 +166,18 @@ app.use((err, req, res, next) => {
   res.status(status).json({ error: err.message || 'Error interno del servidor' });
 });
 
-try {
-  await initDatabase();
-} catch (err) {
-  console.error('[startup] Falló la base de datos:', err?.message || err);
-  if (err?.code) console.error('[startup] código MySQL:', err.code);
-  process.exit(1);
+if (!skipDbInit) {
+  try {
+    await initDatabase();
+  } catch (err) {
+    console.error('[startup] Falló la base de datos:', err?.message || err);
+    if (err?.code) console.error('[startup] código MySQL:', err.code);
+    process.exit(1);
+  }
+} else {
+  console.warn(
+    '[startup] SKIP_DB_INIT: arranque sin conectar BD (solo diagnóstico). Sacá esta variable después.'
+  );
 }
 
 app.listen(PORT, '0.0.0.0', () => {
