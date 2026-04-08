@@ -1,4 +1,5 @@
 import './load-env.js';
+import { appendBootLog } from './lib/boot-file-log.js';
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -28,9 +29,20 @@ import { resolveAngularStaticRoot, isApiOrAssetPath } from './lib/angular-static
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+process.on('uncaughtException', (err) => {
+  appendBootLog(`uncaughtException: ${err?.stack || err?.message || err}`);
+  console.error(err);
+  process.exit(1);
+});
+process.on('unhandledRejection', (reason) => {
+  appendBootLog(`unhandledRejection: ${reason?.stack || reason?.message || String(reason)}`);
+});
+
 try {
   validateEnv();
+  appendBootLog('validateEnv: ok');
 } catch (e) {
+  appendBootLog(`validateEnv: FALLO ${e?.message || e}`);
   console.error('[startup] Variables de entorno:', e?.message || e);
   process.exit(1);
 }
@@ -182,8 +194,10 @@ if (!skipDbInit) {
       console.log('[startup] Conectando MySQL…', { host: h, database: process.env.DB_NAME });
     }
     await initDatabase();
+    appendBootLog('initDatabase: ok');
     if (useMysql()) console.log('[startup] MySQL listo (esquema comprobado).');
   } catch (err) {
+    appendBootLog(`initDatabase: FALLO ${err?.message || err} code=${err?.code || ''}`);
     console.error('[startup] Falló la base de datos:', err?.message || err);
     if (err?.code) console.error('[startup] código MySQL:', err.code);
     console.error(
@@ -192,12 +206,14 @@ if (!skipDbInit) {
     process.exit(1);
   }
 } else {
+  appendBootLog('initDatabase: omitido (SKIP_DB_INIT)');
   console.warn(
     '[startup] SKIP_DB_INIT: arranque sin conectar BD (solo diagnóstico). Sacá esta variable después.'
   );
 }
 
 const server = app.listen(PORT, '0.0.0.0', () => {
+  appendBootLog(`listen: OK puerto ${PORT} cwd=${process.cwd()}`);
   console.log(`Backend Él Vive (Node.js) escuchando en 0.0.0.0:${PORT}`);
   console.log(`  - BD: ${useMysql() ? 'MySQL' : 'SQLite'}`);
   if (spaRoot) console.log(`  - Angular:  ${spaRoot}`);
@@ -206,6 +222,7 @@ const server = app.listen(PORT, '0.0.0.0', () => {
   console.log('  - Público:  /public/*');
 });
 server.on('error', (err) => {
+  appendBootLog(`listen: ERROR ${err?.message || err}`);
   console.error('[startup] No se pudo abrir el puerto (¿PORT ocupado o sin permiso?):', err?.message || err);
   process.exit(1);
 });

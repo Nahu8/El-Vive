@@ -1,7 +1,7 @@
 {
   "name": "el-vive",
   "private": true,
-  "description": "Monorepo: frontend/ (Angular) + backend/ (Express). Hostinger: directorio root del repo = ./ (vacío o punto); archivo de entrada backend/src/index.js; build: npm run build; start: npm start.",
+  "description": "Monorepo Angular+Express. Hostinger: root=./, build=npm run build, Start command=npm start (obligatorio si no arranca), entry=backend/src/index.js. Tras deploy revisar backend/startup-debug.log en el servidor.",
   "engines": {
     "node": ">=18 <=24"
   },
