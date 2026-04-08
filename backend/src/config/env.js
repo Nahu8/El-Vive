@@ -23,6 +23,20 @@ export function validateEnv() {
     if (process.env.DB_USER === undefined || process.env.DB_PASSWORD === undefined) {
       throw new Error('[env] Con MySQL definí DB_USER y DB_PASSWORD (pueden ser cadena vacía si tu hosting lo permite).');
     }
+    const webPort = Number(process.env.PORT || 3000);
+    if (process.env.DB_PORT?.trim()) {
+      const mysqlPort = Number(process.env.DB_PORT);
+      if (Number.isFinite(mysqlPort) && mysqlPort === webPort) {
+        throw new Error(
+          `[env] DB_PORT (${mysqlPort}) no puede ser igual que PORT (servidor web). MySQL en Hostinger usa 3306. Dejá DB_PORT=3306 o eliminá DB_PORT y se usará 3306 por defecto.`
+        );
+      }
+      if (mysqlPort === 3000) {
+        throw new Error(
+          '[env] DB_PORT=3000 es incorrecto: 3000 es el puerto de Express (variable PORT), no de MySQL. Poné DB_PORT=3306 o borrá DB_PORT del panel.'
+        );
+      }
+    }
   }
 }
 
