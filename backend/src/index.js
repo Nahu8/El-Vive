@@ -37,6 +37,15 @@ try {
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
+console.log(
+  '[startup] Express',
+  JSON.stringify({
+    node: process.version,
+    cwd: process.cwd(),
+    port: PORT,
+    envPort: process.env.PORT ?? null,
+  })
+);
 
 if (process.env.TRUST_PROXY === '1' || process.env.NODE_ENV === 'production') {
   app.set('trust proxy', 1);
@@ -188,11 +197,15 @@ if (!skipDbInit) {
   );
 }
 
-app.listen(PORT, '0.0.0.0', () => {
+const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`Backend Él Vive (Node.js) escuchando en 0.0.0.0:${PORT}`);
   console.log(`  - BD: ${useMysql() ? 'MySQL' : 'SQLite'}`);
   if (spaRoot) console.log(`  - Angular:  ${spaRoot}`);
   console.log('  - Auth:     POST /auth/login');
   console.log('  - API:      /api/* (con JWT)');
   console.log('  - Público:  /public/*');
+});
+server.on('error', (err) => {
+  console.error('[startup] No se pudo abrir el puerto (¿PORT ocupado o sin permiso?):', err?.message || err);
+  process.exit(1);
 });

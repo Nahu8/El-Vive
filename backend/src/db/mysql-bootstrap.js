@@ -4,16 +4,42 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+function stripLineComments(sql) {
+  return sql
+    .split('\n')
+    .filter((line) => !/^\s*--/.test(line))
+    .join('\n');
+}
+
 /**
  * Aplica scripts/mysql-schema-hostinger.sql (idempotente: solo CREATE IF NOT EXISTS).
- * Necesario cuando la BD en Hostinger está vacía: sin esto las rutas /api fallan.
+ * Sentencia a sentencia: algunos entornos no aplican bien varias sentencias en un solo query().
  */
 export async function ensureMysqlFullSchema(pool) {
   const sqlPath = path.join(__dirname, '../../scripts/mysql-schema-hostinger.sql');
-  const sql = fs.readFileSync(sqlPath, 'utf8');
+  if (!fs.existsSync(sqlPath)) {
+    throw new Error(`[mysql] Archivo de esquema no encontrado: ${sqlPath}`);
+  }
+  const raw = fs.readFileSync(sqlPath, 'utf8');
+  const statements = stripLineComments(raw)
+    .split(';')
+    .map((s) => s.trim())
+    .filter(Boolean);
+
   const conn = await pool.getConnection();
   try {
-    await conn.query(sql);
+    for (let i = 0; i < statements.length; i++) {
+      const st = statements[i];
+      try {
+        await conn.query(`${st};`);
+      } catch (e) {
+        console.error(
+          `[mysql] Error en sentencia ${i + 1}/${statements.length} (${st.slice(0, 72)}…):`,
+          e?.message || e
+        );
+        throw e;
+      }
+    }
   } finally {
     conn.release();
   }

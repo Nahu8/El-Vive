@@ -1,5 +1,4 @@
 import mysql from 'mysql2/promise';
-import Database from 'better-sqlite3';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
@@ -26,8 +25,9 @@ export function ensureDataDir() {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 }
 
-function getSqliteDb() {
+async function getSqliteDb() {
   if (!sqliteDb) {
+    const { default: Database } = await import('better-sqlite3');
     ensureDataDir();
     const dbPath = process.env.DB_PATH || path.join(__dirname, '../../data/elvive.db');
     sqliteDb = new Database(dbPath);
@@ -64,7 +64,7 @@ export async function dbGet(sql, params = []) {
     if (!Array.isArray(rows) || rows.length === 0) return undefined;
     return rows[0];
   }
-  return getSqliteDb().prepare(q).get(...params);
+  return (await getSqliteDb()).prepare(q).get(...params);
 }
 
 export async function dbAll(sql, params = []) {
@@ -73,7 +73,7 @@ export async function dbAll(sql, params = []) {
     const [rows] = await pool.execute(q, params);
     return Array.isArray(rows) ? rows : [];
   }
-  return getSqliteDb().prepare(q).all(...params);
+  return (await getSqliteDb()).prepare(q).all(...params);
 }
 
 export async function dbRun(sql, params = []) {
@@ -86,7 +86,7 @@ export async function dbRun(sql, params = []) {
       changes: header.affectedRows ?? 0,
     };
   }
-  return getSqliteDb().prepare(q).run(...params);
+  return (await getSqliteDb()).prepare(q).run(...params);
 }
 
 function mysqlPoolConfig() {
@@ -100,7 +100,7 @@ function mysqlPoolConfig() {
     waitForConnections: true,
     connectionLimit: limit,
     enableKeepAlive: true,
-    multipleStatements: true,
+    connectTimeout: Math.min(Math.max(Number(process.env.DB_CONNECT_TIMEOUT_MS || 20000), 5000), 120000),
     ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== 'false' } : undefined,
   };
   if (socketPath) {
@@ -121,7 +121,7 @@ export async function initDatabase() {
     }
     return;
   }
-  getSqliteDb();
+  await getSqliteDb();
 }
 
 export async function closeDatabase() {
@@ -136,7 +136,7 @@ export async function closeDatabase() {
 }
 
 /** Compatibilidad mínima con código legado sync (solo SQLite); no usar con MySQL. */
-export function getDb() {
+export async function getDb() {
   if (useMysql()) {
     throw new Error('getDb() no está disponible con MySQL. Usá dbGet/dbAll/dbRun (async).');
   }
