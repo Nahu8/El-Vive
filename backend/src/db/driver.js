@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { runMigrations } from './schema.js';
-import { ensureMysqlAuxTables } from './mysql-bootstrap.js';
+import { ensureMysqlFullSchema } from './mysql-bootstrap.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -89,24 +89,33 @@ export async function dbRun(sql, params = []) {
   return getSqliteDb().prepare(q).run(...params);
 }
 
+function mysqlPoolConfig() {
+  const socketPath = process.env.DB_SOCKET_PATH?.trim();
+  const limit = Math.min(parseInt(process.env.DB_POOL_LIMIT || '10', 10), 25);
+  const base = {
+    port: Number(process.env.DB_PORT || 3306),
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    waitForConnections: true,
+    connectionLimit: limit,
+    enableKeepAlive: true,
+    multipleStatements: true,
+    ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== 'false' } : undefined,
+  };
+  if (socketPath) {
+    return { ...base, socketPath };
+  }
+  return { ...base, host: process.env.DB_HOST };
+}
+
 export async function initDatabase() {
   if (useMysql()) {
-    const limit = Math.min(parseInt(process.env.DB_POOL_LIMIT || '10', 10), 25);
-    pool = mysql.createPool({
-      host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT || 3306),
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      waitForConnections: true,
-      connectionLimit: limit,
-      enableKeepAlive: true,
-      ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== 'false' } : undefined,
-    });
+    pool = mysql.createPool(mysqlPoolConfig());
     const conn = await pool.getConnection();
     try {
       await conn.ping();
-      await ensureMysqlAuxTables(pool);
+      await ensureMysqlFullSchema(pool);
     } finally {
       conn.release();
     }

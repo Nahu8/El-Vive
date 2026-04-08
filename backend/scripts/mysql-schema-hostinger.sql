@@ -1,5 +1,5 @@
 -- Esquema MySQL alineado con backend Node (mismas tablas/columnas que SQLite local).
--- Importar en phpMyAdmin: seleccionar la base u477860139_eviddbb → Importar → este archivo.
+-- Importar en phpMyAdmin (opcional): el servidor Node también aplica este esquema al arrancar con MySQL.
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;

@@ -168,10 +168,18 @@ app.use((err, req, res, next) => {
 
 if (!skipDbInit) {
   try {
+    if (useMysql()) {
+      const h = process.env.DB_SOCKET_PATH?.trim() ? `socket:${process.env.DB_SOCKET_PATH}` : process.env.DB_HOST;
+      console.log('[startup] Conectando MySQL…', { host: h, database: process.env.DB_NAME });
+    }
     await initDatabase();
+    if (useMysql()) console.log('[startup] MySQL listo (esquema comprobado).');
   } catch (err) {
     console.error('[startup] Falló la base de datos:', err?.message || err);
     if (err?.code) console.error('[startup] código MySQL:', err.code);
+    console.error(
+      '[startup] Si estás en Hostinger: revisá DB_USER/DB_PASSWORD en el panel, probá DB_HOST=127.0.0.1 o definí DB_SOCKET_PATH si hPanel indica socket Unix.'
+    );
     process.exit(1);
   }
 } else {

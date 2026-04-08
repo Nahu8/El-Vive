@@ -1,5 +1,27 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 /**
- * Tablas que el backend Node puede necesitar y que a veces no existen en BD heredadas de Laravel.
+ * Aplica scripts/mysql-schema-hostinger.sql (idempotente: solo CREATE IF NOT EXISTS).
+ * Necesario cuando la BD en Hostinger está vacía: sin esto las rutas /api fallan.
+ */
+export async function ensureMysqlFullSchema(pool) {
+  const sqlPath = path.join(__dirname, '../../scripts/mysql-schema-hostinger.sql');
+  const sql = fs.readFileSync(sqlPath, 'utf8');
+  const conn = await pool.getConnection();
+  try {
+    await conn.query(sql);
+  } finally {
+    conn.release();
+  }
+}
+
+/**
+ * Tablas auxiliares por si el SQL maestro no se ejecutó (BD heredada).
+ * @deprecated Preferir ensureMysqlFullSchema; se mantiene por compatibilidad.
  */
 export async function ensureMysqlAuxTables(pool) {
   await pool.query(`

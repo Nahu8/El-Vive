@@ -11,8 +11,11 @@ async function main() {
     process.exit(0);
   }
 
+  const socketPath = process.env.DB_SOCKET_PATH?.trim();
   const pool = mysql.createPool({
-    host: process.env.DB_HOST,
+    ...(socketPath
+      ? { socketPath }
+      : { host: process.env.DB_HOST }),
     port: Number(process.env.DB_PORT || 3306),
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
