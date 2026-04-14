@@ -6,7 +6,7 @@
     "node": ">=18 <=24"
   },
   "scripts": {
-    "start": "node backend/src/index.js",
+    "start": "node backend/src/entry.js",
     "start:backend": "npm run start --prefix backend",
     "build": "npm install --prefix frontend --include=dev && npm install --prefix backend && npm run build --prefix backend"
   }
