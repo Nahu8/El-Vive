@@ -1,12 +1,12 @@
 {
   "name": "el-vive",
   "private": true,
-  "description": "Monorepo Angular+Express. Hostinger: root=./, build=npm run build, Start command=npm start (obligatorio si no arranca), entry=backend/src/index.js. Tras deploy revisar backend/startup-debug.log en el servidor.",
+  "description": "Monorepo Angular+Express. Hostinger: root=./, build=npm run build, start=npm start, entry=server.js. Si falla el runtime, revisar stderr.log o startup-debug.log.",
   "engines": {
     "node": ">=18 <=24"
   },
   "scripts": {
-    "start": "node backend/src/entry.js",
+    "start": "node server.js",
     "start:backend": "npm run start --prefix backend",
     "build": "npm install --prefix frontend --include=dev && npm install --prefix backend && npm run build --prefix backend"
   }
