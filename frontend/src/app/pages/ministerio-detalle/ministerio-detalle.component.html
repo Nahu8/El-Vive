@@ -1,183 +1,288 @@
-<div class="min-h-screen page-content">
-  
-  <div *ngIf="loading" class="flex items-center justify-center h-screen">
-    <div class="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-  </div>
+<div class="md-detail min-h-screen page-content"
+  [ngStyle]="ministry ? {
+    '--md-accent-from': ministry.colorFrom || '#6366f1',
+    '--md-accent-to': ministry.colorTo || '#a855f7'
+  } : {}">
 
-  
-  <div *ngIf="error && !loading" class="flex flex-col items-center justify-center h-screen gap-4">
-    <svg class="w-16 h-16 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/>
-    </svg>
-    <p class="text-gray-400 text-lg">Ministerio no encontrado</p>
-    <a routerLink="/ministerios" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-sm font-medium transition-colors">
-      Volver a Ministerios
-    </a>
-  </div>
-
-  
-  <div *ngIf="ministry && !loading">
-    
-    <div class="relative h-[50vh] min-h-[400px] overflow-hidden">
-      <div *ngIf="photoUrls.length > 0" class="absolute inset-0">
-        <img [src]="photoUrls[0]" [alt]="ministry.name" class="w-full h-full object-cover">
-      </div>
-      <div *ngIf="photoUrls.length === 0 && ministry.image" class="absolute inset-0">
-        <img [src]="ministry.image" [alt]="ministry.name" class="w-full h-full object-cover">
-      </div>
-      <div *ngIf="photoUrls.length === 0 && !ministry.image" class="absolute inset-0"
-        [ngStyle]="{'background': 'linear-gradient(135deg, ' + (ministry.colorFrom || '#4f46e5') + ', ' + (ministry.colorTo || '#ec4899') + ')'}">
-      </div>
-      <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/30"></div>
-      <div class="absolute bottom-0 left-0 right-0 p-8 md:p-16">
-        <div class="max-w-4xl mx-auto">
-          <div *ngIf="ministry.iconFullUrl" class="mb-4">
-            <img [src]="ministry.iconFullUrl" alt="" class="w-16 h-16 object-contain drop-shadow-lg">
-          </div>
-          <h1 class="text-4xl md:text-6xl font-black tracking-tight mb-3">{{ ministry.name }}</h1>
-          <p class="text-lg md:text-xl text-gray-300 max-w-2xl">{{ ministry.description }}</p>
-
-          <div class="flex flex-wrap gap-3 mt-6" *ngIf="ministry.schedule || ministry.location || ministry.leader">
-            <span *ngIf="ministry.schedule" class="px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-sm text-gray-300 flex items-center gap-1.5">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              {{ ministry.schedule }}
-            </span>
-            <span *ngIf="ministry.location" class="px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-sm text-gray-300 flex items-center gap-1.5">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
-              {{ ministry.location }}
-            </span>
-            <span *ngIf="ministry.leader" class="px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-sm text-gray-300 flex items-center gap-1.5">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
-              Líder: {{ ministry.leader }}
-            </span>
-          </div>
+  @if (loading) {
+    <div class="md-detail__loading">
+      <div class="md-detail__skeleton md-detail__skeleton--hero"></div>
+      <div class="max-w-5xl mx-auto px-6 md:px-12 py-12 space-y-8">
+        <div class="md-detail__skeleton h-12 rounded-xl w-3/4 max-w-md mx-auto"></div>
+        <div class="md-detail__skeleton h-4 rounded-lg w-full max-w-2xl mx-auto"></div>
+        <div class="md-detail__skeleton h-4 rounded-lg w-full max-w-xl mx-auto"></div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-8">
+          <div class="md-detail__skeleton h-32 rounded-2xl"></div>
+          <div class="md-detail__skeleton h-32 rounded-2xl"></div>
+          <div class="md-detail__skeleton h-32 rounded-2xl"></div>
         </div>
       </div>
     </div>
+  }
 
-    
-    <div class="page-section max-w-5xl mx-auto px-6 md:px-16 py-16 space-y-16">
-
-      
-      <div *ngIf="ministry.longDescription" class="space-y-4">
-        <h2 class="page-heading text-2xl font-bold">Sobre este Ministerio</h2>
-        <p class="page-text-muted leading-relaxed whitespace-pre-line text-lg">{{ ministry.longDescription }}</p>
+  @if (error && !loading) {
+    <div class="md-detail__error">
+      <div class="md-detail__error-icon" aria-hidden="true">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/>
+        </svg>
       </div>
+      <h1 class="md-detail__error-title">No encontramos este ministerio</h1>
+      <p class="md-detail__error-text">Puede haber sido movido o el enlace no es válido.</p>
+      <a routerLink="/ministerios" class="md-detail__btn md-detail__btn--primary">
+        Ver todos los ministerios
+      </a>
+    </div>
+  }
 
-      
-      <div *ngIf="photoUrls.length > 1" class="space-y-4">
-        <h2 class="page-heading text-2xl font-bold">Galería</h2>
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-          <div *ngFor="let photo of photoUrls" class="aspect-[4/3] rounded-xl overflow-hidden cursor-pointer group" (click)="openPhoto(photo)">
-            <img [src]="photo" alt="" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-          </div>
-        </div>
-      </div>
+  @if (ministry && !loading) {
 
-      
-      <div *ngIf="internalVideoUrls.length > 0 || videoEmbeds.length > 0" class="space-y-6">
-        <div class="space-y-6">
-          
-          <div *ngFor="let videoUrl of internalVideoUrls" class="aspect-video rounded-2xl overflow-hidden border border-gray-800 bg-black">
-            <video [src]="videoUrl" class="w-full h-full object-contain" controls playsinline>
-              Tu navegador no soporta la reproducción de video.
-            </video>
-          </div>
-          
-          <div *ngFor="let embed of videoEmbeds" class="aspect-video rounded-2xl overflow-hidden border border-gray-800 bg-black">
-            <iframe [src]="embed" class="w-full h-full" frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowfullscreen></iframe>
-          </div>
-        </div>
-      </div>
-
-      
-      <div *ngIf="ministry.features && ministry.features.length > 0">
-        <h2 class="page-heading text-2xl font-bold mb-6">Características</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div *ngFor="let feature of ministry.features"
-            class="flex items-center gap-3 p-4 rounded-lg border page-border-color page-card-bg">
-            <svg class="w-5 h-5 text-indigo-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-            </svg>
-            <span class="page-text-muted">{{ feature }}</span>
-          </div>
-        </div>
-      </div>
-
-      
-      <div *ngIf="ministry.requirements && ministry.requirements.length > 0">
-        <h2 class="page-heading text-2xl font-bold mb-6">Requisitos</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div *ngFor="let req of ministry.requirements"
-            class="flex items-center gap-3 p-4 rounded-lg border page-border-color page-card-bg">
-            <svg class="w-5 h-5 text-purple-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            <span class="page-text-muted">{{ req }}</span>
-          </div>
-        </div>
-      </div>
-
-      
-      <div *ngIf="ministry.pdfUrl" class="space-y-4">
-        <h2 class="page-heading text-2xl font-bold">Descargar material</h2>
-        <a [href]="environment.apiBaseUrl + ministry.pdfUrl" target="_blank" rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-medium rounded-xl transition-all hover:scale-[1.02]">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+    <nav class="md-detail__breadcrumb" aria-label="Camino de navegación">
+      <div class="md-detail__breadcrumb-inner">
+        <a routerLink="/ministerios" class="md-detail__crumb md-detail__crumb--back">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
           </svg>
-          Descargar PDF
+          Ministerios
         </a>
+        <span class="md-detail__crumb-sep" aria-hidden="true">/</span>
+        <span class="md-detail__crumb-current">{{ ministry.name }}</span>
       </div>
+    </nav>
 
-      
-      <div *ngIf="ministry.contactEmail && ministry.showContactSection !== false" class="relative overflow-hidden rounded-2xl p-8 md:p-10 border page-border-color page-card-bg backdrop-blur-sm">
-        <div class="relative z-10">
-          <div class="flex items-start gap-4 md:gap-6">
-            <div class="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
-              [style.background]="'linear-gradient(135deg, ' + (ministry.colorFrom || '#4f46e5') + ', ' + (ministry.colorTo || '#ec4899') + ')'">
-              <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+    <header class="md-detail__hero">
+      <div class="md-detail__hero-media" aria-hidden="true">
+        @if (heroBgUrl) {
+          <img [src]="heroBgUrl" [alt]="''" class="md-detail__hero-img" />
+        } @else {
+          <div class="md-detail__hero-fallback" [style.background]="heroFallbackGradient"></div>
+        }
+        <div class="md-detail__hero-scrim"></div>
+        <div class="md-detail__hero-grain"></div>
+      </div>
+      <div class="md-detail__hero-content">
+        <div class="md-detail__hero-inner">
+          @if (ministry.status && ministry.status !== 'active') {
+            <span class="md-detail__badge">{{ statusLabel(ministry.status) }}</span>
+          }
+          <div class="md-detail__hero-title-block">
+            @if (iconDisplayUrl) {
+              <div class="md-detail__icon-wrap">
+                <img [src]="iconDisplayUrl" alt="" class="md-detail__icon-img" />
+              </div>
+            }
+            <h1 class="md-detail__title">{{ ministry.name }}</h1>
+          </div>
+          @if (ministry.description) {
+            <p class="md-detail__lead">{{ ministry.description }}</p>
+          }
+          @if (ministry.schedule || ministry.location || ministry.leader) {
+            <ul class="md-detail__meta" role="list">
+              @if (ministry.schedule) {
+                <li class="md-detail__meta-item">
+                  <span class="md-detail__meta-icon" aria-hidden="true">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                  </span>
+                  <span>{{ ministry.schedule }}</span>
+                </li>
+              }
+              @if (ministry.location) {
+                <li class="md-detail__meta-item">
+                  <span class="md-detail__meta-icon" aria-hidden="true">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/>
+                    </svg>
+                  </span>
+                  <span>{{ ministry.location }}</span>
+                </li>
+              }
+              @if (ministry.leader) {
+                <li class="md-detail__meta-item">
+                  <span class="md-detail__meta-icon" aria-hidden="true">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
+                    </svg>
+                  </span>
+                  <span>Liderazgo: {{ ministry.leader }}</span>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      </div>
+    </header>
+
+    @if (hasStats) {
+      <section class="md-detail__stats-wrap">
+        <div class="md-detail__stats" appReveal revealVariant="fade-up">
+          @if (ministry.volunteerCount != null && ministry.volunteerCount > 0) {
+            <div class="md-detail__stat-card">
+              <span class="md-detail__stat-value">{{ ministry.volunteerCount }}</span>
+              <span class="md-detail__stat-label">personas sirviendo</span>
+            </div>
+          }
+          @for (line of impactLines; track line) {
+            <div class="md-detail__stat-card md-detail__stat-card--wide">
+              <span class="md-detail__stat-note">{{ line }}</span>
+            </div>
+          }
+        </div>
+      </section>
+    }
+
+    <div class="md-detail__body max-w-5xl mx-auto px-5 md:px-10 pb-20 md:pb-28">
+
+      @if (ministry.longDescription) {
+        <article class="md-detail__section" appReveal revealVariant="fade-up" [revealDelay]="50">
+          <h2 class="md-detail__h2">Sobre este ministerio</h2>
+          <div class="md-detail__prose page-text-muted whitespace-pre-line">{{ ministry.longDescription }}</div>
+        </article>
+      }
+
+      @if (internalVideos.length > 0 || videoEmbeds.length > 0) {
+        <section class="md-detail__section" appReveal revealVariant="fade-up" [revealDelay]="80">
+          @if (internalVideos.length > 0) {
+            <div class="md-detail__video-stack">
+              @for (iv of internalVideos; track iv.url) {
+                <figure class="md-detail__video-card">
+                  <div class="md-detail__video-frame">
+                    <video [src]="iv.url" controls playsinline preload="metadata" class="md-detail__video-el"></video>
+                  </div>
+                </figure>
+              }
+            </div>
+          }
+
+          @if (videoEmbeds.length > 0) {
+            @if (internalVideos.length > 0) {
+              <h3 class="md-detail__h3">Canal externo</h3>
+            }
+            <div class="md-detail__video-stack">
+              @for (emb of videoEmbeds; track $index) {
+                <div class="md-detail__video-frame md-detail__video-frame--embed">
+                  <iframe [src]="emb.src" class="md-detail__iframe"
+                    title="Video del ministerio"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen></iframe>
+                </div>
+              }
+            </div>
+          }
+        </section>
+      }
+
+      @if (photoItems.length > 0) {
+        <section class="md-detail__section" appReveal revealVariant="fade-up" [revealDelay]="100">
+          <h2 class="md-detail__h2">Galería</h2>
+          <ul class="md-detail__gallery" role="list">
+            @for (photo of photoItems; track photo.url) {
+              <li class="md-detail__gallery-item">
+                <button type="button" class="md-detail__gallery-btn" (click)="openPhoto(photo)"
+                  aria-label="Ampliar imagen">
+                  <img [src]="photo.url" alt="" loading="lazy" class="md-detail__gallery-img" />
+                  <span class="md-detail__gallery-shade" aria-hidden="true"></span>
+                </button>
+              </li>
+            }
+          </ul>
+        </section>
+      }
+
+      @if (ministry.features?.length > 0) {
+        <section class="md-detail__section" appReveal revealVariant="fade-up" [revealDelay]="120">
+          <h2 class="md-detail__h2">En este ministerio</h2>
+          <ul class="md-detail__pill-grid" role="list">
+            @for (feature of ministry.features; track $index) {
+              <li class="md-detail__pill">
+                <span class="md-detail__pill-check" aria-hidden="true">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                  </svg>
+                </span>
+                <span class="page-text-muted">{{ feature }}</span>
+              </li>
+            }
+          </ul>
+        </section>
+      }
+
+      @if (ministry.requirements?.length > 0) {
+        <section class="md-detail__section" appReveal revealVariant="fade-up" [revealDelay]="140">
+          <h2 class="md-detail__h2">Requisitos</h2>
+          <ul class="md-detail__pill-grid md-detail__pill-grid--muted" role="list">
+            @for (req of ministry.requirements; track $index) {
+              <li class="md-detail__pill md-detail__pill--muted">
+                <span class="md-detail__pill-dot" aria-hidden="true"></span>
+                <span class="page-text-muted">{{ req }}</span>
+              </li>
+            }
+          </ul>
+        </section>
+      }
+
+      @if (ministry.pdfUrl) {
+        <section class="md-detail__section" appReveal revealVariant="fade-up" [revealDelay]="160">
+          <h2 class="md-detail__h2">Material descargable</h2>
+          <a [href]="publicApi.resolveAssetUrl(ministry.pdfUrl)" target="_blank" rel="noopener noreferrer"
+            class="md-detail__pdf-card">
+            <span class="md-detail__pdf-icon" aria-hidden="true">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
+              </svg>
+            </span>
+            <span class="md-detail__pdf-text">
+              <span class="md-detail__pdf-title">Abrir o descargar PDF</span>
+              <span class="md-detail__pdf-hint">Se abre en una pestaña nueva</span>
+            </span>
+            <svg class="md-detail__pdf-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+            </svg>
+          </a>
+        </section>
+      }
+
+      @if (ministry.contactEmail && ministry.showContactSection !== false) {
+        <section class="md-detail__cta" appReveal revealVariant="fade-up" [revealDelay]="180">
+          <div class="md-detail__cta-inner">
+            <div class="md-detail__cta-icon"
+              [style.background]="'linear-gradient(135deg, ' + (ministry.colorFrom || '#6366f1') + ', ' + (ministry.colorTo || '#a855f7') + ')'">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
               </svg>
             </div>
-            <div class="flex-1">
-              <h2 class="page-heading text-xl font-bold mb-2">¿Querés sumarte?</h2>
-              <p class="page-text-muted mb-4">Si tenés preguntas o querés ser parte de este ministerio, escribinos:</p>
-              <a [href]="'mailto:' + ministry.contactEmail"
-                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-all hover:scale-[1.02]"
-                [style.background]="'linear-gradient(135deg, ' + (ministry.colorFrom || '#4f46e5') + ', ' + (ministry.colorTo || '#ec4899') + ')'">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                </svg>
-                <span class="text-white">{{ ministry.contactEmail }}</span>
-              </a>
+            <div class="md-detail__cta-copy">
+              <h2 class="md-detail__cta-title">¿Querés sumarte o hacer una consulta?</h2>
+              <p class="md-detail__cta-text page-text-muted">Escribinos y te respondemos a la brevedad.</p>
+              <a [href]="'mailto:' + ministry.contactEmail" class="md-detail__cta-mail">{{ ministry.contactEmail }}</a>
             </div>
           </div>
-        </div>
-      </div>
+        </section>
+      }
 
-      
-      <div class="text-center py-8">
-        <a routerLink="/ministerios"
-          class="inline-flex items-center gap-2 px-8 py-3 font-bold rounded-xl transition-all hover:scale-[1.02] hover:shadow-lg"
-          [style.background]="'linear-gradient(135deg, ' + (ministry.colorFrom || '#4f46e5') + ', ' + (ministry.colorTo || '#ec4899') + ')'"
-          style="color: white;">
-          Ver todos los ministerios
+      <p class="md-detail__back-bottom" appReveal revealVariant="fade" [revealDelay]="200">
+        <a routerLink="/ministerios" class="md-detail__btn md-detail__btn--ghost">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
           </svg>
+          Volver a ministerios
         </a>
-      </div>
+      </p>
     </div>
-  </div>
+  }
 
-  
-  <div *ngIf="selectedPhoto" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4" (click)="closePhoto()">
-    <img [src]="selectedPhoto" class="max-w-full max-h-full object-contain rounded-lg">
-    <button class="absolute top-6 right-6 text-white/70 hover:text-white" (click)="closePhoto()">
-      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-    </button>
-  </div>
+  @if (selectedPhoto) {
+    <div class="md-detail__lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada" (click)="closePhoto()">
+      <button type="button" class="md-detail__lightbox-close" (click)="closePhoto(); $event.stopPropagation()" aria-label="Cerrar">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+      <figure class="md-detail__lightbox-figure" (click)="$event.stopPropagation()">
+        <img [src]="selectedPhoto.url" alt="" class="md-detail__lightbox-img" />
+      </figure>
+    </div>
+  }
 </div>

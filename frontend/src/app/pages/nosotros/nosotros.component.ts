@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { PublicApiService } from '../../services/public-api.service';
 import { environment } from '../../../environments/environment';
@@ -11,7 +12,7 @@ const API_BASE = environment.apiBaseUrl;
 @Component({
   selector: 'app-nosotros',
   standalone: true,
-  imports: [CommonModule, RevealOnScrollDirective],
+  imports: [CommonModule, RouterLink, RevealOnScrollDirective],
   templateUrl: './nosotros.component.html',
   styleUrls: ['./nosotros.component.css']
 })
@@ -216,6 +217,47 @@ export class NosotrosComponent implements OnInit {
         linkUrl: ''
       }
     ];
+  }
+
+  /** Tarjetas del equipo pastoral para la grilla (orden fijo). */
+  get leadershipSlots(): Array<{
+    key: string;
+    name: string;
+    role: string;
+    imageUrl: string;
+    placeholderLabel: string;
+  }> {
+    return [
+      {
+        key: 'pastor',
+        name: this.pastor.name,
+        role: this.pastor.role,
+        imageUrl: this.pastor.imageUrl,
+        placeholderLabel: 'Pastor'
+      },
+      {
+        key: 'pastora',
+        name: this.pastora.name,
+        role: this.pastora.role,
+        imageUrl: this.pastora.imageUrl,
+        placeholderLabel: 'Pastora'
+      },
+      {
+        key: 'group',
+        name: this.group.title,
+        role: this.group.role,
+        imageUrl: this.group.imageUrl,
+        placeholderLabel: 'Equipo'
+      }
+    ];
+  }
+
+  highlightHasLink(card: { linkUrl: string }): boolean {
+    return !!(card.linkUrl && String(card.linkUrl).trim());
+  }
+
+  isExternalHighlightLink(url: string): boolean {
+    return /^https?:\/\//i.test(String(url).trim());
   }
 
   get zigzagSections(): Array<{
