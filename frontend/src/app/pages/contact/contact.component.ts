@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 import { PublicApiService } from '../../services/public-api.service';
 import { ThemeService } from '../../services/theme.service';
+import { RevealOnScrollDirective } from '../../directives/reveal-on-scroll.directive';
 
 import { environment } from '../../../environments/environment';
 const API_BASE = environment.apiBaseUrl;
@@ -10,7 +11,7 @@ const API_BASE = environment.apiBaseUrl;
 @Component({
   selector: 'app-contact',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RevealOnScrollDirective],
   templateUrl: './contact.component.html',
   styleUrls: ['./contact.component.css']
 })
@@ -33,7 +34,6 @@ export class ContactComponent implements OnInit {
     { key: 'emergencyHours', label: 'Emergencia' }
   ];
 
-  // pageContent
   heroTitle = 'CONTACTO';
   heroSubtitle = 'Estamos aquí para servirte. No dudes en contactarnos.';
   heroImageUrl = '';
@@ -115,7 +115,7 @@ export class ContactComponent implements OnInit {
         this.mapImageUrl = pc.map?.imageUrl ? this.resolveUrl(pc.map.imageUrl) : '';
         this.googleMapsUrl = pc.map?.googleMapsUrl || '';
       },
-      error: (err) => console.error('Error cargando contacto:', err)
+      error: () => undefined
     });
   }
 
@@ -184,3 +184,4 @@ export class ContactComponent implements OnInit {
     return this.themeService.isDarkMode() ? this.heroBgDarkColor : this.heroBgLightColor;
   }
 }
+

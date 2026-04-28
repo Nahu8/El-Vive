@@ -1,8 +1,3 @@
-/**
- * Esquema SQLite compatible con la API del backend PHP (Laravel).
- * Los blobs se reemplazan por rutas a archivos en uploads/
- */
-
 export function runMigrations(db) {
   db.exec(`
     CREATE TABLE IF NOT EXISTS users (
@@ -233,15 +228,16 @@ export function runMigrations(db) {
     );
   `);
 
-  // Migration: add whatsappNumber to layouts if not exists
   try {
     const cols = db.prepare('PRAGMA table_info(layouts)').all();
     if (!cols.some(c => c.name === 'whatsappNumber')) {
       db.prepare('ALTER TABLE layouts ADD COLUMN whatsappNumber TEXT').run();
     }
+    if (!cols.some(c => c.name === 'maintenanceMode')) {
+      db.prepare('ALTER TABLE layouts ADD COLUMN maintenanceMode INTEGER NOT NULL DEFAULT 0').run();
+    }
   } catch (_) {}
 
-  // Migration: add 2x2 hero media columns (day x mode) if not exists
   try {
     const cols = db.prepare('PRAGMA table_info(homes)').all();
     const maybeAdd = (name, type = 'TEXT') => {
@@ -249,7 +245,7 @@ export function runMigrations(db) {
         db.prepare(`ALTER TABLE homes ADD COLUMN ${name} ${type}`).run();
       }
     };
-    // Videos
+
     maybeAdd('heroVideoDomLightPath');
     maybeAdd('heroVideoDomLightMime');
     maybeAdd('heroVideoDomLightName');
@@ -262,7 +258,7 @@ export function runMigrations(db) {
     maybeAdd('heroVideoMierDarkPath');
     maybeAdd('heroVideoMierDarkMime');
     maybeAdd('heroVideoMierDarkName');
-    // Icons
+
     maybeAdd('heroIconDomLightPath');
     maybeAdd('heroIconDomLightMime');
     maybeAdd('heroIconDomLightName');
@@ -275,12 +271,13 @@ export function runMigrations(db) {
     maybeAdd('heroIconMierDarkPath');
     maybeAdd('heroIconMierDarkMime');
     maybeAdd('heroIconMierDarkName');
-    // Header fade colors (day/night)
+
     maybeAdd('heroFadeEnabled', 'INTEGER');
     maybeAdd('heroFadeLightColor');
     maybeAdd('heroFadeDarkColor');
-    // Header background colors (day/night)
+
     maybeAdd('heroBgLightColor');
     maybeAdd('heroBgDarkColor');
   } catch (_) {}
 }
+

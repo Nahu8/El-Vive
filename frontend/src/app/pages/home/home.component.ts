@@ -12,5 +12,6 @@ import { MeetingDaysComponent } from '../../components/meeting-days/meeting-days
     styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
-  // Los datos ahora se cargan desde la API en cada componente hijo
+
 }
+

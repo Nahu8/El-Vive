@@ -9,10 +9,6 @@ function jwtSecret() {
   return 'dev-only-NO-USAR-EN-PRODUCCION-minimo-32-chars-xx';
 }
 
-/**
- * Middleware que exige JWT en Authorization: Bearer <token>.
- * Añade req.user = { id, username, role }.
- */
 export function requireAuth(req, res, next) {
   const authHeader = req.headers.authorization;
   const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
@@ -30,9 +26,6 @@ export function requireAuth(req, res, next) {
   }
 }
 
-/**
- * Opcional: si hay token válido, pone req.user; si no, sigue sin usuario.
- */
 export function optionalAuth(req, res, next) {
   const authHeader = req.headers.authorization;
   const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
@@ -51,3 +44,4 @@ export function signToken(payload) {
     { algorithm: 'HS256' }
   );
 }
+

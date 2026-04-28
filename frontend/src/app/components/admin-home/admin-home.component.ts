@@ -31,7 +31,6 @@ export class AdminHomeComponent implements OnInit {
   meetingDaysForm: FormGroup;
   ministriesForm: FormGroup;
 
-  // Videos 2x2 (día x modo)
   hasVideoDomLight = false;
   videoDomLightName = '';
   videoDomLightPreview: string | null = null;
@@ -49,7 +48,6 @@ export class AdminHomeComponent implements OnInit {
   videoMierDarkPreview: string | null = null;
   isUploadingMierDark = false;
 
-  // Íconos 2x2 (día x modo)
   hasIconDomLight = false;
   iconDomLightName = '';
   iconDomLightPreview: string | null = null;
@@ -67,7 +65,6 @@ export class AdminHomeComponent implements OnInit {
   iconMierDarkPreview: string | null = null;
   isUploadingIconMierDark = false;
 
-  // Card images state: { [cardIndex]: { name, url } }
   cardImages: Record<number, { name: string; url: string }> = {};
   uploadingCardIndex: number | null = null;
 
@@ -124,10 +121,9 @@ export class AdminHomeComponent implements OnInit {
   }
 
   loadAllData(): void {
-    console.log('[AdminHome] Cargando datos desde API...');
+
     this.apiService.getHome().subscribe({
       next: (data) => {
-        console.log('[AdminHome] Datos recibidos:', data);
 
         this.heroForm.patchValue({
           heroTitle: data.heroTitle || '',
@@ -185,13 +181,12 @@ export class AdminHomeComponent implements OnInit {
         this.loadMinistriesData(data);
       },
       error: (err) => {
-        console.error('[AdminHome] Error al cargar datos:', err);
+
         this.toast('Error al cargar los datos: ' + (err.message || err.status), 'error');
       }
     });
   }
 
-  // --- Celebrations ---
   loadCelebrationsData(data: any): void {
     const arr = this.celebrationsForm.get('celebrations') as FormArray;
     arr.clear();
@@ -212,7 +207,6 @@ export class AdminHomeComponent implements OnInit {
   addCelebration(): void { this.celebrationsArray.push(this.createCelebrationForm()); }
   removeCelebration(i: number): void { this.celebrationsArray.removeAt(i); }
 
-  // --- Meeting Days ---
   loadMeetingDaysData(data: any): void {
     const summary = data?.meetingDaysSummary || {};
     this.meetingDaysForm.patchValue({
@@ -239,7 +233,6 @@ export class AdminHomeComponent implements OnInit {
   addMeeting(): void { this.meetingsArray.push(this.createMeetingForm()); }
   removeMeeting(i: number): void { this.meetingsArray.removeAt(i); }
 
-  // --- Ministries (selector desde página Ministerios) ---
   allMinistries: Array<{ id: string; name: string }> = [];
 
   loadMinistriesData(data: any): void {
@@ -311,13 +304,11 @@ export class AdminHomeComponent implements OnInit {
     this.ministriesForm.patchValue({ ministryIds: ids });
   }
 
-  // --- File Handlers ---
   onVideoDomLightSelected(event: Event): void { this.uploadVideoByKey(event, 'domLight'); }
   onVideoDomDarkSelected(event: Event): void { this.uploadVideoByKey(event, 'domDark'); }
   onVideoMierLightSelected(event: Event): void { this.uploadVideoByKey(event, 'mierLight'); }
   onVideoMierDarkSelected(event: Event): void { this.uploadVideoByKey(event, 'mierDark'); }
 
-  // --- Extract YouTube ID ---
   extractVideoId(urlOrId: string): string {
     if (!urlOrId) return '';
     urlOrId = urlOrId.trim();
@@ -334,17 +325,16 @@ export class AdminHomeComponent implements OnInit {
     return urlOrId;
   }
 
-  // --- Save Methods ---
   saveHero(): void {
     if (!this.heroForm.valid) return this.toast('Complete los campos requeridos', 'error');
-    console.log('[AdminHome] Guardando hero:', this.heroForm.value);
+
     this.apiService.updateHero(this.heroForm.value).subscribe({
       next: (res) => {
-        console.log('[AdminHome] Hero guardado OK:', res);
+
         this.toast('Header guardado');
       },
       error: (err) => {
-        console.error('[AdminHome] Error al guardar hero:', err);
+
         this.toast('Error al guardar: ' + (err.message || err.status), 'error');
       }
     });
@@ -562,3 +552,4 @@ export class AdminHomeComponent implements OnInit {
     setTimeout(() => this.showToast = false, 3000);
   }
 }
+

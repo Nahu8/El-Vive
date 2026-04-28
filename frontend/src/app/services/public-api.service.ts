@@ -12,7 +12,6 @@ export class PublicApiService {
 
   constructor(private http: HttpClient) {}
 
-  /** Resuelve ruta de API a URL completa (para imágenes) */
   resolveAssetUrl(path: string): string {
     if (!path) return '';
     if (path.startsWith('http')) return path;
@@ -59,3 +58,4 @@ export class PublicApiService {
     return this.http.get<any[]>(`${this.publicUrl}/events/calendar`);
   }
 }
+

@@ -1,4 +1,4 @@
-/* contact.component.css */
+
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-10px); }
@@ -31,7 +31,7 @@
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
-/* Estilos para el textarea con efecto de fondo */
+
 textarea {
   background: linear-gradient(90deg, 
     rgba(55, 65, 81, 0.5) 0%, 
@@ -47,7 +47,7 @@ textarea:focus {
   background: rgba(55, 65, 81, 0.8);
 }
 
-/* Efecto de gradiente animado para botones */
+
 .btn-gradient {
   background: linear-gradient(45deg, 
     #4f46e5, 
@@ -64,7 +64,7 @@ textarea:focus {
   100% { background-position: 0% 50%; }
 }
 
-/* Efecto de entrada escalonada */
+
 .stagger-animation > * {
   opacity: 0;
   transform: translateY(20px);
@@ -88,7 +88,7 @@ textarea:focus {
   }
 }
 
-/* Scroll personalizado */
+
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
 }
@@ -103,7 +103,7 @@ textarea:focus {
   border-radius: 10px;
 }
 
-/* Efecto de glassmorphism */
+
 .glass-effect {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
@@ -111,7 +111,7 @@ textarea:focus {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Hover effects mejorados */
+
 .hover-lift {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -121,7 +121,7 @@ textarea:focus {
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
-/* Efecto de borde animado */
+
 .animated-border {
   position: relative;
   overflow: hidden;
@@ -143,7 +143,7 @@ textarea:focus {
   100% { transform: translateX(100%); }
 }
 
-/* Fondo uniforme en toda la page (sin corte por sección) */
+
 :host .page-section {
   background: transparent !important;
   background-color: transparent !important;

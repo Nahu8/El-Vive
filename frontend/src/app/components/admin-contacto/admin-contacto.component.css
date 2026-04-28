@@ -1,4 +1,4 @@
-/* admin-contacto.component.css */
+
 @keyframes slideIn {
     from {
         transform: translateX(100%);
@@ -47,7 +47,7 @@
     animation: pulse 2s infinite;
 }
 
-/* Efectos hover */
+
 .hover-lift {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -57,7 +57,7 @@
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
 }
 
-/* Scroll personalizado */
+
 .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
 }
@@ -72,13 +72,13 @@
     border-radius: 10px;
 }
 
-/* Estilos para inputs con gradientes */
+
 .input-gradient:focus {
     background: linear-gradient(135deg, rgba(55, 65, 81, 0.8), rgba(31, 41, 55, 0.8));
     border-image: linear-gradient(45deg, #4f46e5, #ec4899) 1;
 }
 
-/* Efecto de borde animado */
+
 .animated-border {
     position: relative;
     overflow: hidden;
@@ -105,7 +105,7 @@
     }
 }
 
-/* Estilos para tarjetas con brillo */
+
 .card-glow {
     position: relative;
     overflow: hidden;
@@ -135,14 +135,14 @@
     }
 }
 
-/* Efecto de transición suave para cambios */
+
 .transition-all {
     transition-property: all;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 150ms;
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 768px) {
 
     .grid-cols-3,

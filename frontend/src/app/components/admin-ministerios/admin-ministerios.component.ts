@@ -5,7 +5,6 @@ import { ApiService } from '../../services/api.service';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../../../environments/environment';
 
-// Interfaces para datos de ministerios
 interface Ministry {
   id: string;
   name: string;
@@ -86,7 +85,7 @@ interface PageContent {
   styleUrls: ['./admin-ministerios.component.css']
 })
 export class AdminMinisteriosComponent implements OnInit {
-  // Formularios principales
+
   heroForm: FormGroup;
   ministriesForm: FormGroup;
   processForm: FormGroup;
@@ -94,7 +93,6 @@ export class AdminMinisteriosComponent implements OnInit {
   faqForm: FormGroup;
   pageContentForm: FormGroup;
 
-  // Estado y configuraciones
   activeTab: string = 'hero';
   showToast: boolean = false;
   toastMessage: string = '';
@@ -106,13 +104,11 @@ export class AdminMinisteriosComponent implements OnInit {
   showTestimonialModal: boolean = false;
   showFAQModal: boolean = false;
 
-  // Datos temporales para modales
   currentMinistry: any = null;
   currentTestimonial: any = null;
   currentFAQ: any = null;
   ministryModalForm!: FormGroup;
 
-  // Opciones para selects
   ministryStatuses = [
     { value: 'active', label: 'Activo', color: 'from-green-500 to-emerald-500' },
     { value: 'inactive', label: 'Inactivo', color: 'from-gray-500 to-gray-600' },
@@ -189,7 +185,7 @@ export class AdminMinisteriosComponent implements OnInit {
   ratingOptions = [1, 2, 3, 4, 5];
 
   constructor(private fb: FormBuilder, private apiService: ApiService) {
-    // Formulario para Hero Section
+
     this.heroForm = this.fb.group({
       badgeText: ['Tu lugar para servir', Validators.required],
       title: ['Nuestros Ministerios', Validators.required],
@@ -206,29 +202,24 @@ export class AdminMinisteriosComponent implements OnInit {
       })
     });
 
-    // Formulario para Ministerios
     this.ministriesForm = this.fb.group({
       ministries: this.fb.array([])
     });
 
-    // Formulario para Proceso
     this.processForm = this.fb.group({
       title: ['Cómo Unirte', Validators.required],
       subtitle: ['Tres sencillos pasos para comenzar tu jornada de servicio', Validators.required],
       steps: this.fb.array([])
     });
 
-    // Formulario para Testimonios
     this.testimonialsForm = this.fb.group({
       testimonials: this.fb.array([])
     });
 
-    // Formulario para FAQ
     this.faqForm = this.fb.group({
       faqs: this.fb.array([])
     });
 
-    // Formulario para Contenido de Página
     this.pageContentForm = this.fb.group({
       ministriesTitle: ['Nuestros Ministerios', Validators.required],
       ministriesSubtitle: ['Cada ministerio es una oportunidad para servir, crecer y ser parte de algo más grande.', Validators.required],
@@ -252,9 +243,9 @@ export class AdminMinisteriosComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     this.heroForm.get(`backgroundGradient.${which}`)?.setValue(input.value);
   }
-  // ==================== MÉTODOS PARA CARGAR DATOS ====================
+
   loadAllData(): void {
-    // Cargar datos desde la API
+
     this.apiService.getMinistriesContent().subscribe({
       next: (data) => {
         if (data.hero) this.loadHeroData(data.hero);
@@ -268,12 +259,11 @@ export class AdminMinisteriosComponent implements OnInit {
         if (data.pageContent) this.loadPageContentData(data.pageContent);
       },
       error: (error) => {
-        console.error('Error cargando Ministries:', error);
+
         this.showToastMessage('Error al cargar los datos', 'error');
       }
     });
   }
-
 
   loadHeroData(data: any): void {
     this.heroForm.patchValue(data);
@@ -292,7 +282,7 @@ export class AdminMinisteriosComponent implements OnInit {
 
   loadProcessData(process: any): void {
     if (!process) {
-      // Si no hay proceso, inicializar con valores por defecto
+
       this.processForm.patchValue({
         title: 'Cómo Unirte',
         subtitle: 'Tres sencillos pasos para comenzar tu jornada de servicio'
@@ -312,7 +302,7 @@ export class AdminMinisteriosComponent implements OnInit {
 
     if (process.steps && Array.isArray(process.steps) && process.steps.length > 0) {
       process.steps.forEach((step: any) => {
-        // Asegurar que el paso tenga todos los campos necesarios
+
         const completeStep = {
           id: step.id || this.generateId(),
           number: step.number || (stepsArray.length + 1),
@@ -324,7 +314,7 @@ export class AdminMinisteriosComponent implements OnInit {
         };
         stepsArray.push(this.createProcessStepForm(completeStep));
       });
-      // Actualizar números después de cargar
+
       this.updateStepNumbers();
     }
   }
@@ -447,7 +437,6 @@ export class AdminMinisteriosComponent implements OnInit {
     });
   }
 
-  // ==================== MÉTODOS PARA CREAR FORMULARIOS ====================
   createMinistryForm(ministry?: any): FormGroup {
     return this.fb.group({
       id: [ministry?.id || this.generateId()],
@@ -508,7 +497,6 @@ export class AdminMinisteriosComponent implements OnInit {
     });
   }
 
-  // ==================== GETTERS PARA FORM ARRAYS ====================
   get ministriesArray(): FormArray {
     return this.ministriesForm.get('ministries') as FormArray;
   }
@@ -525,7 +513,6 @@ export class AdminMinisteriosComponent implements OnInit {
     return this.faqForm.get('faqs') as FormArray;
   }
 
-  // Helper para obtener controles como FormGroup
   getMinistryControls(): FormGroup[] {
     return this.ministriesArray.controls as FormGroup[];
   }
@@ -542,13 +529,6 @@ export class AdminMinisteriosComponent implements OnInit {
     return this.faqsArray.controls as FormGroup[];
   }
 
-  // ==================== MÉTODOS CRUD PARA MINISTERIOS ====================
-/*   openMinistryModal(ministry?: any): void {
-    this.currentMinistry = ministry ? { ...ministry } : this.getEmptyMinistry();
-    this.showMinistryModal = true;
-  } */
-
-  // Media state per ministry { [ministryId]: { hasIcon, iconUrl, iconName, photos: [] } }
   ministryMediaState: Record<string, any> = {};
   uploadingMediaFor: string | null = null;
 
@@ -617,7 +597,6 @@ export class AdminMinisteriosComponent implements OnInit {
     this.showToastMessage('Ministerio duplicado correctamente');
   }
 
-  // ==================== MÉTODOS CRUD PARA TESTIMONIOS ====================
   openTestimonialModal(testimonial?: any): void {
     this.currentTestimonial = testimonial ? { ...testimonial } : {
       id: '',
@@ -645,7 +624,7 @@ export class AdminMinisteriosComponent implements OnInit {
         );
 
         if (index >= 0) {
-          // Reemplazar el FormGroup completo para asegurar que todos los campos se actualicen
+
           const updatedForm = this.createTestimonialForm(this.currentTestimonial);
           this.testimonialsArray.setControl(index, updatedForm);
           this.showToastMessage('Testimonio actualizado correctamente');
@@ -661,7 +640,6 @@ export class AdminMinisteriosComponent implements OnInit {
     }
   }
 
-  // ==================== MÉTODOS CRUD PARA FAQs ====================
   openFAQModal(faq?: any): void {
     this.currentFAQ = faq ? { ...faq } : {
       id: '',
@@ -686,7 +664,7 @@ export class AdminMinisteriosComponent implements OnInit {
         );
 
         if (index >= 0) {
-          // Reemplazar el FormGroup completo para asegurar que todos los campos se actualicen
+
           const updatedForm = this.createFAQForm(this.currentFAQ);
           this.faqsArray.setControl(index, updatedForm);
           this.showToastMessage('Pregunta frecuente actualizada correctamente');
@@ -702,7 +680,6 @@ export class AdminMinisteriosComponent implements OnInit {
     }
   }
 
-  // ==================== MÉTODOS AUXILIARES ====================
   generateId(): string {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
   }
@@ -721,7 +698,6 @@ export class AdminMinisteriosComponent implements OnInit {
     this.activeTab = tab;
     window.scrollTo(0, 0);
   }
-
 
   applyColorPreset(target: string, presetIndex: number): void {
     const preset = this.colorPresets[presetIndex];
@@ -773,8 +749,6 @@ export class AdminMinisteriosComponent implements OnInit {
     }
   }
 
-
-  // ==================== MÉTODOS PARA GUARDAR ====================
   savePageContent(): void {
     if (this.pageContentForm.valid) {
       const pageContent = this.pageContentForm.value;
@@ -783,7 +757,7 @@ export class AdminMinisteriosComponent implements OnInit {
           this.showToastMessage('Títulos de sección actualizados correctamente');
         },
         error: (error) => {
-          console.error('Error actualizando page content:', error);
+
           this.showToastMessage('Error al actualizar los títulos', 'error');
         }
       });
@@ -804,7 +778,7 @@ export class AdminMinisteriosComponent implements OnInit {
       };
       this.apiService.updateMinistriesContent(allData).subscribe({
         next: () => resolve(),
-        error: (error) => { console.error('Error guardando Ministries:', error); reject(error); }
+        error: (error) => {  reject(error); }
       });
     });
   }
@@ -816,8 +790,6 @@ export class AdminMinisteriosComponent implements OnInit {
     }
   }
 
-
-  // ==================== MÉTODOS PARA CONTADORES ====================
   getActiveMinistriesCount(): number {
     return this.ministriesArray.value.filter((m: any) => m.status === 'active').length;
   }
@@ -839,7 +811,6 @@ export class AdminMinisteriosComponent implements OnInit {
     return Math.round((total / this.testimonialsArray.length) * 10) / 10;
   }
 
-  // ==================== MÉTODOS PARA PASOS DEL PROCESO ====================
   addProcessStep(): void {
     const newStep: any = {
       id: this.generateId(),
@@ -851,7 +822,7 @@ export class AdminMinisteriosComponent implements OnInit {
       colorTo: '#8b5cf6'
     };
     this.processStepsArray.push(this.createProcessStepForm(newStep));
-    // Actualizar números de los pasos
+
     this.updateStepNumbers();
   }
 
@@ -869,13 +840,11 @@ export class AdminMinisteriosComponent implements OnInit {
     }
   }
 
-  // ==================== MÉTODOS PARA OBTENER ETIQUETAS ====================
   getStatusLabel(statusValue: string): string {
     const status = this.ministryStatuses.find(s => s.value === statusValue);
     return status ? status.label : 'Desconocido';
   }
 
-  // ==================== MÉTODOS PARA FORMULARIOS MODALES ====================
   initializeModalForms(): void {
     if (this.showMinistryModal && !this.currentMinistry) {
       this.currentMinistry = this.getEmptyMinistry();
@@ -884,13 +853,13 @@ export class AdminMinisteriosComponent implements OnInit {
 
   openMinistryModal(ministry?: any): void {
     this.currentMinistry = ministry ? { ...ministry, videos: [...(ministry.videos || [])] } : this.getEmptyMinistry();
-    // Asegurar que siempre haya un id para poder subir fotos/videos (incluso antes de guardar)
+
     if (!this.currentMinistry?.id) {
       this.currentMinistry.id = this.generateId();
     }
     this.ministryModalForm = this.createMinistryModalForm(this.currentMinistry);
     this.showMinistryModal = true;
-    // Siempre cargar/refrescar media (icono, fotos, videos) al abrir el modal para reflejar el estado actual
+
     if (this.currentMinistry.id) {
       this.apiService.getMinistryMedia(this.currentMinistry.id).subscribe({
         next: (data) => {
@@ -932,7 +901,6 @@ export class AdminMinisteriosComponent implements OnInit {
     });
   }
 
-  // === MINISTRY ICON UPLOAD (PNG) ===
   onMinistryCardImageUpload(event: Event, ministryId: string): void {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!file) return;
@@ -996,7 +964,6 @@ export class AdminMinisteriosComponent implements OnInit {
     });
   }
 
-  // === MINISTRY PHOTO UPLOAD ===
   onMinistryPhotoUpload(event: Event, ministryId: string): void {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!file) return;
@@ -1113,14 +1080,12 @@ export class AdminMinisteriosComponent implements OnInit {
 
   trackByIndex(index: number): number { return index; }
 
-  // Manejo de archivos de imagen
   onImageSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const file = input.files[0];
 
-      // Validaciones
-      const maxSize = 5 * 1024 * 1024; // 5MB para imágenes
+      const maxSize = 5 * 1024 * 1024;
       const allowedImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 
       if (file.size > maxSize) {

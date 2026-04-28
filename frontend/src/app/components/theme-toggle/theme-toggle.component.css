@@ -1,3 +1,19 @@
-.theme-toggle {
-  backdrop-filter: blur(8px);
+.theme-toggle-btn {
+  color: currentColor;
+  background: transparent;
+  border: none;
+  opacity: 0.85;
+  cursor: pointer;
+}
+
+.theme-toggle-btn:hover {
+  opacity: 1;
+}
+
+:host-context(html.dark-theme) .theme-toggle-btn {
+  color: rgba(243, 244, 246, 0.95);
+}
+
+:host-context(html.light-theme) .theme-toggle-btn {
+  color: rgba(15, 23, 42, 0.92);
 }

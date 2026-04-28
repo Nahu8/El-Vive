@@ -4,13 +4,14 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { PublicApiService } from '../../services/public-api.service';
 import { environment } from '../../../environments/environment';
 import { ThemeService } from '../../services/theme.service';
+import { RevealOnScrollDirective } from '../../directives/reveal-on-scroll.directive';
 
 const API_BASE = environment.apiBaseUrl;
 
 @Component({
   selector: 'app-nosotros',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RevealOnScrollDirective],
   templateUrl: './nosotros.component.html',
   styleUrls: ['./nosotros.component.css']
 })
@@ -143,7 +144,7 @@ export class NosotrosComponent implements OnInit {
               }
             ];
       },
-      error: (err) => console.error('Error cargando nosotros:', err)
+      error: () => undefined
     });
   }
 
@@ -233,3 +234,4 @@ export class NosotrosComponent implements OnInit {
       }));
   }
 }
+

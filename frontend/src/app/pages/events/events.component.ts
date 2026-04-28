@@ -18,7 +18,7 @@ export class EventsComponent implements OnInit {
   }
 
   loadEvents() {
-    // Datos de ejemplo - en producción vendrían del API
+
     this.events = [
       {
         title: 'Servicio Dominical',
@@ -71,3 +71,4 @@ export class EventsComponent implements OnInit {
     ];
   }
 }
+

@@ -5,17 +5,6 @@ function dirWithIndex(dir) {
   return fs.existsSync(path.join(dir, 'index.html')) ? dir : null;
 }
 
-/**
- * @param {string} serverSrcDir - backend/src (donde está index.js de Express)
- *
- * Monorepo: frontend/ hermano de backend/. Tras `npm run build` en backend: estáticos en ../public.
- *
- * Orden:
- * 1. ANGULAR_DIST
- * 2. ../public/browser — si quedó subcarpeta browser
- * 3. ../public — típico tras copy:spa (index en raíz)
- * 4. ../../frontend/dist/frontend/browser — sin copiar a public (desarrollo)
- */
 export function resolveAngularStaticRoot(serverSrcDir) {
   const envPath = process.env.ANGULAR_DIST?.trim();
   if (envPath) {
@@ -49,3 +38,4 @@ export function isApiOrAssetPath(reqPath) {
     p.startsWith('/uploads')
   );
 }
+

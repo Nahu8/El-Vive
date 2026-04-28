@@ -34,9 +34,7 @@ export class AdminGenericPageComponent implements OnInit {
       fadeColorDark?: string;
     };
     intro: { title: string; content: string };
-    /** Donaciones: tarjetas “por qué dar” con imagen */
     whyGive?: Array<{ title: string; content: string; imageUrl?: string }>;
-    /** Donaciones: transferencia, MP, etc. */
     paymentMethods?: Array<{
       label: string;
       description?: string;
@@ -312,3 +310,4 @@ export class AdminGenericPageComponent implements OnInit {
     setTimeout(() => (this.showToast = false), 3000);
   }
 }
+

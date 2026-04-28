@@ -31,7 +31,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 process.on('uncaughtException', (err) => {
   appendBootLog(`uncaughtException: ${err?.stack || err?.message || err}`);
-  console.error(err);
   process.exit(1);
 });
 process.on('unhandledRejection', (reason) => {
@@ -43,21 +42,11 @@ try {
   appendBootLog('validateEnv: ok');
 } catch (e) {
   appendBootLog(`validateEnv: FALLO ${e?.message || e}`);
-  console.error('[startup] Variables de entorno:', e?.message || e);
   process.exit(1);
 }
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
-console.log(
-  '[startup] Express',
-  JSON.stringify({
-    node: process.version,
-    cwd: process.cwd(),
-    port: PORT,
-    envPort: process.env.PORT ?? null,
-  })
-);
 
 if (process.env.TRUST_PROXY === '1' || process.env.NODE_ENV === 'production') {
   app.set('trust proxy', 1);
@@ -66,7 +55,6 @@ if (process.env.TRUST_PROXY === '1' || process.env.NODE_ENV === 'production') {
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: 'cross-origin' },
-    // Angular en producción suele usar estilos/scripts que CSP estricto bloquea
     contentSecurityPolicy: false,
   })
 );
@@ -135,7 +123,6 @@ function isPublicApiGet(req) {
   return false;
 }
 
-/** POST del formulario de contacto (sitio público, sin JWT). */
 function isPublicContactPost(req) {
   if (req.method !== 'POST') return false;
   const p = (req.originalUrl || req.path || '').split('?')[0];
@@ -161,7 +148,6 @@ app.use('/api/ministry/:ministryId', ministryMediaRoutes);
 app.use('/api/media', mediaRoutes);
 app.use('/api/generic-pages', genericPagesRoutes);
 
-// Angular: después de API (no capturar /api con fallback). Build → frontend/dist/.../browser y copy:spa → backend/public/.
 const spaRoot = resolveAngularStaticRoot(__dirname);
 if (spaRoot) {
   app.use(express.static(spaRoot));
@@ -171,9 +157,7 @@ if (spaRoot) {
     res.sendFile(path.join(spaRoot, 'index.html'), (err) => (err ? next(err) : undefined));
   });
 } else if (process.env.NODE_ENV === 'production') {
-  console.warn(
-    '[angular] No hay build del front (index.html). Subí el contenido de dist/.../browser a backend/public o definí ANGULAR_DIST.'
-  );
+  appendBootLog('[angular] No hay build del front (index.html).');
 }
 
 app.use((req, res) => res.status(404).json({ error: 'No encontrado' }));
@@ -182,47 +166,29 @@ app.use((err, req, res, next) => {
   if (err && err.message === 'CORS: origen no permitido') {
     return res.status(403).json({ error: 'Origen no permitido' });
   }
-  console.error(err);
   const status = err.statusCode || 500;
   res.status(status).json({ error: err.message || 'Error interno del servidor' });
 });
 
 if (!skipDbInit) {
   try {
-    if (useMysql()) {
-      const h = process.env.DB_SOCKET_PATH?.trim() ? `socket:${process.env.DB_SOCKET_PATH}` : process.env.DB_HOST;
-      console.log('[startup] Conectando MySQL…', { host: h, database: process.env.DB_NAME });
-    }
     await initDatabase();
     appendBootLog('initDatabase: ok');
-    if (useMysql()) console.log('[startup] MySQL listo (esquema comprobado).');
   } catch (err) {
     appendBootLog(`initDatabase: FALLO ${err?.message || err} code=${err?.code || ''}`);
-    console.error('[startup] Falló la base de datos:', err?.message || err);
-    if (err?.code) console.error('[startup] código MySQL:', err.code);
-    console.error(
-      '[startup] Si estás en Hostinger: revisá DB_USER/DB_PASSWORD en el panel, probá DB_HOST=127.0.0.1 o definí DB_SOCKET_PATH si hPanel indica socket Unix.'
-    );
     process.exit(1);
   }
 } else {
   appendBootLog('initDatabase: omitido (SKIP_DB_INIT)');
-  console.warn(
-    '[startup] SKIP_DB_INIT: arranque sin conectar BD (solo diagnóstico). Sacá esta variable después.'
-  );
 }
 
 const server = app.listen(PORT, '0.0.0.0', () => {
-  appendBootLog(`listen: OK puerto ${PORT} cwd=${process.cwd()}`);
-  console.log(`Backend Él Vive (Node.js) escuchando en 0.0.0.0:${PORT}`);
-  console.log(`  - BD: ${useMysql() ? 'MySQL' : 'SQLite'}`);
-  if (spaRoot) console.log(`  - Angular:  ${spaRoot}`);
-  console.log('  - Auth:     POST /auth/login');
-  console.log('  - API:      /api/* (con JWT)');
-  console.log('  - Público:  /public/*');
+  appendBootLog(
+    `listen: OK 0.0.0.0:${PORT} bd=${useMysql() ? 'mysql' : 'sqlite'} spa=${spaRoot || '—'} cwd=${process.cwd()}`
+  );
 });
 server.on('error', (err) => {
   appendBootLog(`listen: ERROR ${err?.message || err}`);
-  console.error('[startup] No se pudo abrir el puerto (¿PORT ocupado o sin permiso?):', err?.message || err);
   process.exit(1);
 });
+

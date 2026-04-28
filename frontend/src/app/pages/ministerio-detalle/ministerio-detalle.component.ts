@@ -105,3 +105,4 @@ export class MinisterioDetalleComponent implements OnInit {
     return null;
   }
 }
+

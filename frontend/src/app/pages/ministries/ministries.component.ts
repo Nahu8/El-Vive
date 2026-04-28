@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ApiService } from '../../services/api.service';
 
 @Component({
-  // Renamed selector to avoid collision with moved component; this file is kept as backup
+
   selector: 'app-ministries-old',
   imports: [CommonModule],
   templateUrl: './ministries.component.html',
@@ -13,7 +13,6 @@ export class MinistriesComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren('minCard', { read: ElementRef }) cards!: QueryList<ElementRef<HTMLElement>>;
   @ViewChild('minHeader', { read: ElementRef }) header!: ElementRef<HTMLElement>;
 
-  // Observer for scroll-synced animations
   private _observer: IntersectionObserver | null = null;
   headerAnimated = false;
 
@@ -26,7 +25,7 @@ export class MinistriesComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   loadMinistries() {
-    // Lista solicitada por el usuario (datos estáticos)
+
     this.ministries = [
       {
         name: 'Ministerio Escuela Bíblica',
@@ -53,7 +52,7 @@ export class MinistriesComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    // Set up IntersectionObserver to sync animations with scroll
+
     const options = { root: null, rootMargin: '200px 0px 200px 0px', threshold: [0, 0.05, 0.1, 0.2, 0.4, 0.6, 0.8, 1] };
     this._observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -61,9 +60,9 @@ export class MinistriesComponent implements OnInit, AfterViewInit, OnDestroy {
         const indexAttr = target.getAttribute('data-min-index');
         const i = indexAttr ? parseInt(indexAttr, 10) : -1;
         const ratio = entry.intersectionRatio;
-        // If this is a card (has index) handle card animation
+
         if (i >= 0) {
-          // If already animated, ensure final state and skip
+
           if (this.ministries[i].animated) {
             target.style.opacity = '1';
             target.style.transform = 'translateX(0px) translateY(0px)';
@@ -75,13 +74,12 @@ export class MinistriesComponent implements OnInit, AfterViewInit, OnDestroy {
           const clamped = Math.min(Math.max(ratio, 0), 1);
           const eased = Math.pow(clamped, 0.5);
           const translateX = (1 - eased) * baseDirection;
-          // small vertical lift for more dynamism
-          const translateY = (1 - eased) * 12; // px
+
+          const translateY = (1 - eased) * 12;
 
           target.style.opacity = String(eased);
           target.style.transform = `translateX(${translateX}px) translateY(${translateY}px)`;
 
-          // When sufficiently visible mark as animated and unobserve
           if (ratio >= 0.6) {
             this.ministries[i].animated = true;
             target.style.opacity = '1';
@@ -91,10 +89,9 @@ export class MinistriesComponent implements OnInit, AfterViewInit, OnDestroy {
           return;
         }
 
-        // If not a card, check if this is the header element
         const isHeader = target.getAttribute('data-min-header') === 'true';
         if (isHeader) {
-          // If already animated, ensure final state and unobserve
+
           if (this.headerAnimated) {
             target.style.opacity = '1';
             target.style.transform = 'translateY(0px)';
@@ -104,7 +101,7 @@ export class MinistriesComponent implements OnInit, AfterViewInit, OnDestroy {
 
           const clamped = Math.min(Math.max(ratio, 0), 1);
           const eased = Math.pow(clamped, 0.5);
-          const translateY = (1 - eased) * 30; // make header movement more noticeable
+          const translateY = (1 - eased) * 30;
           target.style.opacity = String(eased);
           target.style.transform = `translateY(${translateY}px)`;
 
@@ -119,11 +116,10 @@ export class MinistriesComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     }, options);
 
-    // Observe each card and initialize style/transition
     this.cards.forEach((cardEl, idx) => {
       const el = cardEl.nativeElement as HTMLElement;
       el.setAttribute('data-min-index', String(idx));
-      // initial hidden state
+
       const dir = (idx % 2 === 1) ? 120 : -120;
       el.style.opacity = '0';
       el.style.transform = `translateX(${dir}px) translateY(12px)`;
@@ -131,7 +127,6 @@ export class MinistriesComponent implements OnInit, AfterViewInit, OnDestroy {
       this._observer?.observe(el);
     });
 
-    // Initialize header initial state and observe it
     if (this.header && this.header.nativeElement) {
       const h = this.header.nativeElement as HTMLElement;
       h.setAttribute('data-min-header', 'true');
@@ -149,3 +144,4 @@ export class MinistriesComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 }
+

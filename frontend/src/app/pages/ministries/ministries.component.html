@@ -8,7 +8,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
       <div #minCard *ngFor="let ministry of ministries; index as i" class="ministry-card bg-gray-900 rounded-lg p-6 flex items-start gap-4 hover:shadow-2xl hover:-translate-y-2">
         <div class="icon w-14 h-14 flex items-center justify-center bg-gradient-to-br from-purple-600 to-pink-500 rounded-full flex-shrink-0">
-          <!-- Inline icons by key -->
+          
           <ng-container [ngSwitch]="ministry.icon">
             <svg *ngSwitchCase="'book'" xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 20H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6v16z" />

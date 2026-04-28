@@ -162,8 +162,7 @@ export class HeroComponent implements OnInit {
           }).catch(() => {
             if (attempts >= 5) {
               clearInterval(retryInterval);
-              // Mantener autoplay silencioso sin botón manual.
-              // Si falla, se reintentará en próximos cambios de fuente/tema.
+
             }
           });
         }, 1000);
@@ -177,8 +176,7 @@ export class HeroComponent implements OnInit {
   }
 
   onVideoError() {
-    console.error('Error cargando video:', this.videoSrc);
-    // Fallback visual seguro para evitar hero vacío
+
     if (this.videoSrc !== 'assets/videos/MinisteriosServicios Pantalla.mp4') {
       this.videoSrc = 'assets/videos/MinisteriosServicios Pantalla.mp4';
       this.reloadVideo();
@@ -202,3 +200,4 @@ export class HeroComponent implements OnInit {
     return this.themeService.isDarkMode() ? this.heroBgDarkColor : this.heroBgLightColor;
   }
 }
+

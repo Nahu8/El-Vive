@@ -13,9 +13,6 @@ export function ensureDir(dirPath) {
   if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true });
 }
 
-/**
- * Guarda un buffer en uploads/subdir/name y devuelve la ruta relativa (subdir/name).
- */
 export function saveFile(subdir, name, buffer) {
   const dir = path.join(UPLOADS_DIR, subdir);
   ensureDir(dir);
@@ -24,18 +21,12 @@ export function saveFile(subdir, name, buffer) {
   return path.join(subdir, name).replace(/\\/g, '/');
 }
 
-/**
- * Devuelve la ruta absoluta del archivo. relativePath es relativo a uploads/.
- */
 export function resolvePath(relativePath) {
   if (!relativePath) return null;
   const normalized = path.normalize(relativePath).replace(/^(\.\.(\/|\\))+/, '');
   return path.join(UPLOADS_DIR, normalized);
 }
 
-/**
- * Envía un archivo como respuesta con Content-Type y Cache-Control.
- */
 export function sendFile(res, absolutePath, mimeType, filename = 'file') {
   if (!fs.existsSync(absolutePath)) {
     return res.status(404).json({ error: 'Archivo no encontrado' });
@@ -46,3 +37,4 @@ export function sendFile(res, absolutePath, mimeType, filename = 'file') {
   const stream = fs.createReadStream(absolutePath);
   stream.pipe(res);
 }
+

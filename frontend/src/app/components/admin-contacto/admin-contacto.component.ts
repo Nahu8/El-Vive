@@ -7,7 +7,6 @@ import { HttpClient } from '@angular/common/http';
 import { ApiService } from '../../services/api.service';
 import { environment } from '../../../environments/environment';
 
-// Interfaces extendidas
 interface ContactInfo {
   id: string;
   email: string;
@@ -59,19 +58,17 @@ interface DepartmentItem {
   styleUrls: ['./admin-contacto.component.css']
 })
 export class AdminContactoComponent implements OnInit {
-  // Formularios
+
   basicInfoForm: FormGroup;
   schedulesForm: FormGroup;
   departmentsForm: FormGroup;
 
-  // Estado
   activeTab: string = 'pageContent';
   isEditing: boolean = false;
   showToast: boolean = false;
   toastMessage: string = '';
   toastType: 'success' | 'error' | 'info' = 'success';
 
-  // Datos
   contactInfo: ContactInfo = this.getDefaultContact();
 
   pageContent: {
@@ -108,7 +105,6 @@ export class AdminContactoComponent implements OnInit {
 
   private apiBase = environment.apiBaseUrl;
 
-  // Opciones - usando tipos específicos
   scheduleItems: ScheduleItem[] = [
     { id: 'sunday', title: 'Servicio Dominical', icon: 'fas fa-hands-praying', description: 'Culto principal de adoración', color: 'from-blue-500 to-cyan-500' },
     { id: 'wednesday', title: 'Estudio Bíblico', icon: 'fas fa-book', description: 'Estudio profundo de la Palabra', color: 'from-purple-500 to-pink-500' },
@@ -131,7 +127,7 @@ export class AdminContactoComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private http: HttpClient
   ) {
-    // Formulario de Información Básica
+
     this.basicInfoForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       phone: ['', Validators.required],
@@ -140,7 +136,6 @@ export class AdminContactoComponent implements OnInit {
       mapEmbed: ['']
     });
 
-    // Formulario de Horarios
     this.schedulesForm = this.fb.group({
       sunday: ['10:00 AM - 12:00 PM', Validators.required],
       wednesday: ['7:00 PM - 9:00 PM', Validators.required],
@@ -149,7 +144,6 @@ export class AdminContactoComponent implements OnInit {
       emergencyHours: ['24/7 - Línea de emergencia', Validators.required]
     });
 
-    // Formulario de Departamentos
     this.departmentsForm = this.fb.group({
       youth: ['Pastor de Jóvenes: Juan Pérez - jovenes@iglesia.com', Validators.required],
       kids: ['Directora: María González - ninos@iglesia.com', Validators.required],
@@ -170,7 +164,7 @@ export class AdminContactoComponent implements OnInit {
         this.loadForms();
       },
       error: (error) => {
-        console.error('Error loading contact data:', error);
+
         this.contactInfo = this.getDefaultContact();
         this.loadForms();
       }
@@ -178,7 +172,7 @@ export class AdminContactoComponent implements OnInit {
   }
 
     loadForms(): void {
-    // pageContent
+
     const pc = (this.contactInfo as any).pageContent || {};
     this.pageContent = {
       hero: { ...this.pageContent.hero, ...pc.hero },
@@ -187,7 +181,6 @@ export class AdminContactoComponent implements OnInit {
       sections: Array.isArray(pc.sections) ? [...pc.sections] : []
     };
 
-    // Información básica
     this.basicInfoForm.patchValue({
       email: this.contactInfo.email,
       phone: this.contactInfo.phone,
@@ -196,12 +189,10 @@ export class AdminContactoComponent implements OnInit {
       mapEmbed: this.contactInfo.mapEmbed || ''
     });
 
-    // Horarios
     if (this.contactInfo.schedules) {
       this.schedulesForm.patchValue(this.contactInfo.schedules);
     }
 
-    // Departamentos
     if (this.contactInfo.departments) {
       this.departmentsForm.patchValue(this.contactInfo.departments);
     }
@@ -233,7 +224,6 @@ export class AdminContactoComponent implements OnInit {
     };
   }
 
-  // Métodos para copiar al portapapeles (actualizados)
   copyScheduleToClipboard(schedule: ScheduleItem): void {
     const value = this.getScheduleValue(schedule.id);
     if (value) {
@@ -280,7 +270,7 @@ export class AdminContactoComponent implements OnInit {
           resolve();
         },
         error: (error) => {
-          console.error('Error saving contact data:', error);
+
           reject(error);
         }
       });
@@ -330,7 +320,7 @@ export class AdminContactoComponent implements OnInit {
           this.showToastMessage('Datos importados exitosamente', 'success');
         } catch (error) {
           this.showToastMessage('Error al importar el archivo', 'error');
-          console.error('Import error:', error);
+
         }
       };
 
@@ -347,8 +337,6 @@ export class AdminContactoComponent implements OnInit {
       this.showToast = false;
     }, 3000);
   }
-
-  // Métodos auxiliares
 
   getScheduleValue(scheduleId: keyof Schedules): string {
     if (!this.contactInfo.schedules) return '';
@@ -384,13 +372,11 @@ export class AdminContactoComponent implements OnInit {
     return department ? department.color : 'from-gray-600 to-gray-800';
   }
 
-  // Método para generar vista previa del mapa
   getMapPreview(): string {
     const mapEmbed = this.basicInfoForm.get('mapEmbed')?.value || this.contactInfo.mapEmbed;
     return mapEmbed || '';
   }
 
-  // Método para validar URL
   isValidUrl(url: string): boolean {
     try {
       new URL(url);
@@ -471,7 +457,6 @@ export class AdminContactoComponent implements OnInit {
     return raw ? this.sanitizer.bypassSecurityTrustHtml(raw) : '';
   }
 
-  // Método para copiar al portapapeles
   copyToClipboard(text: string, label: string): void {
     navigator.clipboard.writeText(text).then(() => {
       this.showToastMessage(`${label} copiado`, 'success');

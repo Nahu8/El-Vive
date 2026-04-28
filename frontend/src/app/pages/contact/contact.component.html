@@ -1,5 +1,5 @@
 <div class="min-h-screen page-content no-section-gradient" [style.--page-bg]="pageBgColor" [style.--page-bg-section]="pageBgColor">
-  <!-- Hero: única sección con imagen/video/gradiente + degradé a negro -->
+  
   <section class="page-hero relative min-h-[50vh] flex items-center justify-center overflow-hidden">
     <div class="absolute inset-0" [style.background-color]="heroBgColor"></div>
     <video *ngIf="heroVideoUrl" [src]="heroVideoUrl" autoplay muted loop playsinline
@@ -16,7 +16,7 @@
   </section>
 
   <div class="container mx-auto px-6 pb-24 max-w-6xl page-content">
-    <section *ngIf="introContent" class="page-section py-16">
+    <section *ngIf="introContent" class="page-section py-16" appReveal revealVariant="fade-up">
       <div class="max-w-3xl mx-auto text-center">
         <h2 class="page-heading text-2xl md:text-3xl font-bold mb-6">{{ introTitle }}</h2>
         <p class="text-lg leading-relaxed whitespace-pre-line page-text-muted">{{ introContent }}</p>
@@ -65,21 +65,25 @@
     </ng-container>
 
     <section class="page-section py-16 border-t page-border-color">
-      <h2 class="page-heading text-3xl font-bold mb-10 text-center">¿Cómo contactarnos?</h2>
+      <h2 class="page-heading text-3xl font-bold mb-10 text-center" appReveal revealVariant="fade-up">¿Cómo contactarnos?</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
         <a *ngIf="contactInfo.email" [href]="'mailto:' + contactInfo.email"
+          appReveal revealVariant="fade-up" [revealDelay]="0"
           class="group flex flex-col items-center text-center p-6 rounded-2xl border page-border-color hover:border-indigo-500/40 transition-all hover:opacity-90">
           <span class="text-4xl mb-3">✉</span>
           <span class="text-sm page-text-muted mb-1">Email</span>
           <span class="font-medium group-hover:text-indigo-400 transition-colors break-all">{{ contactInfo.email }}</span>
         </a>
         <a *ngIf="contactInfo.phone" [href]="'tel:' + contactInfo.phone"
+          appReveal revealVariant="fade-up" [revealDelay]="120"
           class="group flex flex-col items-center text-center p-6 rounded-2xl border page-border-color hover:border-indigo-500/40 transition-all hover:opacity-90">
           <span class="text-4xl mb-3">📞</span>
           <span class="text-sm page-text-muted mb-1">Teléfono</span>
           <span class="font-medium group-hover:text-indigo-400 transition-colors">{{ contactInfo.phone }}</span>
         </a>
-        <div *ngIf="contactInfo.address" class="flex flex-col items-center text-center p-6 rounded-2xl border page-border-color">
+        <div *ngIf="contactInfo.address"
+          appReveal revealVariant="fade-up" [revealDelay]="240"
+          class="flex flex-col items-center text-center p-6 rounded-2xl border page-border-color">
           <span class="text-4xl mb-3">📍</span>
           <span class="text-sm page-text-muted mb-1">Dirección</span>
           <span class="font-medium">{{ contactInfo.address }}</span>
@@ -88,11 +92,11 @@
       </div>
     </section>
 
-    <section *ngIf="mapImageUrl || contactInfo.mapEmbed" class="page-section py-16">
+    <section *ngIf="mapImageUrl || contactInfo.mapEmbed" class="page-section py-16" appReveal revealVariant="zoom">
       <h2 class="page-heading text-3xl font-bold mb-4 text-center">{{ mapTitle }}</h2>
       <p *ngIf="mapDescription" class="page-text-muted text-center mb-8 max-w-2xl mx-auto">{{ mapDescription }}</p>
 
-      <!-- Opción 1: Imagen que redirige a Google Maps -->
+      
       <a *ngIf="mapImageUrl && googleMapsUrl" [href]="googleMapsUrl" target="_blank" rel="noopener noreferrer"
         class="block relative group overflow-hidden rounded-2xl aspect-video md:aspect-[21/9] shadow-2xl">
         <img [src]="mapImageUrl" alt="Ver en Google Maps" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
@@ -108,7 +112,7 @@
       </div>
     </section>
 
-    <section class="page-section py-16 border-t page-border-color">
+    <section class="page-section py-16 border-t page-border-color" appReveal revealVariant="fade-up">
       <h2 class="page-heading text-3xl font-bold mb-8 text-center">Horario de servicios</h2>
       <div class="max-w-2xl mx-auto space-y-4">
         <div *ngFor="let item of scheduleItems" class="flex justify-between items-center py-4 border-b page-border-color last:border-0"

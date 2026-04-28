@@ -33,3 +33,4 @@ export class WhatsappFloatComponent implements OnInit {
     return !!this.whatsappNumber;
   }
 }
+

@@ -1,6 +1,3 @@
-/**
- * Validación de variables de entorno (secretos nunca en el código ni en el frontend).
- */
 export function validateEnv() {
   const isProd = process.env.NODE_ENV === 'production';
 
@@ -40,9 +37,6 @@ export function validateEnv() {
   }
 }
 
-/**
- * Orígenes permitidos para CORS (solo lista explícita en producción).
- */
 export function getCorsOptions() {
   const raw = process.env.CORS_ORIGIN;
   const isProd = process.env.NODE_ENV === 'production';
@@ -65,3 +59,4 @@ export function getCorsOptions() {
     credentials: false,
   };
 }
+

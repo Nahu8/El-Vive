@@ -58,7 +58,6 @@ async function deleteHomeMedia(req, res, config) {
   return res.json({ message: `${config.label} eliminado` });
 }
 
-// GET /api/home
 router.get(
   '/',
   asyncHandler(async (req, res) => {
@@ -88,7 +87,7 @@ router.get(
     heroIconLightName: home.heroIconDomName ?? '',
     hasIconDark: !!home.heroIconMierPath,
     heroIconDarkName: home.heroIconMierName ?? '',
-    // 2x2 (dia x modo)
+
     hasVideoDomLight: !!home.heroVideoDomLightPath,
     heroVideoDomLightName: home.heroVideoDomLightName ?? '',
     hasVideoDomDark: !!home.heroVideoDomDarkPath,
@@ -105,7 +104,7 @@ router.get(
     heroIconMierLightName: home.heroIconMierLightName ?? '',
     hasIconMierDark: !!home.heroIconMierDarkPath,
     heroIconMierDarkName: home.heroIconMierDarkName ?? '',
-    // Compatibilidad (nombres anteriores)
+
     hasVideoDomingo: !!home.heroVideoPath,
     heroVideoDomingoName: home.heroVideoName ?? '',
     hasVideoMiercoles: !!home.heroVideo2Path,
@@ -126,7 +125,6 @@ router.get(
   })
 );
 
-// PUT /api/home
 router.put(
   '/',
   asyncHandler(async (req, res) => {
@@ -149,7 +147,6 @@ router.put(
   })
 );
 
-// PATCH /api/home/hero
 router.patch(
   '/hero',
   asyncHandler(async (req, res) => {
@@ -190,7 +187,6 @@ router.patch(
   })
 );
 
-// --- Video Modo Día ---
 router.post(
   '/video',
   upload.single('video'),
@@ -232,7 +228,6 @@ router.delete(
   })
 );
 
-// --- Video Modo Noche ---
 router.post(
   '/video2',
   upload.single('video'),
@@ -274,7 +269,6 @@ router.delete(
   })
 );
 
-// GET /api/home/current-video (compat, basado en día Argentina)
 router.get(
   '/current-video',
   asyncHandler(async (req, res) => {
@@ -301,7 +295,6 @@ router.get(
   })
 );
 
-// GET /api/home/video-light
 router.get(
   '/video-light',
   asyncHandler(async (req, res) => {
@@ -311,7 +304,6 @@ router.get(
   })
 );
 
-// GET /api/home/video-dark
 router.get(
   '/video-dark',
   asyncHandler(async (req, res) => {
@@ -321,7 +313,6 @@ router.get(
   })
 );
 
-// --- Videos 2x2 (día x modo) ---
 router.post(
   '/video-dom-light',
   upload.single('video'),
@@ -482,7 +473,6 @@ router.delete(
   )
 );
 
-// --- Ícono Modo Día ---
 router.post(
   '/icon-dom',
   upload.single('icon'),
@@ -523,7 +513,6 @@ router.delete(
   })
 );
 
-// --- Ícono Modo Noche ---
 router.post(
   '/icon-mier',
   upload.single('icon'),
@@ -564,7 +553,6 @@ router.delete(
   })
 );
 
-// GET /api/home/current-icon (compat, basado en día Argentina)
 router.get(
   '/current-icon',
   asyncHandler(async (req, res) => {
@@ -591,7 +579,6 @@ router.get(
   })
 );
 
-// GET /api/home/icon-light
 router.get(
   '/icon-light',
   asyncHandler(async (req, res) => {
@@ -601,7 +588,6 @@ router.get(
   })
 );
 
-// GET /api/home/icon-dark
 router.get(
   '/icon-dark',
   asyncHandler(async (req, res) => {
@@ -611,7 +597,6 @@ router.get(
   })
 );
 
-// --- Íconos 2x2 (día x modo) ---
 router.post(
   '/icon-dom-light',
   upload.single('icon'),
@@ -772,7 +757,6 @@ router.delete(
   )
 );
 
-// --- Card images ---
 router.post(
   '/card-image/:index',
   upload.single('image'),
@@ -814,7 +798,6 @@ router.delete(
   })
 );
 
-// PATCH celebrations, meeting-days-summary, ministries-summary
 router.patch(
   '/celebrations',
   asyncHandler(async (req, res) => {
@@ -846,3 +829,4 @@ router.patch(
 );
 
 export default router;
+

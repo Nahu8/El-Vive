@@ -3,7 +3,6 @@ import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { WhatsappFloatComponent } from './components/whatsapp-float/whatsapp-float.component';
-import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle.component';
 import { ThemeService } from './services/theme.service';
 import { filter } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
@@ -15,7 +14,6 @@ import { CommonModule } from '@angular/common';
     HeaderComponent,
     FooterComponent,
     WhatsappFloatComponent,
-    ThemeToggleComponent,
     CommonModule
   ],
   templateUrl: './app.component.html',
@@ -33,7 +31,8 @@ export class AppComponent implements OnInit {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
-      this.showHeaderFooter = !event.url.startsWith('/admin');
+      const p = event.url.split('?')[0];
+      this.showHeaderFooter = !p.startsWith('/admin') && !p.startsWith('/mantenimiento');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }

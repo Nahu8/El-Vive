@@ -11,10 +11,6 @@ function stripLineComments(sql) {
     .join('\n');
 }
 
-/**
- * Aplica scripts/mysql-schema-hostinger.sql (idempotente: solo CREATE IF NOT EXISTS).
- * Sentencia a sentencia: algunos entornos no aplican bien varias sentencias en un solo query().
- */
 export async function ensureMysqlFullSchema(pool) {
   const sqlPath = path.join(__dirname, '../../scripts/mysql-schema-hostinger.sql');
   if (!fs.existsSync(sqlPath)) {
@@ -33,10 +29,6 @@ export async function ensureMysqlFullSchema(pool) {
       try {
         await conn.query(`${st};`);
       } catch (e) {
-        console.error(
-          `[mysql] Error en sentencia ${i + 1}/${statements.length} (${st.slice(0, 72)}…):`,
-          e?.message || e
-        );
         throw e;
       }
     }
@@ -45,10 +37,6 @@ export async function ensureMysqlFullSchema(pool) {
   }
 }
 
-/**
- * Tablas auxiliares por si el SQL maestro no se ejecutó (BD heredada).
- * @deprecated Preferir ensureMysqlFullSchema; se mantiene por compatibilidad.
- */
 export async function ensureMysqlAuxTables(pool) {
   await pool.query(`
     CREATE TABLE IF NOT EXISTS generic_pages (
@@ -71,3 +59,4 @@ export async function ensureMysqlAuxTables(pool) {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   `);
 }
+

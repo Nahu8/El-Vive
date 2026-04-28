@@ -29,18 +29,14 @@ export class LoginComponent {
     this.isLoading = true;
     try {
       const loginSuccess = await this.authService.login(this.username, this.password);
-      console.log('Login result:', loginSuccess);
 
       if (loginSuccess) {
         const isAuth = this.authService.isAuthenticated();
         const user = this.authService.getCurrentUser();
-        console.log('After login - Is authenticated:', isAuth);
-        console.log('After login - Current user:', user);
 
         if (isAuth && user) {
           await this.router.navigate(['/admin']);
         } else {
-          console.error('Estado de autenticación inconsistente después del login');
           this.errorMessage = 'Error en la autenticación. Intenta nuevamente.';
         }
       } else {
@@ -51,3 +47,4 @@ export class LoginComponent {
     }
   }
 }
+

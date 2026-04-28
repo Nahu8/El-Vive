@@ -234,6 +234,7 @@ router.get(
       footerIconUrl: footerIcon ? '/api/section-icon/layout/footer' : null,
       footerIconUrlLight: footerIconLight ? '/api/section-icon/layout/footer-light' : null,
       footerIconUrlDark: footerIconDark ? '/api/section-icon/layout/footer-dark' : null,
+      maintenanceMode: !!(layout.maintenanceMode === 1 || layout.maintenanceMode === true),
     });
   })
 );
@@ -362,3 +363,4 @@ router.get(
 );
 
 export default router;
+

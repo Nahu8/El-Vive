@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
+import { MaintenanceService } from '../../services/maintenance.service';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -27,7 +28,8 @@ export class AdminLayoutComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private maintenanceService: MaintenanceService
   ) {
     this.layoutForm = this.fb.group({
       navLinks: this.fb.array([]),
@@ -45,7 +47,8 @@ export class AdminLayoutComponent implements OnInit {
       quickLinks: this.fb.array([]),
       whatsappNumber: [''],
       headerIconUrl: [null as string | null],
-      footerIconUrl: [null as string | null]
+      footerIconUrl: [null as string | null],
+      maintenanceMode: [false]
     });
   }
 
@@ -118,7 +121,8 @@ export class AdminLayoutComponent implements OnInit {
           footerTermsUrl: data.footerTermsUrl || '',
           whatsappNumber: data.whatsappNumber || '',
           headerIconUrl: data.headerIconUrl || null,
-          footerIconUrl: data.footerIconUrl || null
+          footerIconUrl: data.footerIconUrl || null,
+          maintenanceMode: !!data.maintenanceMode
         });
         this.headerIconPreview = data.headerIconUrl ? this.apiBase + data.headerIconUrl + '?t=' + Date.now() : '';
         this.headerIconLightPreview = data.headerIconUrlLight ? this.apiBase + data.headerIconUrlLight + '?t=' + Date.now() : '';
@@ -147,10 +151,14 @@ export class AdminLayoutComponent implements OnInit {
       footerCopyright: value.footerCopyright,
       footerPrivacyUrl: value.footerPrivacyUrl,
       footerTermsUrl: value.footerTermsUrl,
-      whatsappNumber: value.whatsappNumber
+      whatsappNumber: value.whatsappNumber,
+      maintenanceMode: value.maintenanceMode
     };
     this.apiService.updateLayout(payload).subscribe({
-      next: () => this.showToastMsg('Header y Footer guardados'),
+      next: () => {
+        this.maintenanceService.invalidate();
+        this.showToastMsg('Header y Footer guardados');
+      },
       error: () => this.showToastMsg('Error al guardar', 'error')
     });
   }
@@ -215,9 +223,16 @@ export class AdminLayoutComponent implements OnInit {
         footerYoutubeUrl: value.footerYoutubeUrl, footerAddress: value.footerAddress,
         footerEmail: value.footerEmail, footerPhone: value.footerPhone,
         footerCopyright: value.footerCopyright, footerPrivacyUrl: value.footerPrivacyUrl,
-        footerTermsUrl: value.footerTermsUrl, whatsappNumber: value.whatsappNumber
+        footerTermsUrl: value.footerTermsUrl, whatsappNumber: value.whatsappNumber,
+        maintenanceMode: value.maintenanceMode
       };
-      this.apiService.updateLayout(payload).subscribe({ next: () => resolve(), error: () => reject() });
+      this.apiService.updateLayout(payload).subscribe({
+        next: () => {
+          this.maintenanceService.invalidate();
+          resolve();
+        },
+        error: () => reject()
+      });
     });
   }
 
@@ -228,3 +243,4 @@ export class AdminLayoutComponent implements OnInit {
     setTimeout(() => (this.showToast = false), 3000);
   }
 }
+

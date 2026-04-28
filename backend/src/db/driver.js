@@ -37,9 +37,6 @@ async function getSqliteDb() {
   return sqliteDb;
 }
 
-/**
- * Adapta SQL de SQLite a MySQL (solo lo que usa este proyecto).
- */
 export function translateSql(sql) {
   if (!useMysql()) return sql;
   let s = sql
@@ -89,6 +86,19 @@ export async function dbRun(sql, params = []) {
   return (await getSqliteDb()).prepare(q).run(...params);
 }
 
+async function ensureMysqlLayoutMaintenanceMode(pool) {
+  try {
+    const [rows] = await pool.query(
+      `SELECT COUNT(*) AS c FROM information_schema.COLUMNS
+       WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'layouts' AND COLUMN_NAME = 'maintenanceMode'`
+    );
+    const row = rows?.[0];
+    if (!row?.c) {
+      await pool.query('ALTER TABLE layouts ADD COLUMN maintenanceMode TINYINT(1) NOT NULL DEFAULT 0');
+    }
+  } catch (_) {}
+}
+
 function mysqlPoolConfig() {
   const socketPath = process.env.DB_SOCKET_PATH?.trim();
   const limit = Math.min(parseInt(process.env.DB_POOL_LIMIT || '10', 10), 25);
@@ -116,6 +126,7 @@ export async function initDatabase() {
     try {
       await conn.ping();
       await ensureMysqlFullSchema(pool);
+      await ensureMysqlLayoutMaintenanceMode(pool);
     } finally {
       conn.release();
     }
@@ -135,10 +146,10 @@ export async function closeDatabase() {
   }
 }
 
-/** Compatibilidad mínima con código legado sync (solo SQLite); no usar con MySQL. */
 export async function getDb() {
   if (useMysql()) {
     throw new Error('getDb() no está disponible con MySQL. Usá dbGet/dbAll/dbRun (async).');
   }
   return getSqliteDb();
 }
+

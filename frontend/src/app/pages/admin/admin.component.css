@@ -1,4 +1,4 @@
-/* Admin component styles - Responsive sidebar fix */
+
 
 :host {
   display: block;
@@ -20,7 +20,7 @@ aside {
   flex-direction: column;
 }
 
-/* Desktop breakpoint: Always show sidebar */
+
 @media (min-width: 768px) {
   aside {
     position: relative !important;
@@ -33,14 +33,14 @@ aside {
     width: 16rem !important;
   }
   
-  /* Main content should not have left margin on desktop since sidebar is relative */
+  
   .flex-1.flex.flex-col {
     margin-left: 0 !important;
     width: calc(100% - 16rem) !important;
   }
 }
 
-/* Mobile: Sidebar hidden by default */
+
 @media (max-width: 767px) {
   aside {
     position: fixed !important;

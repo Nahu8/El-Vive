@@ -13,7 +13,7 @@
   </section>
 
   <div class="container mx-auto px-6 pb-24 max-w-7xl page-content">
-    <section class="page-section py-14">
+    <section class="page-section py-14" appReveal revealVariant="fade-up">
       <div class="max-w-4xl mx-auto text-center">
         <h2 class="text-2xl md:text-3xl font-bold mb-6">{{ introTitle || 'Quiénes somos' }}</h2>
         <p class="text-lg leading-relaxed whitespace-pre-line page-text-muted">
@@ -23,11 +23,11 @@
     </section>
 
     <section class="page-section py-16">
-      <div class="text-center mb-8">
+      <div class="text-center mb-8" appReveal revealVariant="fade-up">
         <h3 class="text-3xl md:text-4xl font-bold">Presentación Pastoral</h3>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <article class="text-center">
+        <article class="text-center" appReveal revealVariant="fade-up" [revealDelay]="0">
           <div class="mx-auto w-40 h-40 rounded-full overflow-hidden ring-2 ring-white/20 mb-4 bg-gray-900">
             <img *ngIf="pastor.imageUrl" [src]="pastor.imageUrl" alt="Pastor" class="w-full h-full object-cover">
             <div *ngIf="!pastor.imageUrl" class="w-full h-full flex items-center justify-center text-5xl">👤</div>
@@ -35,7 +35,7 @@
           <h4 class="text-xl font-semibold">{{ pastor.name }}</h4>
           <p class="page-text-muted">{{ pastor.role }}</p>
         </article>
-        <article class="text-center">
+        <article class="text-center" appReveal revealVariant="fade-up" [revealDelay]="120">
           <div class="mx-auto w-40 h-40 rounded-full overflow-hidden ring-2 ring-white/20 mb-4 bg-gray-900">
             <img *ngIf="pastora.imageUrl" [src]="pastora.imageUrl" alt="Pastora" class="w-full h-full object-cover">
             <div *ngIf="!pastora.imageUrl" class="w-full h-full flex items-center justify-center text-5xl">👩</div>
@@ -43,7 +43,7 @@
           <h4 class="text-xl font-semibold">{{ pastora.name }}</h4>
           <p class="page-text-muted">{{ pastora.role }}</p>
         </article>
-        <article class="text-center">
+        <article class="text-center" appReveal revealVariant="fade-up" [revealDelay]="240">
           <div class="mx-auto w-40 h-40 rounded-full overflow-hidden ring-2 ring-white/20 mb-4 bg-gray-900">
             <img *ngIf="group.imageUrl" [src]="group.imageUrl" alt="Grupo" class="w-full h-full object-cover">
             <div *ngIf="!group.imageUrl" class="w-full h-full flex items-center justify-center text-5xl">👥</div>
@@ -60,7 +60,9 @@
 
     <section class="page-section py-6 md:py-10">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <article *ngFor="let card of featureCards" class="p-2 md:p-4">
+        <article *ngFor="let card of featureCards; let i = index"
+          appReveal revealVariant="fade-up" [revealDelay]="i * 120"
+          class="p-2 md:p-4">
           <h3 class="text-3xl font-semibold mb-4">{{ card.title }}</h3>
           <p class="page-text-muted leading-relaxed min-h-[110px]">{{ card.content }}</p>
         </article>
@@ -70,13 +72,20 @@
     <section class="page-section py-10 md:py-16 space-y-12 md:space-y-16">
       <div *ngFor="let section of zigzagSections" class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center"
         [ngClass]="{'lg:grid-flow-dense': section.layout === 'right'}">
-        <div class="order-2" [ngClass]="{'lg:order-2': section.layout === 'right', 'lg:order-1': section.layout !== 'right'}">
+        <div class="order-2"
+          appReveal
+          [revealVariant]="section.layout === 'right' ? 'fade-right' : 'fade-left'"
+          [ngClass]="{'lg:order-2': section.layout === 'right', 'lg:order-1': section.layout !== 'right'}">
           <h3 class="text-2xl md:text-3xl font-bold mb-4">{{ section.title || 'Nuestra visión' }}</h3>
           <p class="leading-relaxed whitespace-pre-line page-text-muted mb-4">
             {{ section.content || 'Seguimos creciendo como comunidad, desarrollando espacios donde cada persona pueda conocer, vivir y compartir su fe.' }}
           </p>
         </div>
-        <div class="order-1" [ngClass]="{'lg:order-1': section.layout === 'right', 'lg:order-2': section.layout !== 'right'}">
+        <div class="order-1"
+          appReveal
+          [revealVariant]="section.layout === 'right' ? 'fade-left' : 'fade-right'"
+          [revealDelay]="100"
+          [ngClass]="{'lg:order-1': section.layout === 'right', 'lg:order-2': section.layout !== 'right'}">
           <div *ngIf="section.videoUrl && getSafeVideoUrl(section.videoUrl)" class="aspect-video rounded-xl overflow-hidden shadow-xl bg-gray-900">
             <iframe [src]="getSafeVideoUrl(section.videoUrl)!" allowfullscreen class="w-full h-full"></iframe>
           </div>

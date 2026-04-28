@@ -1,4 +1,4 @@
-/* Animaciones personalizadas */
+
 @keyframes float {
   0%, 100% {
     transform: translateY(0px);
@@ -37,7 +37,7 @@
   }
 }
 
-/* Clases de utilidad */
+
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
@@ -59,7 +59,7 @@
   animation: shimmer 2s infinite linear;
 }
 
-/* Efectos para tarjetas de ministerios */
+
 .ministry-card {
   position: relative;
   overflow: hidden;
@@ -104,7 +104,7 @@
   transform: rotate(45deg) translate(50%, 50%);
 }
 
-/* Efecto de brillo en bordes */
+
 .glow-border {
   position: relative;
 }
@@ -126,7 +126,7 @@
   opacity: 1;
 }
 
-/* Animación para iconos */
+
 .icon-float {
   animation: float 2s ease-in-out infinite;
 }
@@ -147,14 +147,14 @@
   }
 }
 
-/* Efecto de texto brillante */
+
 .text-glow {
   text-shadow: 0 0 10px rgba(99, 102, 241, 0.5),
                0 0 20px rgba(99, 102, 241, 0.3),
                0 0 30px rgba(99, 102, 241, 0.1);
 }
 
-/* Scroll personalizado */
+
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
 }
@@ -169,19 +169,19 @@
   border-radius: 10px;
 }
 
-/* Efecto de vidrio */
+
 .glass-effect {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Animación para estadísticas */
+
 .counter-animation {
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Hover effect para botones */
+
 .btn-hover-effect {
   position: relative;
   overflow: hidden;
@@ -205,7 +205,7 @@
   height: 300px;
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 768px) {
   .ministry-card {
     margin-bottom: 1.5rem;
@@ -216,7 +216,7 @@
   }
 }
 
-/* Efecto de aparición secuencial */
+
 .stagger-animation > * {
   opacity: 0;
   animation: fadeInUp 0.6s ease-out forwards;
@@ -229,7 +229,7 @@
 .stagger-animation > *:nth-child(5) { animation-delay: 0.5s; }
 .stagger-animation > *:nth-child(6) { animation-delay: 0.6s; }
 
-/* Efecto de paralaje suave */
+
 .parallax-bg {
   background-attachment: fixed;
   background-position: center;
@@ -237,7 +237,7 @@
   background-size: cover;
 }
 
-/* Efecto de onda */
+
 .wave-effect {
   position: relative;
   overflow: hidden;
@@ -266,7 +266,7 @@
   }
 }
 
-/* Optimización para rendimiento */
+
 .will-change-transform {
   will-change: transform;
 }
@@ -275,12 +275,12 @@
   will-change: opacity;
 }
 
-/* Transiciones suaves */
+
 .transition-all-smooth {
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Efecto de profundidad */
+
 .depth-effect {
   box-shadow: 
     0 10px 30px rgba(0, 0, 0, 0.3),
@@ -293,7 +293,7 @@
     0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-/* Fondo uniforme en toda la page (sin corte por sección) */
+
 :host .page-section {
   background: transparent !important;
   background-color: transparent !important;

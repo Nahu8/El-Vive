@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { PublicApiService } from '../../services/public-api.service';
 import { environment } from '../../../environments/environment';
 import { ThemeService } from '../../services/theme.service';
+import { RevealOnScrollDirective } from '../../directives/reveal-on-scroll.directive';
 
 interface Ministry {
   id: string;
@@ -37,10 +38,10 @@ interface FAQ {
   templateUrl: './ministerios.component.html',
   styleUrls: ['./ministerios.component.css'],
   standalone: true,
-  imports: [CommonModule, RouterModule]
+  imports: [CommonModule, RouterModule, RevealOnScrollDirective]
 })
 export class MinisteriosComponent implements OnInit {
-  // Datos del Hero
+
   heroBadgeText = 'Tu lugar para servir';
   heroTitle = 'Nuestros Ministerios';
   heroSubtitle = 'Descubre cómo puedes servir y crecer en nuestra comunidad. Cada ministerio es una oportunidad para usar tus dones y hacer una diferencia eterna.';
@@ -53,7 +54,6 @@ export class MinisteriosComponent implements OnInit {
   heroFadeLightColor = '#000000';
   heroFadeDarkColor = '#000000';
 
-  // Datos de secciones
   sectionTitle = 'Nuestros Ministerios';
   sectionSubtitle = 'Descubre cómo puedes servir y crecer en nuestra comunidad. Cada ministerio es una oportunidad para usar tus dones y hacer una diferencia eterna.';
   sectionIconUrl: string | null = null;
@@ -69,7 +69,7 @@ export class MinisteriosComponent implements OnInit {
   faqTitle: string = 'Preguntas Frecuentes';
   faqSubtitle: string = 'Respuestas a las dudas más comunes sobre nuestros ministerios';
   
-  // Datos del proceso
+
   processTitle = 'Como Unirte';
   processSubtitle = 'Tres sencillos pasos para comenzar tu jornada de servicio';
   processSteps: any[] = [];
@@ -81,7 +81,7 @@ export class MinisteriosComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Scroll al inicio de la página
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
     this.loadMinistriesContent();
   }
@@ -89,7 +89,7 @@ export class MinisteriosComponent implements OnInit {
   loadMinistriesContent(): void {
     this.publicApi.getMinistriesConfig().subscribe({
       next: (data) => {
-        // Cargar datos del Hero
+
         if (data.hero) {
           this.heroBadgeText = data.hero.badgeText || this.heroBadgeText;
           this.heroTitle = data.hero.title || this.heroTitle;
@@ -110,7 +110,6 @@ export class MinisteriosComponent implements OnInit {
           this.heroFadeDarkColor = data.hero.fadeColorDark || '#000000';
         }
 
-        // Cargar título y subtítulo desde pageContent
         if (data.pageContent) {
           this.sectionTitle = data.pageContent.sectionTitle || data.pageContent.ministriesTitle || this.sectionTitle;
           this.sectionSubtitle = data.pageContent.sectionSubtitle || data.pageContent.ministriesSubtitle || this.sectionSubtitle;
@@ -124,7 +123,6 @@ export class MinisteriosComponent implements OnInit {
           this.faqIconUrl = data.pageContent.faqIconUrl ? this.publicApi.resolveAssetUrl(data.pageContent.faqIconUrl) : null;
         }
 
-        // Cargar ministerios
         if (data.pageContent?.backgroundColor) {
           this.backgroundColor = data.pageContent.backgroundColor;
         }
@@ -147,7 +145,6 @@ export class MinisteriosComponent implements OnInit {
             }));
         }
 
-        // Cargar testimonios
         if (data.testimonials && Array.isArray(data.testimonials)) {
           this.testimonials = data.testimonials.map((t: any) => ({
             name: t.name || '',
@@ -157,7 +154,6 @@ export class MinisteriosComponent implements OnInit {
           }));
         }
 
-        // Cargar FAQs
         if (data.faqs && Array.isArray(data.faqs)) {
           this.faqs = data.faqs.map((f: any) => ({
             question: f.question || '',
@@ -165,7 +161,6 @@ export class MinisteriosComponent implements OnInit {
           }));
         }
 
-        // Cargar datos del proceso
         if (data.process) {
           this.processTitle = data.process.title || this.processTitle;
           this.processSubtitle = data.process.subtitle || this.processSubtitle;
@@ -182,8 +177,7 @@ export class MinisteriosComponent implements OnInit {
         }
       },
       error: (error) => {
-        console.error('Error cargando Ministries Content:', error);
-        // Valores por defecto si falla
+
         this.ministries = [];
         this.testimonials = [];
         this.faqs = [];
@@ -252,8 +246,6 @@ export class MinisteriosComponent implements OnInit {
     ];
   }
 
-
-  // Método para manejar errores en la carga de imágenes
   handleImageError(event: any): void {
     event.target.src = 'assets/imagenes/placeholder.jpg';
   }

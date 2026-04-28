@@ -1,5 +1,5 @@
 <div class="min-h-screen page-content animate-fadeIn no-section-gradient donaciones-page" [style.--page-bg]="pageBgColor" [style.--page-bg-section]="pageBgColor">
-  <!-- Hero -->
+  
   <section class="page-hero relative min-h-[58vh] flex items-center justify-center overflow-hidden pt-20 md:pt-24">
     <div class="absolute inset-0" [style.background-color]="heroBgColor"></div>
     <video *ngIf="heroVideoUrl" [src]="heroVideoUrl" autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover"></video>
@@ -22,22 +22,25 @@
   </section>
 
   <div class="container mx-auto px-4 sm:px-6 pb-24 max-w-6xl page-content">
-    <!-- Intro -->
-    <section *ngIf="introTitle || introContent" class="page-section py-16 md:py-20">
+    
+    <section *ngIf="introTitle || introContent" class="page-section py-16 md:py-20" appReveal revealVariant="fade-up">
       <div class="max-w-3xl mx-auto text-center donaciones-glass rounded-3xl px-6 py-10 md:px-10 md:py-12 border page-border-color">
         <h2 *ngIf="introTitle" class="page-heading text-2xl md:text-3xl font-bold mb-5">{{ introTitle }}</h2>
         <p *ngIf="introContent" class="text-base md:text-lg leading-relaxed whitespace-pre-line page-text-muted">{{ introContent }}</p>
       </div>
     </section>
 
-    <!-- Por qué damos -->
+    
     <section *ngIf="whyGive.length" class="page-section py-6 md:py-10">
-      <h2 class="page-heading text-2xl md:text-3xl font-bold text-center mb-3">Cómo impacta tu donación</h2>
-      <p class="text-center page-text-muted max-w-2xl mx-auto mb-12 text-sm md:text-base">
-        Tres pilares que guían el uso responsable de cada aporte.
-      </p>
+      <div appReveal revealVariant="fade-up">
+        <h2 class="page-heading text-2xl md:text-3xl font-bold text-center mb-3">Cómo impacta tu donación</h2>
+        <p class="text-center page-text-muted max-w-2xl mx-auto mb-12 text-sm md:text-base">
+          Tres pilares que guían el uso responsable de cada aporte.
+        </p>
+      </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
         <article *ngFor="let card of whyGive; let i = index"
+          appReveal revealVariant="fade-up" [revealDelay]="i * 120"
           class="donaciones-card group rounded-2xl overflow-hidden border page-border-color bg-[var(--card-bg)] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
           <div class="aspect-[4/3] overflow-hidden bg-gray-900">
             <img *ngIf="card.imageUrl" [src]="card.imageUrl" [alt]="card.title" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
@@ -52,9 +55,9 @@
       </div>
     </section>
 
-    <!-- Medios de pago -->
+    
     <section *ngIf="paymentMethods.length" class="page-section py-12 md:py-16">
-      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10" appReveal revealVariant="fade-up">
         <div>
           <h2 class="page-heading text-2xl md:text-3xl font-bold mb-2">Formas de aportar</h2>
           <p class="page-text-muted text-sm md:text-base max-w-xl">
@@ -64,6 +67,7 @@
       </div>
       <div class="space-y-8">
         <article *ngFor="let pm of paymentMethods; let pi = index"
+          appReveal revealVariant="fade-up" [revealDelay]="pi * 100"
           class="donaciones-pay-card rounded-2xl border page-border-color overflow-hidden flex flex-col lg:flex-row bg-[var(--card-bg)] shadow-lg">
           <div *ngIf="pm.imageUrl" class="lg:w-[38%] min-h-[200px] lg:min-h-0 relative">
             <img [src]="pm.imageUrl" [alt]="pm.label" class="absolute inset-0 w-full h-full object-cover">
@@ -91,7 +95,7 @@
       </div>
     </section>
 
-    <!-- CMS sections -->
+    
     <ng-container *ngFor="let section of pageSections; let i = index">
       <section *ngIf="section.type === 'textImage'" class="page-section py-10 md:py-16">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center"
@@ -135,8 +139,8 @@
       </section>
     </ng-container>
 
-    <!-- CTA -->
-    <section *ngIf="donacionesCta?.title" class="page-section py-12 md:py-16">
+    
+    <section *ngIf="donacionesCta?.title" class="page-section py-12 md:py-16" appReveal revealVariant="zoom">
       <div class="relative rounded-3xl overflow-hidden border page-border-color min-h-[280px] flex items-center">
         <div *ngIf="donacionesCta?.imageUrl" class="absolute inset-0">
           <img [src]="donacionesCta!.imageUrl!" alt="" class="w-full h-full object-cover">

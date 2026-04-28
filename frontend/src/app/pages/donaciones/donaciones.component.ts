@@ -5,6 +5,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { PublicApiService } from '../../services/public-api.service';
 import { environment } from '../../../environments/environment';
 import { ThemeService } from '../../services/theme.service';
+import { RevealOnScrollDirective } from '../../directives/reveal-on-scroll.directive';
 
 const API_BASE = environment.apiBaseUrl;
 
@@ -33,7 +34,7 @@ export interface DonacionesCta {
 @Component({
   selector: 'app-donaciones',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, RevealOnScrollDirective],
   templateUrl: './donaciones.component.html',
   styleUrls: ['./donaciones.component.css']
 })
@@ -127,7 +128,7 @@ export class DonacionesComponent implements OnInit {
           videoUrl: s.videoUrl
         }));
       },
-      error: (err) => console.error('Error cargando donaciones:', err)
+      error: () => undefined
     });
   }
 
@@ -194,3 +195,4 @@ export class DonacionesComponent implements OnInit {
     return m?.[1] || null;
   }
 }
+

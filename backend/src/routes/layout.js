@@ -71,6 +71,7 @@ router.get(
       footerIconUrl: footerIcon ? '/api/section-icon/layout/footer' : null,
       footerIconUrlLight: footerIconLight ? '/api/section-icon/layout/footer-light' : null,
       footerIconUrlDark: footerIconDark ? '/api/section-icon/layout/footer-dark' : null,
+      maintenanceMode: !!(layout.maintenanceMode === 1 || layout.maintenanceMode === true),
     });
   })
 );
@@ -93,12 +94,19 @@ const putLayout = asyncHandler(async (req, res) => {
     'footerTermsUrl',
     'quickLinks',
     'whatsappNumber',
+    'maintenanceMode',
   ];
   for (const f of fields) {
-    if (body[f] !== undefined) {
-      const val = typeof body[f] === 'object' ? stringifyJson(body[f]) : body[f];
-      await dbRun(`UPDATE layouts SET ${f}=?, updated_at=datetime('now') WHERE id=?`, [val, layout.id]);
-    }
+    if (body[f] === undefined) continue;
+    const val =
+      f === 'maintenanceMode'
+        ? body[f] === true || body[f] === 1 || body[f] === '1'
+          ? 1
+          : 0
+        : typeof body[f] === 'object'
+          ? stringifyJson(body[f])
+          : body[f];
+    await dbRun(`UPDATE layouts SET ${f}=?, updated_at=datetime('now') WHERE id=?`, [val, layout.id]);
   }
   const updated = await dbGet('SELECT * FROM layouts WHERE id=?', [layout.id]);
   res.json(updated);
@@ -108,3 +116,4 @@ router.put('/', putLayout);
 router.patch('/', putLayout);
 
 export default router;
+

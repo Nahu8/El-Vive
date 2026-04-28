@@ -1,4 +1,4 @@
-/* Animaciones y efectos personalizados */
+
 @keyframes float {
   0%, 100% {
     transform: translateY(0px);
@@ -17,7 +17,7 @@
   }
 }
 
-/* Clases de utilidad */
+
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
@@ -26,7 +26,7 @@
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
-/* Estilos para tarjetas de reuniones */
+
 .meeting-card {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
@@ -46,7 +46,7 @@
   transform: translateX(100%);
 }
 
-/* Estilo para los indicadores de tiempo */
+
 .time-indicator {
   position: relative;
 }
@@ -64,7 +64,7 @@
   box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
 }
 
-/* Scroll personalizado */
+
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
 }
@@ -79,12 +79,12 @@
   border-radius: 10px;
 }
 
-/* Efecto de brillo en hover */
+
 .hover-glow:hover {
   box-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
 }
 
-/* Animación para iconos */
+
 .icon-pulse {
   animation: pulse 2s infinite;
 }
@@ -104,7 +104,7 @@
   }
 }
 
-/* Gradiente de texto animado */
+
 .animated-gradient-text {
   background: linear-gradient(45deg, #fff, #a5b4fc, #c4b5fd, #a5b4fc, #fff);
   background-size: 300% 300%;
@@ -123,7 +123,7 @@
   }
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 768px) {
   .meeting-card {
     margin-bottom: 1.5rem;
@@ -136,7 +136,7 @@
   }
 }
 
-/* Horizontal scroll carousel for mobile */
+
 :host ::ng-deep .overflow-x-auto {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -145,14 +145,14 @@
   display: none;
 }
 
-/* Calendar cells smaller on mobile */
+
 @media (max-width: 640px) {
   :host ::ng-deep .min-h-32 {
     min-height: 4rem;
   }
 }
 
-/* Fondo uniforme en toda la page (sin corte por sección) */
+
 :host .page-section {
   background: transparent !important;
   background-color: transparent !important;

@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { PublicApiService } from '../../services/public-api.service';
 import { environment } from '../../../environments/environment';
+import { RevealOnScrollDirective } from '../../directives/reveal-on-scroll.directive';
 
 @Component({
   selector: 'app-ministries',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, RevealOnScrollDirective],
   templateUrl: './ministries.component.html',
   styleUrls: ['./ministries.component.css']
 })
@@ -44,3 +45,4 @@ export class MinistriesComponent implements OnInit {
     return index;
   }
 }
+

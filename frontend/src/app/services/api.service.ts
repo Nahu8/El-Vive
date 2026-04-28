@@ -11,7 +11,6 @@ export class ApiService {
 
   constructor(private http: HttpClient) { }
 
-  // ==================== HOME ====================
   getHome(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/home`);
   }
@@ -112,7 +111,6 @@ export class ApiService {
     return this.http.delete<any>(`${this.apiUrl}/home/icon-mier`);
   }
 
-  // Ministry media
   uploadMinistryIcon(ministryId: string, file: File): Observable<any> {
     const fd = new FormData(); fd.append('icon', file);
     return this.http.post<any>(`${this.apiUrl}/ministry/${ministryId}/icon`, fd);
@@ -169,7 +167,6 @@ export class ApiService {
     return this.http.patch<any>(`${this.apiUrl}/home/ministries-summary`, { ministriesSummary });
   }
 
-  // ==================== MEETING DAYS ====================
   getMeetingDays(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/meeting-days`);
   }
@@ -240,7 +237,6 @@ export class ApiService {
     return `${this.apiUrl}/event/${eventId}/background`;
   }
 
-  /** Resuelve una ruta relativa de API (ej: /api/event/123/icon) a URL completa */
   resolveAssetUrl(path: string): string {
     if (!path) return '';
     if (path.startsWith('http')) return path;
@@ -248,7 +244,6 @@ export class ApiService {
     return (path.startsWith('/') ? base + path : base + '/' + path);
   }
 
-  // ==================== SECTION ICONS ====================
   uploadSectionIcon(pageKey: string, sectionKey: string, file: File): Observable<any> {
     const formData = new FormData();
     formData.append('icon', file);
@@ -263,7 +258,6 @@ export class ApiService {
     return `${this.apiUrl}/section-icon/${pageKey}/${sectionKey}`;
   }
 
-  // ==================== MINISTRIES ====================
   getMinistriesContent(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/ministries-content`);
   }
@@ -296,7 +290,6 @@ export class ApiService {
     return this.http.patch<any>(`${this.apiUrl}/ministries-content/page-content`, { pageContent });
   }
 
-  // ==================== LAYOUT (Nav + Footer) ====================
   getLayout(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/layout`);
   }
@@ -305,7 +298,6 @@ export class ApiService {
     return this.http.put<any>(`${this.apiUrl}/layout`, data);
   }
 
-  // ==================== GENERIC PAGES (Donaciones, Nosotros) ====================
   getGenericPage(pageKey: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/generic-pages/${pageKey}`);
   }
@@ -314,7 +306,6 @@ export class ApiService {
     return this.http.put<any>(`${this.apiUrl}/generic-pages/${pageKey}`, { pageContent });
   }
 
-  // ==================== MINISTRY PDF ====================
   uploadMinistryPdf(ministryId: string, file: File): Observable<any> {
     const fd = new FormData();
     fd.append('pdf', file);
@@ -325,7 +316,6 @@ export class ApiService {
     return this.http.delete<any>(`${this.apiUrl}/ministry/${ministryId}/pdf`);
   }
 
-  // ==================== CONTACT INFO ====================
   getContactInfo(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/contact-info`);
   }
@@ -354,7 +344,6 @@ export class ApiService {
     return this.http.patch<any>(`${this.apiUrl}/contact-info/departments`, { departments });
   }
 
-  // ==================== EVENTS (Legacy) ====================
   getEvents(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/events`);
   }
@@ -371,7 +360,6 @@ export class ApiService {
     return this.http.delete<any>(`${this.apiUrl}/events/${id}`);
   }
 
-  // ==================== MINISTRIES (Legacy) ====================
   getMinistries(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/ministries`);
   }
@@ -388,7 +376,6 @@ export class ApiService {
     return this.http.delete<any>(`${this.apiUrl}/ministries/${id}`);
   }
 
-  // ==================== CONTACT MESSAGES ====================
   submitContact(formData: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/contact`, formData);
   }
@@ -405,8 +392,8 @@ export class ApiService {
     return this.http.delete<any>(`${this.apiUrl}/contact/${id}`);
   }
 
-  // ==================== HEALTH CHECK ====================
   healthCheck(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/health`);
   }
 }
+

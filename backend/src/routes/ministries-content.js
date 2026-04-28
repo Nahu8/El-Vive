@@ -66,3 +66,4 @@ router.patch('/faqs', patchField('faqs', 'faqs'));
 router.patch('/page-content', patchField('pageContent', 'pageContent'));
 
 export default router;
+

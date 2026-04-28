@@ -12,3 +12,4 @@ export function stringifyJson(value) {
   if (value == null) return null;
   return typeof value === 'string' ? value : JSON.stringify(value);
 }
+

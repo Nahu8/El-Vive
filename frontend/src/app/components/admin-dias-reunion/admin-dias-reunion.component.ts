@@ -5,7 +5,6 @@ import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } fr
 import { ApiService } from '../../services/api.service';
 import { environment } from '../../../environments/environment';
 
-// Interfaces para los eventos
 interface CalendarEvent {
   id: string;
   title: string;
@@ -37,16 +36,15 @@ interface MeetingDay {
   styleUrls: ['./admin-dias-reunion.component.css']
 })
 export class AdminDiasReunionComponent implements OnInit {
-  // Formularios principales
+
   heroForm: FormGroup;
   calendarEventsForm: FormGroup;
   upcomingEventsForm: FormGroup;
   eventCtaForm: FormGroup;
   
-  // Pestañas
+
   activeTab: string = 'hero';
 
-  // Hero image
   hasHeroImage = false;
   heroImageName = '';
   heroImagePreview: string | null = null;
@@ -54,7 +52,6 @@ export class AdminDiasReunionComponent implements OnInit {
   heroImageDarkPreview: string | null = null;
   isUploadingImage = false;
 
-  // Event media (icon & background) - index -> preview URL
   eventIconPreviews: { [index: number]: string } = {};
   eventBackgroundPreviews: { [index: number]: string } = {};
   eventIconUploading: { [index: number]: boolean } = {};
@@ -62,11 +59,9 @@ export class AdminDiasReunionComponent implements OnInit {
   upcomingEventsIconPreview: string | null = null;
   calendarIconPreview: string | null = null;
 
-  // Previews y estados
   showToast: boolean = false;
   toastMessage: string = '';
 
-  // Opciones para selects
   eventTypes = [
     { value: 'reunion', label: 'Reunión', icon: 'fas fa-hands-praying', color: 'from-blue-500 to-cyan-500' },
     { value: 'especial', label: 'Evento Especial', icon: 'fas fa-party-horn', color: 'from-pink-500 to-rose-500' },
@@ -116,7 +111,7 @@ export class AdminDiasReunionComponent implements OnInit {
   ];
 
   constructor(private fb: FormBuilder, private apiService: ApiService, private http: HttpClient) {
-    // Formulario para Hero de la página
+
     this.heroForm = this.fb.group({
       badgeText: ['Calendario en tiempo real', Validators.required],
       title: ['CALENDARIO DE EVENTOS', Validators.required],
@@ -128,21 +123,18 @@ export class AdminDiasReunionComponent implements OnInit {
       fadeColorDark: ['#000000']
     });
 
-    // Formulario para eventos del calendario
     this.calendarEventsForm = this.fb.group({
       sectionTitle: ['CALENDARIO DE EVENTOS', Validators.required],
       sectionSubtitle: ['Planifica tu participación en nuestras reuniones y eventos especiales', Validators.required],
       events: this.fb.array([])
     });
 
-    // Formulario para sección de próximos eventos
     this.upcomingEventsForm = this.fb.group({
       sectionTitle: ['Próximos Eventos', Validators.required],
       sectionSubtitle: ['No te pierdas los eventos de los próximos días', Validators.required],
-      events: this.fb.array([]) // Array de eventos específicos para esta sección
+      events: this.fb.array([])
     });
 
-    // Formulario para CTA de eventos
     this.eventCtaForm = this.fb.group({
       badgeText: ['¿Tienes un evento?', Validators.required],
       title: ['¿Quieres programar un evento especial?', Validators.required],
@@ -158,10 +150,10 @@ export class AdminDiasReunionComponent implements OnInit {
   }
 
   loadAllData(): void {
-    // Cargar datos desde la API
+
     this.apiService.getMeetingDays().subscribe({
       next: (meetingDaysData) => {
-        // Cargar estado de imagen hero
+
         this.hasHeroImage = !!meetingDaysData.hasHeroImage;
         this.heroImageName = meetingDaysData.heroImageName || '';
         this.heroImagePreview = this.hasHeroImage ? `${environment.apiBaseUrl}/api/meeting-days/hero-image` : null;
@@ -172,11 +164,10 @@ export class AdminDiasReunionComponent implements OnInit {
         this.calendarIconPreview = meetingDaysData.calendarIconUrl
           ? this.apiService.resolveAssetUrl(meetingDaysData.calendarIconUrl) + '?t=' + Date.now() : null;
 
-        // Cargar Hero
         if (meetingDaysData.hero) {
           this.heroForm.patchValue(meetingDaysData.hero);
         } else {
-          // Si no hay hero, usar los datos del calendario como fallback
+
           if (meetingDaysData.calendarEvents) {
             this.heroForm.patchValue({
               badgeText: 'Calendario en tiempo real',
@@ -186,12 +177,10 @@ export class AdminDiasReunionComponent implements OnInit {
           }
         }
 
-        // Cargar eventos del calendario
         if (meetingDaysData.calendarEvents) {
           this.loadCalendarEventsData(meetingDaysData.calendarEvents);
         }
 
-        // Cargar sección de próximos eventos
         if (meetingDaysData.upcomingEvents) {
           this.loadUpcomingEventsData(meetingDaysData.upcomingEvents);
         } else {
@@ -203,14 +192,12 @@ export class AdminDiasReunionComponent implements OnInit {
           upcomingEventsArray.clear();
         }
 
-        // Cargar CTA de eventos
         if (meetingDaysData.eventCta) {
           this.eventCtaForm.patchValue(meetingDaysData.eventCta);
         }
 
       },
-      error: (error) => {
-        console.error('Error cargando Meeting Days:', error);
+      error: () => {
         this.showToastMessage('Error al cargar los datos', 'error');
       }
     });
@@ -259,29 +246,22 @@ export class AdminDiasReunionComponent implements OnInit {
   saveEventCta(): void {
     if (this.eventCtaForm.valid) {
       const eventCta = this.eventCtaForm.value;
-      console.log('Guardando Event CTA:', eventCta);
 
       this.apiService.updateEventCta(eventCta).subscribe({
-        next: (response: any) => {
-          console.log('Event CTA guardado exitosamente:', response);
+        next: () => {
           this.showToastMessage('CTA de eventos guardado exitosamente');
-          // Recargar los datos para asegurar que se muestren los valores actualizados
           this.loadAllData();
         },
         error: (error: any) => {
-          console.error('Error guardando Event CTA:', error);
-          console.error('Detalles del error:', error.error);
           this.showToastMessage('Error al guardar el CTA de eventos: ' + (error.error?.error || error.message), 'error');
         }
       });
     } else {
-      console.log('Formulario Event CTA inválido:', this.eventCtaForm.errors);
       this.showToastMessage('Por favor complete los campos requeridos', 'error');
       this.markFormGroupTouched(this.eventCtaForm);
     }
   }
 
-  // CRUD para eventos del calendario
   createEventForm(event?: any): FormGroup {
     const eventDate = event?.date ? new Date(event.date) : new Date();
 
@@ -359,9 +339,6 @@ export class AdminDiasReunionComponent implements OnInit {
     this.eventBackgroundPreviews = bgNext;
   }
 
-  // CRUD para reuniones recurrentes
-
-  // Métodos auxiliares
   generateId(): string {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
   }
@@ -506,16 +483,15 @@ export class AdminDiasReunionComponent implements OnInit {
     });
   }
 
-  // Métodos para guardar
   saveCalendarEvents(): void {
-    // Validar que al menos los campos básicos estén completos
+
     if (this.calendarEventsForm.get('sectionTitle')?.valid && this.calendarEventsForm.get('sectionSubtitle')?.valid) {
-      // Obtener los valores del formulario
+
       const formValue = this.calendarEventsForm.value;
       
-      // Procesar los eventos del FormArray
+
       const events = this.eventsArray.value.map((event: any) => {
-        // Convertir speakers de string a array si es necesario
+
         let speakers = event.speakers;
         if (typeof speakers === 'string' && speakers.trim()) {
           speakers = speakers.split(',').map((s: string) => s.trim()).filter((s: string) => s.length > 0);
@@ -546,30 +522,20 @@ export class AdminDiasReunionComponent implements OnInit {
         lastUpdated: new Date().toISOString()
       };
 
-      console.log('Guardando Calendar Events:', calendarEvents);
-      console.log('Número de eventos:', events.length);
-
       this.apiService.updateCalendarEvents(calendarEvents).subscribe({
-        next: (response) => {
-          console.log('Calendar Events guardados exitosamente:', response);
+        next: () => {
           this.showToastMessage(`Eventos del calendario guardados exitosamente (${events.length} eventos)`);
-          // Recargar los datos para asegurar que se muestren los valores actualizados
           this.loadAllData();
         },
         error: (error) => {
-          console.error('Error guardando Calendar Events:', error);
-          console.error('Detalles del error:', error.error);
           this.showToastMessage('Error al guardar los eventos del calendario: ' + (error.error?.error || error.message), 'error');
         }
       });
     } else {
-      console.log('Formulario Calendar Events inválido:', this.calendarEventsForm.errors);
       this.showToastMessage('Por favor complete los campos requeridos', 'error');
       this.markFormGroupTouched(this.calendarEventsForm);
     }
   }
-
-
 
   saveAll(): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -605,36 +571,26 @@ export class AdminDiasReunionComponent implements OnInit {
   saveHero(): void {
     if (this.heroForm.valid) {
       const heroData = this.heroForm.value;
-      console.log('Guardando Hero con datos:', heroData);
-      
+
       this.apiService.updateMeetingDaysHero(heroData).subscribe({
-        next: (response) => {
-          console.log('Hero guardado exitosamente:', response);
+        next: () => {
           this.showToastMessage('Hero guardado exitosamente');
-          // Recargar los datos para asegurar que se muestren los valores actualizados
           this.loadAllData();
         },
         error: (error) => {
-          console.error('Error guardando Hero:', error);
-          console.error('Detalles del error:', error.error);
           this.showToastMessage('Error al guardar el Hero: ' + (error.error?.error || error.message), 'error');
         }
       });
     } else {
-      console.log('Formulario Hero inválido:', this.heroForm.errors);
       this.showToastMessage('Por favor completa todos los campos requeridos', 'error');
     }
   }
 
   saveUpcomingEvents(): void {
-    // Validar que al menos los campos básicos estén completos
     if (this.upcomingEventsForm.get('sectionTitle')?.valid && this.upcomingEventsForm.get('sectionSubtitle')?.valid) {
-      // Obtener los valores del formulario
       const formValue = this.upcomingEventsForm.value;
-      
-      // Procesar los eventos del FormArray
+
       const events = this.upcomingEventsArray.value.map((event: any) => {
-        // Convertir speakers de string a array si es necesario
         let speakers = event.speakers;
         if (typeof speakers === 'string' && speakers.trim()) {
           speakers = speakers.split(',').map((s: string) => s.trim()).filter((s: string) => s.length > 0);
@@ -664,24 +620,16 @@ export class AdminDiasReunionComponent implements OnInit {
         events: events
       };
 
-      console.log('Guardando Upcoming Events:', upcomingEvents);
-      console.log('Número de eventos:', events.length);
-
       this.apiService.updateUpcomingEvents(upcomingEvents).subscribe({
-        next: (response: any) => {
-          console.log('Upcoming Events guardados exitosamente:', response);
+        next: () => {
           this.showToastMessage(`Sección de próximos eventos guardada exitosamente (${events.length} eventos)`);
-          // Recargar los datos para asegurar que se muestren los valores actualizados
           this.loadAllData();
         },
         error: (error: any) => {
-          console.error('Error guardando Upcoming Events:', error);
-          console.error('Detalles del error:', error.error);
           this.showToastMessage('Error al guardar la sección de próximos eventos: ' + (error.error?.error || error.message), 'error');
         }
       });
     } else {
-      console.log('Formulario Upcoming Events inválido:', this.upcomingEventsForm.errors);
       this.showToastMessage('Por favor complete los campos requeridos', 'error');
       this.markFormGroupTouched(this.upcomingEventsForm);
     }
@@ -707,9 +655,7 @@ export class AdminDiasReunionComponent implements OnInit {
   }
 
   selectEventFromCalendar(eventIndex?: number): void {
-    // Si no se especifica índice, mostrar un selector
     if (eventIndex === undefined) {
-      // Agregar el primer evento disponible como ejemplo
       if (this.eventsArray.length > 0) {
         const calendarEvent = this.eventsArray.at(0).value;
         const newEvent = { ...calendarEvent, id: this.generateId() };
@@ -726,7 +672,6 @@ export class AdminDiasReunionComponent implements OnInit {
     }
   }
 
-  // Métodos para Toast
   showToastMessage(message: string, type: 'success' | 'error' = 'success'): void {
     this.toastMessage = message;
     this.showToast = true;
@@ -736,7 +681,6 @@ export class AdminDiasReunionComponent implements OnInit {
     }, 3000);
   }
 
-  // Método para marcar todos los campos como tocados
   markFormGroupTouched(formGroup: FormGroup): void {
     Object.values(formGroup.controls).forEach(control => {
       control.markAsTouched();
@@ -752,8 +696,6 @@ export class AdminDiasReunionComponent implements OnInit {
     });
   }
 
-
-  // Método para aplicar un preset de color
   applyColorPreset(eventIndex: number, presetIndex: number): void {
     const preset = this.colorPresets[presetIndex];
     const eventGroup = this.eventsArray.at(eventIndex) as FormGroup;
@@ -763,8 +705,6 @@ export class AdminDiasReunionComponent implements OnInit {
     });
   }
 
-
-  // Método para ordenar eventos por fecha
   sortEventsByDate(): void {
     const events = this.eventsArray.value;
     events.sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime());
@@ -777,7 +717,6 @@ export class AdminDiasReunionComponent implements OnInit {
     this.showToastMessage('Eventos ordenados por fecha');
   }
 
-  // Método para exportar eventos
   exportEvents(): void {
     const events = this.eventsArray.value;
     const dataStr = JSON.stringify(events, null, 2);
@@ -793,7 +732,6 @@ export class AdminDiasReunionComponent implements OnInit {
     this.showToastMessage('Eventos exportados exitosamente');
   }
 
-  // Método para importar eventos
   importEvents(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
@@ -821,7 +759,6 @@ export class AdminDiasReunionComponent implements OnInit {
     }
   }
 
-  // Método para contar eventos próximos
   getUpcomingEventsCount(): number {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -833,7 +770,6 @@ export class AdminDiasReunionComponent implements OnInit {
     }).length;
   }
 
-  // Método para contar días únicos con eventos
   getUniqueDaysCount(): number {
     const uniqueDays = new Set();
 
@@ -848,7 +784,6 @@ export class AdminDiasReunionComponent implements OnInit {
     return uniqueDays.size;
   }
 
-  // Método para obtener eventos próximos (próximos 30 días)
   getUpcomingEvents(): any[] {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -867,7 +802,6 @@ export class AdminDiasReunionComponent implements OnInit {
       });
   }
 
-  // Método para obtener eventos por tipo
   getEventsByType(type: string): number {
     return this.eventsArray.value.filter((event: any) => event.type === type).length;
   }
@@ -891,7 +825,6 @@ export class AdminDiasReunionComponent implements OnInit {
         this.showToastMessage('Imagen guardada en la base de datos');
       },
       error: (err) => {
-        console.error('Error subiendo imagen:', err);
         this.isUploadingImage = false;
         this.showToastMessage('Error al subir imagen: ' + (err.error?.error || err.message), 'error');
       }

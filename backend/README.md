@@ -22,7 +22,9 @@ npm start
 npm run dev
 ```
 
-El servidor escucha en **http://127.0.0.1:3000** (mismo puerto que usa el frontend).
+El servidor escucha en **http://127.0.0.1:3000** por defecto (`PORT` en `.env`).
+
+En desarrollo, el Angular usa `frontend/src/environments/environment.ts` → `apiBaseUrl` debe ser **el mismo host y puerto** (por defecto `http://127.0.0.1:3000`). Si cambiás `PORT` en el backend, actualizá también esa URL.
 
 ### Usuario por defecto
 

@@ -1,8 +1,3 @@
-/**
- * Contenido por defecto y enriquecimiento para la página Donaciones (generic_pages.page_key = donaciones).
- * Imágenes: Unsplash (HTTPS) para que funcionen sin subir archivos.
- */
-
 const UNSPLASH = {
   heroHands: 'https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=1600&q=80',
   community: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=900&q=80',
@@ -90,3 +85,4 @@ export function enrichDonacionesPageContent(pc) {
   out.sections = Array.isArray(pc.sections) ? pc.sections : [];
   return out;
 }
+

@@ -44,7 +44,7 @@ export class AdminFooterComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Cargamos la configuración de Layout (footer público)
+
     this.apiService.getLayout().subscribe({
       next: (data) => {
         const footer = {
@@ -106,7 +106,7 @@ export class AdminFooterComponent implements OnInit {
         ]).forEach((l: any) => arr.push(this.createQuickLinkForm(l)));
       },
       error: () => {
-        // keep defaults if API fails
+
       }
     });
   }

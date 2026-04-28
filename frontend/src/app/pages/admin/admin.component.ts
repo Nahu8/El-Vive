@@ -139,7 +139,7 @@ export class AdminComponent implements OnInit, OnDestroy {
       this.saveSuccess = true;
       setTimeout(() => this.saveSuccess = false, 3000);
     } catch (err) {
-      console.error('Error al guardar:', err);
+
       this.saveError = true;
       setTimeout(() => this.saveError = false, 4000);
     } finally {
@@ -156,3 +156,4 @@ export class AdminComponent implements OnInit, OnDestroy {
     return this.sidebarItems.find(i => i.id === this.activeSection)?.label || '';
   }
 }
+

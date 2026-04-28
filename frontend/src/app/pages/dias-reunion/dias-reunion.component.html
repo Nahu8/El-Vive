@@ -1,5 +1,5 @@
 <div class="min-h-screen page-content no-section-gradient" [style.--page-bg]="pageBgColor" [style.--page-bg-section]="pageBgColor" [style.--card-bg]="pageBgColor">
-<!-- Hero: única sección con imagen/gradiente + degradé a negro -->
+
 <section class="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden">
     <div class="absolute inset-0 z-0" [style.background-color]="heroBgColor"></div>
     <div *ngIf="currentHeroImageUrl" class="absolute inset-0 z-0">
@@ -14,25 +14,25 @@
 
     <div class="container mx-auto px-6 relative z-10">
         <div class="max-w-4xl mx-auto text-center">
-            <!-- Badge animado -->
+            
             <div
                 class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-full border border-indigo-500/30 mb-6 animate-pulse">
                 <span class="w-2 h-2 bg-indigo-400 rounded-full animate-ping"></span>
                 <span class="text-sm font-medium text-indigo-300">{{ heroBadgeText }}</span>
             </div>
 
-            <!-- Título principal -->
+            
             <h1
                 class="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
                 {{ heroTitle }}
             </h1>
 
-            <!-- Subtítulo -->
+            
             <p class="text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
                 {{ heroSubtitle }}
             </p>
 
-            <!-- Estadísticas -->
+            
             <div class="flex flex-wrap justify-center gap-8 mb-12">
                 <div class="text-center group cursor-pointer">
                     <div class="text-3xl font-bold text-white mb-1 group-hover:scale-110 transition-transform">{{
@@ -51,8 +51,8 @@
 
 <section class="page-section relative py-16 overflow-hidden">
     <div class="container mx-auto px-6 relative z-10">
-        <!-- Encabezado del calendario -->
-        <div class="flex flex-col md:flex-row justify-between items-center mb-12">
+        
+        <div class="flex flex-col md:flex-row justify-between items-center mb-12" appReveal revealVariant="fade-up">
             <div class="mb-6 md:mb-0">
                 <h2 class="page-heading text-3xl font-bold mb-2 flex items-center gap-2">
                     <img *ngIf="calendarIconUrl" [src]="calendarIconUrl" alt="" class="w-8 h-8 object-contain">
@@ -62,7 +62,7 @@
             </div>
 
             <div class="flex items-center gap-4">
-                <!-- Navegación -->
+                
                 <div class="flex items-center gap-2">
                     <button (click)="previousMonth()"
                         class="p-3 rounded-xl bg-gray-900 hover:bg-gray-800 text-white transition-all hover:scale-105">
@@ -80,7 +80,7 @@
             </div>
         </div>
 
-        <!-- Filtros de eventos -->
+        
         <div class="mb-8">
             <h3 class="page-heading text-lg font-semibold mb-4">Filtrar por tipo:</h3>
             <div class="flex flex-wrap gap-3">
@@ -93,30 +93,30 @@
             </div>
         </div>
 
-        <!-- Grid del calendario -->
-        <div
+        
+        <div appReveal revealVariant="fade-up"
             class="page-card-bg backdrop-blur-sm rounded-2xl border page-border-color p-6 mb-8">
-            <!-- Días de la semana -->
+            
             <div class="grid grid-cols-7 gap-2 mb-4">
                 <div *ngFor="let day of weekDays" class="text-center py-3 text-sm font-semibold text-gray-400">
                     {{ day }}
                 </div>
             </div>
 
-            <!-- Días del mes -->
+            
             <div class="grid grid-cols-7 gap-2">
                 <div *ngFor="let day of daysInMonth; let i = index" (click)="selectDate(day)" [class]="'min-h-16 md:min-h-32 p-1.5 md:p-3 rounded-lg md:rounded-xl border transition-all duration-300 cursor-pointer hover:scale-[1.02] overflow-hidden relative ' +
                       (isToday(day) ? 'border-indigo-500 bg-indigo-500/10' : 'border-gray-800 hover:border-indigo-500/50') +
                       (!isCurrentMonth(day) ? ' opacity-40' : '')">
 
-                    <!-- Fondo de evento (solo desktop: 1 evento con imagen) -->
+                    
                     <div *ngIf="getEventsForDate(day).length === 1 && getEventsForDate(day)[0].backgroundUrl" 
                         class="absolute inset-0 z-0 hidden md:block">
                         <img [src]="getEventsForDate(day)[0].backgroundUrl" alt="" class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-black/50"></div>
                     </div>
 
-                    <!-- Número del día -->
+                    
                     <div class="flex justify-between items-start mb-2 relative z-10">
                         <span
                             [class]="'text-xs md:text-lg font-semibold ' + 
@@ -125,7 +125,7 @@
                             {{ day.getDate() }}
                         </span>
 
-                        <!-- Indicador de eventos: círculos en mobile y desktop -->
+                        
                         <div *ngIf="hasEvents(day) && isCurrentMonth(day)" class="flex gap-1">
                             <div *ngFor="let event of getEventsForDate(day).slice(0, 3)" class="w-2 h-2 rounded-full"
                                 [style.background]="event.type === 'reunion' ? '#3b82f6' : 
@@ -135,7 +135,7 @@
                         </div>
                     </div>
 
-                    <!-- Eventos del día: solo en desktop (md+). En mobile solo círculos arriba -->
+                    
                     <div class="space-y-2 relative z-10 hidden md:block">
                         <ng-container *ngIf="getEventsForDate(day).length === 1; else multipleEvents">
                             <div *ngFor="let event of getEventsForDate(day)"
@@ -169,7 +169,7 @@
             </div>
         </div>
 
-        <!-- Eventos del día seleccionado -->
+        
         <div *ngIf="selectedDate"
             class="page-card-bg rounded-2xl border page-border-color p-6 mb-8">
             <div class="flex items-center justify-between mb-6">
@@ -270,9 +270,10 @@
             </div>
         </div>
 
-        <!-- Desktop grid -->
+        
         <div class="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            <div *ngFor="let event of upcomingEvents"
+            <div *ngFor="let event of upcomingEvents; let i = index"
+                appReveal revealVariant="fade-up" [revealDelay]="(i % 3) * 100"
                 class="page-card-bg rounded-2xl border page-border-color overflow-hidden hover:border-indigo-500/50 transition-all duration-300 hover:scale-[1.02]">
                 <div class="p-6 border-b page-border-color relative min-h-[140px] overflow-hidden" 
                     [style.background]="event.backgroundUrl ? 'none' : ('linear-gradient(135deg, ' + 
@@ -303,7 +304,7 @@
             </div>
         </div>
 
-        <!-- Mobile horizontal carousel -->
+        
         <div class="md:hidden overflow-x-auto -mx-6 px-6 pb-4 mb-12">
             <div class="flex gap-4" [style.width.px]="upcomingEvents.length * 300">
                 <div *ngFor="let event of upcomingEvents"
@@ -339,7 +340,7 @@
 
 <section class="page-section relative py-16 overflow-hidden">
     <div class="container mx-auto px-6 relative z-10">
-        <div class="max-w-3xl mx-auto text-center">
+        <div class="max-w-3xl mx-auto text-center" appReveal revealVariant="zoom">
             <div
                 class="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-full border border-green-500/30 mb-8">
                 <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>

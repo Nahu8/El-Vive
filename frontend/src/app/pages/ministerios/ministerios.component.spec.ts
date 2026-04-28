@@ -21,3 +21,4 @@ describe('MinisteriosComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+

@@ -1,7 +1,3 @@
-/**
- * Copia el build del Angular (monorepo: frontend/ hermano de backend/)
- * desde frontend/dist/frontend/browser → backend/public/ (index.html en raíz).
- */
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -13,8 +9,6 @@ const distBrowser = path.join(repoRoot, 'frontend', 'dist', 'frontend', 'browser
 const publicDir = path.join(backendRoot, 'public');
 
 if (!fs.existsSync(path.join(distBrowser, 'index.html'))) {
-  console.error('copy:spa: no existe', path.join(distBrowser, 'index.html'));
-  console.error('Ejecutá antes: npm run build:frontend (desde backend) o ng build en frontend/');
   process.exit(1);
 }
 
@@ -30,4 +24,4 @@ for (const name of fs.readdirSync(distBrowser)) {
   fs.cpSync(path.join(distBrowser, name), path.join(publicDir, name), { recursive: true });
 }
 
-console.log('copy:spa: frontend/dist/frontend/browser → backend/public/');
+process.exit(0);

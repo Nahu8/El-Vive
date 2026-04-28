@@ -32,7 +32,7 @@
   --theme-accent: #06b6d4;
 }
 
-/* ========== MODO NOCHE (dark) ========== */
+
 html.dark-theme {
   --page-bg: #0a0a0a;
   --page-bg-section: #000000;
@@ -48,7 +48,7 @@ html.dark-theme .page-content {
   color: var(--page-text) !important;
 }
 
-/* ========== MODO DÍA (light) ========== */
+
 html.light-theme {
   --page-bg: #faf8f5;
   --page-bg-section: #faf8f5;
@@ -64,14 +64,14 @@ html.light-theme .page-content {
   color: var(--page-text) !important;
 }
 
-/* Secciones de contenido: negro o blanco hueso según tema */
+
 .page-section {
   background-color: var(--page-bg-section) !important;
   color: var(--page-text) !important;
   position: relative;
 }
 
-/* Transición suave entre secciones: degradado de fusión en el borde superior */
+
 html.dark-theme .page-section + .page-section {
   background: linear-gradient(to bottom,
     #141414 0%,
@@ -120,13 +120,13 @@ html.light-theme .page-section + .page-section {
   background-color: var(--card-bg) !important;
 }
 
-/* Header siempre transparente, no afectado por modo día/noche */
+
 app-header header {
   background-color: transparent !important;
   background: transparent !important;
 }
 
-/* Footer: solo fondo y letras según tema */
+
 html.dark-theme app-footer footer {
   background-color: #000000 !important;
   color: #e5e7eb !important;
@@ -163,7 +163,7 @@ html.light-theme app-footer footer .text-gray-600 {
   color: #475569 !important;
 }
 
-/* Overflow scroll */
+
 .overflow-x-auto {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -192,11 +192,35 @@ html {
   scroll-behavior: smooth;
 }
 
-.theme-toggle {
-  top: 5.5rem;
+
+.reveal {
+  opacity: 0;
+  transition: opacity 0.75s ease-out, transform 0.75s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: opacity, transform;
 }
 
-/* Páginas que deben usar fondo continuo sin corte entre secciones */
+.reveal-fade-up    { transform: translate3d(0, 32px, 0); }
+.reveal-fade-left  { transform: translate3d(-32px, 0, 0); }
+.reveal-fade-right { transform: translate3d(32px, 0, 0); }
+.reveal-zoom       { transform: scale(0.96); }
+.reveal-fade       { transform: none; }
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal,
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+
 .no-section-gradient .page-section {
   background-image: none !important;
   background: transparent !important;
@@ -209,7 +233,7 @@ html {
   background-color: var(--page-bg) !important;
 }
 
-/* Tarjetas alineadas al fondo editable de la página (mismo tono que header), sin vidrio */
+
 .no-section-gradient .page-card-bg {
   background-color: var(--page-bg) !important;
   background-image: none !important;

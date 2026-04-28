@@ -1,19 +1,21 @@
-import { Component, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, HostListener } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PublicApiService } from '../../services/public-api.service';
 import { ThemeService } from '../../services/theme.service';
 import { environment } from '../../../environments/environment';
 import { forkJoin } from 'rxjs';
+import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, RouterLinkActive, CommonModule],
+  imports: [RouterLink, RouterLinkActive, CommonModule, ThemeToggleComponent],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements AfterViewInit, OnDestroy {
   isMenuOpen = false;
+  isScrolled = false;
   showFirstLogo = true;
   private _logoInterval: any = null;
 
@@ -43,6 +45,11 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    this.isScrolled = (window.scrollY || window.pageYOffset) > 20;
   }
 
   ngAfterViewInit(): void {
@@ -88,3 +95,4 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   }
   
 }
+

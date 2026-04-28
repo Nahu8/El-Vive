@@ -1,4 +1,4 @@
-/* simple helpers for ministries cards */
+
 .ministry-card { transition: transform .3s ease, box-shadow .3s ease; }
 .ministry-image { background-color: #111827; }
 

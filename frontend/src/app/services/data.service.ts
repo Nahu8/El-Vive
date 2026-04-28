@@ -72,7 +72,6 @@ export interface MinistrySummary {
   image?: string;
 }
 
-// En tu archivo de tipos (ej: types.ts) o data.service.ts
 export interface HomePageData {
   heroTitle: string;
   heroButton1Text: string;
@@ -81,7 +80,6 @@ export interface HomePageData {
   heroButton2Link: string;
   heroVideoUrl: string;
 
-  // Mantén los campos existentes:
   celebrations?: Celebration[];
   meetingDaysSummary?: {
     sectionTitle: string;
@@ -120,14 +118,12 @@ export class DataService {
   private changesSubject = new BehaviorSubject<boolean>(false);
   public hasChanges$ = this.changesSubject.asObservable();
 
-  // Datos para la página de inicio (home)
   private homeData = new BehaviorSubject<any>({
     heroTitle: 'ÉL VIVE IGLESIA',
     heroSubtitle: 'Una comunidad de fe, esperanza y amor. Únete a nosotros en nuestro viaje espiritual',
     heroButtonText: 'VER EVENTOS',
     heroVideoUrl: 'assets/videos/MinisteriosServicios Pantalla.mp4',
 
-    // Celebrations Section
     celebrations: [
       {
         title: 'CELEBRACIÓN',
@@ -155,70 +151,10 @@ export class DataService {
     this.loadData();
   }
 
-  // Método corregido para marcar cambios pendientes
   markChangesPending(section: string): void {
     this.changesSubject.next(true);
   }
 
-  // Actualizar el BehaviorSubject inicial
-  /*   private homeData = new BehaviorSubject<HomePageData>({
-      heroTitle: 'ÉL VIVE IGLESIA',
-      heroSubtitle: 'Una comunidad de fe, esperanza y amor. Únete a nosotros en nuestro viaje espiritual',
-      heroButtonText: 'VER EVENTOS',
-      heroVideoUrl: 'assets/videos/MinisteriosServicios Pantalla.mp4',
-  
-      // Celebrations Section
-      celebrations: [
-        {
-          title: 'CELEBRACIÓN',
-          subtitle: 'Título de Celebración',
-          description: 'Bajada o descripción de la celebración. Aquí puedes agregar información sobre este evento especial.',
-          videoId: '3wuQUvXiLv8'
-        },
-        {
-          title: 'SOBRE LA ROCA',
-          subtitle: 'Título de Sobre la Roca',
-          description: 'Bajada o descripción sobre este ministerio. Comparte información relevante sobre este programa.',
-          videoId: '2O1cS9zjM90'
-        },
-        {
-          title: 'SANTA CENA',
-          subtitle: 'Título de Santa Cena',
-          description: 'Bajada o descripción sobre la Santa Cena. Información sobre este momento especial de comunión.',
-          videoId: '94Dje21syOA',
-          startTime: 57
-        }
-      ],
-  
-      // Meeting Days Summary Section
-      meetingDaysSummary: {
-        sectionTitle: 'DÍAS DE REUNIÓN',
-        sectionSubtitle: 'Próximas reuniones y horarios — mantente al tanto.',
-        meetings: [
-          { day: 'Miércoles', title: 'SLR', time: '19:00', note: 'Servicio y estudio', colorFrom: '#4f46e5', colorTo: '#ec4899' },
-          { day: 'Sábado', title: 'Escuelita Bíblica', time: '10:00', note: 'Ministerio infantil', colorFrom: '#7c3aed', colorTo: '#db2777' },
-          { day: 'Domingo', title: 'Celebración', time: '10:00', note: 'Servicio dominical', colorFrom: '#8b5cf6', colorTo: '#e11d48' }
-        ]
-      },
-  
-      // Ministries Summary Section
-      ministriesSummary: {
-        sectionTitle: 'NUESTROS MINISTERIOS',
-        sectionSubtitle: 'Descubre cómo puedes servir y crecer en nuestra comunidad.',
-        ministries: [
-          { name: 'Ministerio Escuela Bíblica', description: 'Enseñanza bíblica formativa para todas las edades; estudios y formación espiritual.', icon: 'book', image: 'assets/imagenes/ministerio-1.jpg' },
-          { name: 'Ministerio Efraín', description: 'Acompañamiento pastoral y programas de apoyo comunitario bajo el nombre Efraín.', icon: 'people', image: 'assets/imagenes/ministerio-2.jpg' },
-          { name: 'Ministerio de Jóvenes', description: 'Encuentros, estudios y actividades para jóvenes que buscan crecer en su fe.', icon: 'spark', image: 'assets/imagenes/ministerio-3.jpg' },
-          { name: 'Remendando Redes', description: 'Iniciativa de apoyo y reinserción social, trabajo comunitario y redes de ayuda.', icon: 'network', image: 'assets/imagenes/ministerio-4.jpg' },
-          { name: 'Ministerio de Oración', description: 'Grupo dedicado a la intercesión y acompañamiento espiritual en oración.', icon: 'spark', image: 'assets/imagenes/ministerio-5.jpg' },
-          { name: 'Ministerio de Música', description: 'Equipo musical y de alabanza que lidera el culto y los eventos musicales.', icon: 'people', image: 'assets/imagenes/ministerio-6.jpg' },
-          { name: 'Ministerio de Niños', description: 'Actividades, enseñanza y cuidado orientado a los niños de la iglesia.', icon: 'book', image: 'assets/imagenes/ministerio-7.jpg' },
-          { name: 'Servicio Comunitario', description: 'Proyectos y acciones sociales para ayudar a la comunidad local.', icon: 'network', image: 'assets/imagenes/ministerio-8.jpg' }
-        ]
-      }
-    });
-   */
-  // Asegurar que getHomeData devuelva HomePageData
   getHomeData(): HomePageData {
     return this.homeData.value;
   }
@@ -233,7 +169,6 @@ export class DataService {
     this.changesSubject.next(true);
   }
 
-  // Observables para home
   homeData$ = this.homeData.asObservable();
 
   private loadData(): void {
@@ -412,7 +347,6 @@ export class DataService {
     };
   }
 
-  // Home Content CRUD
   getHomeContent(): HomePageContent | null {
     return this.homeContentSubject.value;
   }
@@ -422,7 +356,6 @@ export class DataService {
     this.changesSubject.next(true);
   }
 
-  // Meeting Days Content CRUD
   getMeetingDaysContent(): MeetingDaysPageContent | null {
     return this.meetingDaysContentSubject.value;
   }
@@ -432,7 +365,6 @@ export class DataService {
     this.changesSubject.next(true);
   }
 
-  // Contact Page Content CRUD
   getContactPageContent(): ContactPageContent | null {
     return this.contactPageContentSubject.value;
   }
@@ -442,7 +374,6 @@ export class DataService {
     this.changesSubject.next(true);
   }
 
-  // Ministerios CRUD
   getMinisterios(): Ministerio[] {
     return this.ministeriosSubject.value;
   }
@@ -471,7 +402,6 @@ export class DataService {
     this.changesSubject.next(true);
   }
 
-  // Eventos CRUD
   getEventos(): Evento[] {
     return this.eventosSubject.value;
   }
@@ -500,7 +430,6 @@ export class DataService {
     this.changesSubject.next(true);
   }
 
-  // Contact Info CRUD
   getContact(): ContactInfo | null {
     return this.contactSubject.value;
   }
@@ -510,7 +439,6 @@ export class DataService {
     this.changesSubject.next(true);
   }
 
-  // Publicar cambios (guardar en localStorage)
   publishChanges(): void {
     const homeData = this.homeData.value;
     const ministerios = this.ministeriosSubject.value;
@@ -568,7 +496,6 @@ export class DataService {
     this.changesSubject.next(true);
   }
 
-  // Método para obtener el Subject directamente (para reactividad)
   getMinisteriosSubject(): BehaviorSubject<Ministerio[]> {
     return this.ministeriosSubject;
   }

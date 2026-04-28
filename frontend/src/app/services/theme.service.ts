@@ -42,7 +42,6 @@ export class ThemeService {
     if (typeof localStorage !== 'undefined') {
       this.storageKey = getThemeStorageKey();
       const raw = localStorage.getItem(this.storageKey);
-      // Sin valor guardado: modo noche por defecto
       const saved = raw === null ? true : raw === 'true';
       this.darkModeSubject.next(saved);
       document.documentElement.classList.toggle('dark-theme', saved);
@@ -68,7 +67,7 @@ export class ThemeService {
           this.applyPalette(theme.palette);
         }
       },
-      error: (err) => console.error('Error cargando theme:', err)
+      error: () => undefined
     });
     this.applyDarkMode();
   }
@@ -104,3 +103,4 @@ export class ThemeService {
     return this.themeSubject.getValue();
   }
 }
+

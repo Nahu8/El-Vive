@@ -33,9 +33,9 @@ export class MeetingDaysComponent implements OnInit, AfterViewInit, OnDestroy {
   loadMeetingDays() {
     this.publicApi.getHomeConfig().subscribe({
       next: (data) => {
-        console.log('Datos recibidos de Home para Meeting Days:', data);
+
         const meetingDaysSummary = data.meetingDaysSummary;
-        console.log('Meeting Days Summary:', meetingDaysSummary);
+
         if (meetingDaysSummary) {
           this.sectionTitle = meetingDaysSummary.sectionTitle || this.sectionTitle;
           this.sectionSubtitle = meetingDaysSummary.sectionSubtitle || this.sectionSubtitle;
@@ -51,14 +51,13 @@ export class MeetingDaysComponent implements OnInit, AfterViewInit, OnDestroy {
             imageUrl: cardImgs[idx] ? `${environment.apiBaseUrl}/api/home/card-image/${idx}` : undefined,
             animated: false
           }));
-          console.log('Meetings procesadas:', this.meetings);
+
         } else {
-          console.warn('No hay meetingDaysSummary en los datos');
+
         }
       },
       error: (error) => {
-        console.error('Error cargando Meeting Days:', error);
-        // Valores por defecto si falla
+
         this.meetings = [
           { day: 'Miércoles', title: 'SLR', time: '19:00', note: 'Servicio y estudio', colorFrom: '#4f46e5', colorTo: '#ec4899', animated: false },
           { day: 'Sábado', title: 'Escuelita Bíblica', time: '10:00', note: 'Ministerio infantil', colorFrom: '#3b82f6', colorTo: '#8b5cf6', animated: false },
@@ -69,11 +68,11 @@ export class MeetingDaysComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    // Esperar a que los datos se carguen antes de inicializar animaciones
+
     if (this.meetings.length > 0) {
       this.initializeAnimations();
     } else {
-      // Si aún no hay datos, esperar un poco y reintentar
+
       setTimeout(() => {
         if (this.meetings.length > 0) {
           this.initializeAnimations();
@@ -143,7 +142,6 @@ export class MeetingDaysComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     }, options);
 
-    // Usar setTimeout para asegurar que las cards estén en el DOM
     setTimeout(() => {
       this.cards.forEach((cardEl, idx) => {
         const el = cardEl.nativeElement as HTMLElement;
@@ -173,3 +171,4 @@ export class MeetingDaysComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 }
+
