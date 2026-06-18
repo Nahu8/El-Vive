@@ -16,12 +16,18 @@
             <div>
               <label class="block text-gray-500 text-sm mb-1">Imagen modo día</label>
               <input type="file" (change)="onHeroImageSelected($event, 'light')" accept="image/*" class="text-gray-400 text-sm file:mr-2 file:py-1 file:px-2 file:rounded file:bg-gray-700 file:text-gray-300">
-              <img *ngIf="pageContent.hero.backgroundImageUrlLight" [src]="resolveUrl(pageContent.hero.backgroundImageUrlLight)" class="mt-2 h-20 object-cover rounded">
+              <div *ngIf="pageContent.hero.backgroundImageUrlLight" class="mt-2 flex items-center gap-2">
+                <img [src]="resolveUrl(pageContent.hero.backgroundImageUrlLight)" class="h-20 object-cover rounded">
+                <button type="button" (click)="clearHeroImage('light')" class="text-red-400 text-xs">Eliminar</button>
+              </div>
             </div>
             <div>
               <label class="block text-gray-500 text-sm mb-1">Imagen modo noche</label>
               <input type="file" (change)="onHeroImageSelected($event, 'dark')" accept="image/*" class="text-gray-400 text-sm file:mr-2 file:py-1 file:px-2 file:rounded file:bg-gray-700 file:text-gray-300">
-              <img *ngIf="pageContent.hero.backgroundImageUrlDark" [src]="resolveUrl(pageContent.hero.backgroundImageUrlDark)" class="mt-2 h-20 object-cover rounded">
+              <div *ngIf="pageContent.hero.backgroundImageUrlDark" class="mt-2 flex items-center gap-2">
+                <img [src]="resolveUrl(pageContent.hero.backgroundImageUrlDark)" class="h-20 object-cover rounded">
+                <button type="button" (click)="clearHeroImage('dark')" class="text-red-400 text-xs">Eliminar</button>
+              </div>
             </div>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3">

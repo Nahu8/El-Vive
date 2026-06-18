@@ -48,7 +48,7 @@ export class MeetingDaysComponent implements OnInit, AfterViewInit, OnDestroy {
             note: m.note || '',
             colorFrom: m.colorFrom || '#4f46e5',
             colorTo: m.colorTo || '#ec4899',
-            imageUrl: cardImgs[idx] ? `${environment.apiBaseUrl}/api/home/card-image/${idx}` : undefined,
+            imageUrl: cardImgs[idx] ? this.publicApi.resolveAssetUrl(`/api/home/card-image/${idx}`) : undefined,
             animated: false
           }));
 
@@ -169,6 +169,15 @@ export class MeetingDaysComponent implements OnInit, AfterViewInit, OnDestroy {
       this._observer.disconnect();
       this._observer = null;
     }
+  }
+
+  formatMeetingTime(time: string): string {
+    if (!time) return '';
+    const trimmed = time.trim();
+    if (/hs/i.test(trimmed)) return trimmed.replace(/\s*2\s*hs/i, ' hs').replace(/(\d+)\s*hs/i, '$1 hs');
+    const match = trimmed.match(/^(\d{1,2}):00$/);
+    if (match) return `${match[1]} hs`;
+    return trimmed;
   }
 }
 

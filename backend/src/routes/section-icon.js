@@ -17,6 +17,11 @@ router.post(
     if (!req.file) return res.status(400).json({ error: 'No se proporcionó imagen' });
     if (!req.file.mimetype.startsWith('image/')) return res.status(400).json({ error: 'Debe ser una imagen' });
     const ext = path.extname(req.file.originalname) || '.png';
+    const row = await dbGet('SELECT imagePath FROM section_icons WHERE page_key=? AND section_key=?', [pageKey, sectionKey]);
+    if (row?.imagePath) {
+      const abs = resolvePath(row.imagePath);
+      if (fs.existsSync(abs)) fs.unlinkSync(abs);
+    }
     const rel = saveFile('section-icons', `${pageKey}_${sectionKey}${ext}`, req.file.buffer);
     await dbRun(
       "INSERT INTO section_icons (page_key, section_key, imagePath, imageMime, imageName) VALUES (?,?,?,?,?) ON CONFLICT(page_key, section_key) DO UPDATE SET imagePath=excluded.imagePath, imageMime=excluded.imageMime, imageName=excluded.imageName, updated_at=datetime('now')",

@@ -376,18 +376,20 @@ export class AdminDiasReunionComponent implements OnInit {
     const eventId = this.eventsArray.at(index).get('id')?.value;
     if (!eventId) return;
     this.eventIconUploading[index] = true;
-    this.apiService.uploadEventIcon(eventId, file).subscribe({
-      next: () => {
-        this.eventIconPreviews[index] = this.apiService.getEventIconUrl(eventId) + '?t=' + Date.now();
-        this.eventIconUploading[index] = false;
-        this.showToastMessage('Ícono subido');
-        input.value = '';
-      },
-      error: (err) => {
-        this.eventIconUploading[index] = false;
-        this.showToastMessage('Error al subir ícono: ' + (err.error?.error || err.message), 'error');
-      }
-    });
+    this.persistCalendarEvents(() => {
+      this.apiService.uploadEventIcon(eventId, file).subscribe({
+        next: () => {
+          this.eventIconPreviews[index] = this.apiService.getEventIconUrl(eventId) + '?t=' + Date.now();
+          this.eventIconUploading[index] = false;
+          this.showToastMessage('Ícono subido');
+          input.value = '';
+        },
+        error: (err) => {
+          this.eventIconUploading[index] = false;
+          this.showToastMessage('Error al subir ícono: ' + (err.error?.error || err.message), 'error');
+        }
+      });
+    }, () => { this.eventIconUploading[index] = false; });
   }
 
   removeEventIcon(index: number): void {
@@ -409,18 +411,20 @@ export class AdminDiasReunionComponent implements OnInit {
     const eventId = this.eventsArray.at(index).get('id')?.value;
     if (!eventId) return;
     this.eventBackgroundUploading[index] = true;
-    this.apiService.uploadEventBackground(eventId, file).subscribe({
-      next: () => {
-        this.eventBackgroundPreviews[index] = this.apiService.getEventBackgroundUrl(eventId) + '?t=' + Date.now();
-        this.eventBackgroundUploading[index] = false;
-        this.showToastMessage('Imagen de fondo subida');
-        input.value = '';
-      },
-      error: (err) => {
-        this.eventBackgroundUploading[index] = false;
-        this.showToastMessage('Error al subir imagen: ' + (err.error?.error || err.message), 'error');
-      }
-    });
+    this.persistCalendarEvents(() => {
+      this.apiService.uploadEventBackground(eventId, file).subscribe({
+        next: () => {
+          this.eventBackgroundPreviews[index] = this.apiService.getEventBackgroundUrl(eventId) + '?t=' + Date.now();
+          this.eventBackgroundUploading[index] = false;
+          this.showToastMessage('Imagen de fondo subida');
+          input.value = '';
+        },
+        error: (err) => {
+          this.eventBackgroundUploading[index] = false;
+          this.showToastMessage('Error al subir imagen: ' + (err.error?.error || err.message), 'error');
+        }
+      });
+    }, () => { this.eventBackgroundUploading[index] = false; });
   }
 
   removeEventBackground(index: number): void {
@@ -869,6 +873,30 @@ export class AdminDiasReunionComponent implements OnInit {
         this.showToastMessage('Imagen de header eliminada');
       },
       error: () => this.showToastMessage('Error al eliminar imagen', 'error')
+    });
+  }
+
+  private persistCalendarEvents(onSuccess: () => void, onError?: () => void): void {
+    const calForm = this.calendarEventsForm.value;
+    const calEvents = this.eventsArray.value.map((e: any) => {
+      let speakers = e.speakers;
+      if (typeof speakers === 'string' && speakers.trim()) {
+        speakers = speakers.split(',').map((s: string) => s.trim()).filter((s: string) => s.length > 0);
+      } else if (!speakers || (Array.isArray(speakers) && speakers.length === 0)) {
+        speakers = [];
+      }
+      return { ...e, speakers };
+    });
+    this.apiService.updateCalendarEvents({
+      sectionTitle: calForm.sectionTitle || 'CALENDARIO DE EVENTOS',
+      sectionSubtitle: calForm.sectionSubtitle || '',
+      events: calEvents
+    }).subscribe({
+      next: () => onSuccess(),
+      error: (err) => {
+        this.showToastMessage('Guardá el evento antes de subir medios: ' + (err.error?.error || err.message), 'error');
+        onError?.();
+      }
     });
   }
 }

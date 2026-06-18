@@ -69,7 +69,11 @@ const authLimiter = rateLimit({
   message: { error: 'Demasiados intentos de acceso. Probá de nuevo más tarde.' },
 });
 
-app.use('/uploads', express.static(path.join(getUploadsDir())));
+app.use('/uploads', express.static(path.join(getUploadsDir()), {
+  setHeaders(res) {
+    res.setHeader('Cache-Control', 'no-cache, must-revalidate');
+  },
+}));
 
 app.use('/auth', authLimiter, authRoutes);
 app.use('/public', publicRoutes);

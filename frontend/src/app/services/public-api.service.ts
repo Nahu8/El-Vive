@@ -12,10 +12,17 @@ export class PublicApiService {
 
   constructor(private http: HttpClient) {}
 
-  resolveAssetUrl(path: string): string {
+  resolveAssetUrl(path: string, bustCache = true): string {
     if (!path) return '';
-    if (path.startsWith('http')) return path;
-    return path.startsWith('/') ? this.apiBase + path : this.apiBase + '/' + path;
+    if (path.startsWith('http')) return bustCache ? this.cacheBust(path) : path;
+    const url = path.startsWith('/') ? this.apiBase + path : this.apiBase + '/' + path;
+    return bustCache ? this.cacheBust(url) : url;
+  }
+
+  cacheBust(url: string): string {
+    if (!url) return '';
+    const sep = url.includes('?') ? '&' : '?';
+    return `${url}${sep}v=${Date.now()}`;
   }
 
   getHomeConfig(): Observable<any> {

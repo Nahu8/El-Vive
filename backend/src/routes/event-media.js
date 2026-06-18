@@ -56,20 +56,29 @@ router.delete(
 
 router.post(
   '/background',
-  upload.single('background'),
+  upload.fields([
+    { name: 'background', maxCount: 1 },
+    { name: 'image', maxCount: 1 },
+  ]),
   asyncHandler(async (req, res) => {
     const eventId = req.params.eventId;
-    if (!req.file) return res.status(400).json({ error: 'No se proporcionó imagen' });
-    if (!req.file.mimetype.startsWith('image/')) return res.status(400).json({ error: 'Debe ser una imagen' });
+    const reqFile = req.file || req.files?.background?.[0] || req.files?.image?.[0];
+    if (!reqFile) return res.status(400).json({ error: 'No se proporcionó imagen' });
+    if (!reqFile.mimetype.startsWith('image/')) return res.status(400).json({ error: 'Debe ser una imagen' });
+    const existing = await dbGet('SELECT imagePath FROM event_media WHERE eventId=? AND mediaType=?', [eventId, 'background']);
+    if (existing?.imagePath) {
+      const abs = resolvePath(existing.imagePath);
+      if (fs.existsSync(abs)) fs.unlinkSync(abs);
+    }
     await dbRun('DELETE FROM event_media WHERE eventId = ? AND mediaType = ?', [eventId, 'background']);
-    const ext = path.extname(req.file.originalname) || '.jpg';
-    const rel = saveFile('event-media', `event-${eventId}-bg${ext}`, req.file.buffer);
+    const ext = path.extname(reqFile.originalname) || '.jpg';
+    const rel = saveFile('event-media', `event-${eventId}-bg${ext}`, reqFile.buffer);
     await dbRun('INSERT INTO event_media (eventId, mediaType, imagePath, imageMime, imageName) VALUES (?,?,?,?,?)', [
       eventId,
       'background',
       rel,
-      req.file.mimetype,
-      req.file.originalname,
+      reqFile.mimetype,
+      reqFile.originalname,
     ]);
     res.json({ message: 'Fondo subido' });
   })

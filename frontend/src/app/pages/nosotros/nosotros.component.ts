@@ -196,7 +196,7 @@ export class NosotrosComponent implements OnInit {
   }
 
   get featureCards(): Array<{ title: string; content: string; linkText: string; linkUrl: string }> {
-    if (this.highlights.length >= 3) return this.highlights.slice(0, 3);
+    if (this.highlights.length > 0) return this.highlights.slice(0, 3);
     return [
       {
         title: 'Nuestras Creencias',
@@ -261,6 +261,7 @@ export class NosotrosComponent implements OnInit {
   }
 
   get zigzagSections(): Array<{
+    type: string;
     title?: string;
     content?: string;
     imageUrl?: string;
@@ -275,5 +276,8 @@ export class NosotrosComponent implements OnInit {
         layout: s.layout || (index % 2 === 0 ? 'left' : 'right')
       }));
   }
-}
 
+  get showHeroVideo(): boolean {
+    return !!(this.heroVideoUrl && this.heroVideoUrl.trim() && !this.currentHeroImageUrl);
+  }
+}

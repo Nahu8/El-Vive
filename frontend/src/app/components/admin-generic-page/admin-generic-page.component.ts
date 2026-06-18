@@ -256,10 +256,17 @@ export class AdminGenericPageComponent implements OnInit {
         const imagePath = res.path || res.url || '';
         if (mode === 'light') this.pageContent.hero.backgroundImageUrlLight = imagePath;
         else this.pageContent.hero.backgroundImageUrlDark = imagePath;
-        this.showToastMsg('Imagen subida');
+        this.pageContent.hero.backgroundVideoUrl = '';
+        this.persistContent('Imagen subida y guardada');
       },
       error: () => this.showToastMsg('Error al subir', 'error')
     });
+  }
+
+  clearHeroImage(mode: 'light' | 'dark') {
+    if (mode === 'light') this.pageContent.hero.backgroundImageUrlLight = '';
+    else this.pageContent.hero.backgroundImageUrlDark = '';
+    this.persistContent('Imagen eliminada');
   }
 
   onSectionImageSelected(event: Event, index: number) {
@@ -272,7 +279,7 @@ export class AdminGenericPageComponent implements OnInit {
         if (this.pageContent.sections[index]) {
           this.pageContent.sections[index].imageUrl = res.path || res.url || '';
         }
-        this.showToastMsg('Imagen subida');
+        this.persistContent('Imagen subida y guardada');
       },
       error: () => this.showToastMsg('Error al subir', 'error')
     });
@@ -301,6 +308,13 @@ export class AdminGenericPageComponent implements OnInit {
       p = '/uploads' + p;
     }
     return this.apiBase + p;
+  }
+
+  private persistContent(successMsg: string) {
+    this.apiService.updateGenericPage(this.pageKey, this.pageContent).subscribe({
+      next: () => this.showToastMsg(successMsg),
+      error: () => this.showToastMsg('Error al guardar', 'error')
+    });
   }
 
   private showToastMsg(msg: string, type: 'success' | 'error' = 'success') {

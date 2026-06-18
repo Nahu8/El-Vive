@@ -453,7 +453,7 @@ export class AdminMinisteriosComponent implements OnInit {
       schedule: [ministry?.schedule || ''],
       location: [ministry?.location || ''],
       leader: [ministry?.leader || ''],
-      contactEmail: [ministry?.contactEmail || ''],
+      contactEmail: [ministry?.contactEmail || '', Validators.email],
       showContactSection: [ministry?.showContactSection !== false],
       requirements: [ministry?.requirements || []],
       status: [ministry?.status || 'active', Validators.required],
@@ -574,12 +574,17 @@ export class AdminMinisteriosComponent implements OnInit {
       );
       if (index >= 0) {
         this.ministriesArray.setControl(index, this.createMinistryForm(merged));
-        this.showToastMessage('Ministerio actualizado correctamente');
       } else {
         this.ministriesArray.push(this.createMinistryForm(merged));
-        this.showToastMessage('Ministerio agregado correctamente');
       }
-      this.closeMinistryModal();
+
+      this.apiService.updateMinistriesList(this.ministriesArray.value).subscribe({
+        next: () => {
+          this.showToastMessage(index >= 0 ? 'Ministerio actualizado correctamente' : 'Ministerio agregado correctamente');
+          this.closeMinistryModal();
+        },
+        error: () => this.showToastMessage('Error al guardar el ministerio en el servidor', 'error')
+      });
     }
   }
 
@@ -892,7 +897,7 @@ export class AdminMinisteriosComponent implements OnInit {
       schedule: [ministry?.schedule || ''],
       location: [ministry?.location || ''],
       leader: [ministry?.leader || ''],
-      contactEmail: [ministry?.contactEmail || ''],
+      contactEmail: [ministry?.contactEmail || '', Validators.email],
       showContactSection: [ministry?.showContactSection !== false],
       requirements: [ministry?.requirements || []],
       status: [ministry?.status || 'active', Validators.required],

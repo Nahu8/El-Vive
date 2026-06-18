@@ -24,7 +24,7 @@ export class FooterComponent implements OnInit {
   footerAddress = '';
   footerEmail = '';
   footerPhone = '';
-  footerCopyright = '© 2025 ÉL VIVE IGLESIA. Todos los derechos reservados.';
+  footerCopyright = '© 2026 ÉL VIVE IGLESIA. Todos los derechos reservados.';
   footerPrivacyUrl = '#';
   footerTermsUrl = '#';
   quickLinks: { label: string; path: string }[] = [

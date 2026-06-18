@@ -47,7 +47,23 @@ router.put(
         await dbRun(`UPDATE ministries_content SET ${f}=?, updated_at=datetime('now') WHERE id=?`, [stringifyJson(body[f]), m.id]);
       }
     }
-    res.json(await dbGet('SELECT * FROM ministries_content WHERE id=?', [m.id]));
+    const updated = await getMinistriesContent();
+    const heroLightIcon = await dbGet('SELECT 1 FROM section_icons WHERE page_key=? AND section_key=?', ['ministries', 'hero-light']);
+    const heroDarkIcon = await dbGet('SELECT 1 FROM section_icons WHERE page_key=? AND section_key=?', ['ministries', 'hero-dark']);
+    res.json({
+      id: updated.id,
+      hero: {
+        ...(parseJson(updated.hero) || {}),
+        heroImageUrlLight: heroLightIcon ? '/api/section-icon/ministries/hero-light' : null,
+        heroImageUrlDark: heroDarkIcon ? '/api/section-icon/ministries/hero-dark' : null,
+      },
+      ministries: parseJson(updated.ministries),
+      statistics: parseJson(updated.statistics),
+      process: parseJson(updated.process),
+      testimonials: parseJson(updated.testimonials),
+      faqs: parseJson(updated.faqs),
+      pageContent: parseJson(updated.pageContent),
+    });
   })
 );
 

@@ -73,8 +73,8 @@ export class HeroComponent implements OnInit {
           this.heroVideoUrlDomDark = data.theme?.videoUrlDomDark ? this.publicApi.resolveAssetUrl(data.theme.videoUrlDomDark) : null;
           this.heroVideoUrlMierLight = data.theme?.videoUrlMierLight ? this.publicApi.resolveAssetUrl(data.theme.videoUrlMierLight) : null;
           this.heroVideoUrlMierDark = data.theme?.videoUrlMierDark ? this.publicApi.resolveAssetUrl(data.theme.videoUrlMierDark) : null;
-          this.heroVideoUrlLight = data.theme?.videoUrlLight ? this.publicApi.resolveAssetUrl(data.theme.videoUrlLight) : `${environment.apiBaseUrl}/api/home/video-light`;
-          this.heroVideoUrlDark = data.theme?.videoUrlDark ? this.publicApi.resolveAssetUrl(data.theme.videoUrlDark) : `${environment.apiBaseUrl}/api/home/video-dark`;
+          this.heroVideoUrlLight = data.theme?.videoUrlLight ? this.publicApi.resolveAssetUrl(data.theme.videoUrlLight) : this.publicApi.cacheBust(`${environment.apiBaseUrl}/api/home/video-light`);
+          this.heroVideoUrlDark = data.theme?.videoUrlDark ? this.publicApi.resolveAssetUrl(data.theme.videoUrlDark) : this.publicApi.cacheBust(`${environment.apiBaseUrl}/api/home/video-dark`);
           const isMier = Number(data?.theme?.context?.variant) === 2;
           const isDark = this.themeService.isDarkMode();
           this.videoSrc = isMier
@@ -94,8 +94,8 @@ export class HeroComponent implements OnInit {
         this.heroIconUrlDomDark = data.theme?.iconUrlDomDark ? this.publicApi.resolveAssetUrl(data.theme.iconUrlDomDark) : null;
         this.heroIconUrlMierLight = data.theme?.iconUrlMierLight ? this.publicApi.resolveAssetUrl(data.theme.iconUrlMierLight) : null;
         this.heroIconUrlMierDark = data.theme?.iconUrlMierDark ? this.publicApi.resolveAssetUrl(data.theme.iconUrlMierDark) : null;
-        this.heroIconUrlLight = data.theme?.iconUrlLight ? this.publicApi.resolveAssetUrl(data.theme.iconUrlLight) : `${environment.apiBaseUrl}/api/home/icon-light`;
-        this.heroIconUrlDark = data.theme?.iconUrlDark ? this.publicApi.resolveAssetUrl(data.theme.iconUrlDark) : `${environment.apiBaseUrl}/api/home/icon-dark`;
+        this.heroIconUrlLight = data.theme?.iconUrlLight ? this.publicApi.resolveAssetUrl(data.theme.iconUrlLight) : this.publicApi.cacheBust(`${environment.apiBaseUrl}/api/home/icon-light`);
+        this.heroIconUrlDark = data.theme?.iconUrlDark ? this.publicApi.resolveAssetUrl(data.theme.iconUrlDark) : this.publicApi.cacheBust(`${environment.apiBaseUrl}/api/home/icon-dark`);
         const isMier = Number(data?.theme?.context?.variant) === 2;
         const isDark = this.themeService.isDarkMode();
         this.heroIconUrl = data.hasIcon ? (isMier

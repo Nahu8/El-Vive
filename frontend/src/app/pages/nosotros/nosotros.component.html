@@ -1,12 +1,10 @@
 <div class="nos min-h-screen page-content animate-fadeIn no-section-gradient"
-  [style.--page-bg]="pageBgColor"
-  [style.--page-bg-section]="pageBgColor"
   [style.--nos-accent]="'linear-gradient(135deg, var(--theme-primary, #6366f1), var(--theme-secondary, #7c3aed))'">
 
   <!-- Hero -->
   <section class="nos-hero page-hero relative flex min-h-[58vh] items-center justify-center overflow-hidden md:min-h-[62vh]">
     <div class="absolute inset-0" [style.background-color]="heroBgColor"></div>
-    @if (heroVideoUrl) {
+    @if (showHeroVideo) {
       <video [src]="heroVideoUrl" autoplay muted loop playsinline
         class="absolute inset-0 h-full w-full object-cover"></video>
     } @else if (currentHeroImageUrl) {
@@ -16,7 +14,7 @@
       <div class="nos-hero__abstract absolute inset-0"></div>
     }
     @if (heroFadeEnabled) {
-      <div class="absolute inset-0" [style.background]="heroFadeStyle"></div>
+      <div class="absolute bottom-0 left-0 right-0 h-16 md:h-20 z-[1]" [style.background]="heroFadeStyle"></div>
     }
     <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/25"></div>
     <div class="nos-hero__grain pointer-events-none absolute inset-0 opacity-[0.35]"></div>
@@ -166,29 +164,30 @@
     @if (zigzagSections.length > 0) {
       <section class="nos-zigzag page-section space-y-20 py-14 md:space-y-28 md:py-20" aria-label="Historias y contenidos">
         @for (section of zigzagSections; track $index; let zi = $index) {
-          <div class="nos-zigzag-row grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-14 xl:gap-16"
-            [ngClass]="{ 'lg:grid-flow-dense': section.layout === 'right' }">
+          <div class="nos-zigzag-row grid grid-cols-1 items-center gap-10"
+            [ngClass]="{
+              'lg:grid-cols-2 lg:gap-14 xl:gap-16': section.type !== 'text',
+              'lg:grid-flow-dense': section.layout === 'right' && section.type !== 'text'
+            }">
             <div class="nos-zigzag-copy order-2 lg:max-w-xl"
               appReveal
               [revealVariant]="section.layout === 'right' ? 'fade-right' : 'fade-left'"
               [ngClass]="{
-                'lg:order-2 lg:justify-self-end': section.layout === 'right',
-                'lg:order-1': section.layout !== 'right'
+                'lg:order-2 lg:justify-self-end': section.layout === 'right' && section.type !== 'text',
+                'lg:order-1': section.layout !== 'right' || section.type === 'text',
+                'mx-auto text-center lg:col-span-2': section.type === 'text'
               }">
               <span class="nos-zigzag-index mb-4 inline-flex text-xs font-bold tabular-nums tracking-[0.25em] page-text-muted">
                 {{ zi + 1 | number: '2.0-0' }}
               </span>
-              <h3 class="page-heading mb-5 text-2xl font-bold md:text-3xl">
-                {{ section.title || 'Nuestra visión' }}
+              <h3 *ngIf="section.title" class="page-heading mb-5 text-2xl font-bold md:text-3xl">
+                {{ section.title }}
               </h3>
-              <p class="leading-relaxed whitespace-pre-line page-text-muted md:text-lg">
-                {{
-                  section.content ||
-                    'Seguimos creciendo como comunidad, desarrollando espacios donde cada persona pueda conocer, vivir y compartir su fe.'
-                }}
+              <p *ngIf="section.content" class="leading-relaxed whitespace-pre-line page-text-muted md:text-lg">
+                {{ section.content }}
               </p>
             </div>
-            <div class="nos-zigzag-media order-1"
+            <div *ngIf="section.type !== 'text'" class="nos-zigzag-media order-1"
               appReveal
               [revealVariant]="section.layout === 'right' ? 'fade-left' : 'fade-right'"
               [revealDelay]="80"
@@ -207,10 +206,6 @@
                 <div class="nos-media-frame overflow-hidden rounded-3xl shadow-2xl">
                   <img [src]="section.imageUrl" [alt]="section.title || 'Imagen'" loading="lazy"
                     class="aspect-video w-full object-cover lg:aspect-[4/3]" />
-                </div>
-              } @else {
-                <div class="nos-media-placeholder flex aspect-video items-center justify-center rounded-3xl border border-dashed page-border-color lg:aspect-[4/3]">
-                  <span class="text-5xl opacity-40">✨</span>
                 </div>
               }
             </div>
