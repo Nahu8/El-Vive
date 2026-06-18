@@ -39,6 +39,19 @@ export async function ensureMysqlFullSchema(pool) {
 
 export async function ensureMysqlAuxTables(pool) {
   await pool.query(`
+    CREATE TABLE IF NOT EXISTS section_icons (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      page_key VARCHAR(191) NOT NULL,
+      section_key VARCHAR(191) NOT NULL,
+      imagePath TEXT NULL,
+      imageMime TEXT NULL,
+      imageName TEXT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      UNIQUE KEY uk_section_icons_page_section (page_key, section_key)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS generic_pages (
       id INT AUTO_INCREMENT PRIMARY KEY,
       page_key VARCHAR(191) NOT NULL UNIQUE,

@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { PublicApiService } from '../../services/public-api.service';
 import { ThemeService } from '../../services/theme.service';
-import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-footer',
@@ -70,9 +69,7 @@ export class FooterComponent implements OnInit {
     const url = dark
       ? (this._footerIconUrlDark || this._footerIconUrl)
       : (this._footerIconUrlLight || this._footerIconUrl);
-    this.footerIconUrl = url
-      ? (url.startsWith('http') ? url : environment.apiBaseUrl + url)
-      : '';
+    this.footerIconUrl = url ? this.publicApi.resolveAssetUrl(url) : '';
   }
 }
 
