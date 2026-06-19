@@ -268,15 +268,15 @@
       <div class="bg-gray-800/50 rounded-lg p-5 border border-indigo-900/30 space-y-4">
         <h4 class="text-indigo-300 font-medium">Sección "¿Cómo contactarnos?"</h4>
         <p class="text-gray-500 text-sm">Título e iconos PNG de las tarjetas de email, teléfono y dirección.</p>
-        <input type="text" [(ngModel)]="pageContent.contactSection!.title" placeholder="Título de la sección"
+        <input type="text" [(ngModel)]="pageContent.contactSection.title" placeholder="Título de la sección"
           class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div *ngFor="let card of [{ key: 'email', name: 'Email' }, { key: 'phone', name: 'Teléfono' }, { key: 'address', name: 'Dirección' }]"
+          <div *ngFor="let card of contactCardConfigs"
             class="p-4 bg-gray-900 rounded-lg border border-gray-700 space-y-3">
             <p class="text-gray-400 text-sm font-medium">{{ card.name }}</p>
             <input type="text"
-              [(ngModel)]="pageContent.contactSection![card.key].label"
+              [(ngModel)]="contactCard(card.key).label"
               placeholder="Etiqueta"
               class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm">
             <input type="file"
@@ -284,11 +284,11 @@
               accept="image/png,image/jpeg,image/webp,image/svg+xml"
               class="text-xs text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded file:bg-gray-700 file:text-gray-300">
             <input type="text"
-              [(ngModel)]="pageContent.contactSection![card.key].iconUrl"
+              [(ngModel)]="contactCard(card.key).iconUrl"
               placeholder="URL del icono PNG"
               class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-xs">
-            <div *ngIf="pageContent.contactSection![card.key].iconUrl" class="flex items-center gap-2">
-              <img [src]="resolvePageContentUrl(pageContent.contactSection![card.key].iconUrl!)" alt="" class="h-10 w-10 object-contain">
+            <div *ngIf="contactCard(card.key).iconUrl" class="flex items-center gap-2">
+              <img [src]="resolvePageContentUrl(contactCard(card.key).iconUrl)" alt="" class="h-10 w-10 object-contain">
               <button type="button" (click)="clearContactIcon(card.key)" class="text-red-400 text-xs">Eliminar icono</button>
             </div>
           </div>

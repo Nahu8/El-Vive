@@ -50,6 +50,20 @@ interface DepartmentItem {
   color: string;
 }
 
+type ContactCardKey = 'email' | 'phone' | 'address';
+
+interface ContactCardItem {
+  label: string;
+  iconUrl: string;
+}
+
+interface ContactSection {
+  title: string;
+  email: ContactCardItem;
+  phone: ContactCardItem;
+  address: ContactCardItem;
+}
+
 @Component({
   selector: 'app-admin-contacto',
   standalone: true,
@@ -86,12 +100,7 @@ export class AdminContactoComponent implements OnInit {
       fadeColorDark?: string;
     };
     intro: { title: string; content: string };
-    contactSection?: {
-      title?: string;
-      email?: { label?: string; iconUrl?: string };
-      phone?: { label?: string; iconUrl?: string };
-      address?: { label?: string; iconUrl?: string };
-    };
+    contactSection: ContactSection;
     map: { title: string; description: string; imageUrl?: string; googleMapsUrl?: string; mapEmbed?: string };
     scheduleMeta?: Record<string, { title?: string; description?: string; icon?: string }>;
     sections: Array<{ type: string; title?: string; content?: string; imageUrl?: string; videoUrl?: string; caption?: string; layout?: string }>;
@@ -118,6 +127,12 @@ export class AdminContactoComponent implements OnInit {
   };
 
   private apiBase = environment.apiBaseUrl;
+
+  contactCardConfigs: ReadonlyArray<{ key: ContactCardKey; name: string }> = [
+    { key: 'email', name: 'Email' },
+    { key: 'phone', name: 'Teléfono' },
+    { key: 'address', name: 'Dirección' }
+  ];
 
   scheduleItems: ScheduleItem[] = [
     { id: 'sunday', title: 'Servicio Dominical', icon: 'fas fa-hands-praying', description: 'Culto principal de adoración', color: 'from-blue-500 to-cyan-500' },
@@ -452,26 +467,26 @@ export class AdminContactoComponent implements OnInit {
     });
   }
 
-  onContactIconSelected(event: Event, key: 'email' | 'phone' | 'address'): void {
+  onContactIconSelected(event: Event, key: ContactCardKey): void {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!file || !file.type.startsWith('image/')) return;
     const fd = new FormData();
     fd.append('file', file);
     this.http.post<any>(`${this.apiBase}/api/media/upload`, fd).subscribe({
       next: (res) => {
-        if (!this.pageContent.contactSection) this.pageContent.contactSection = {};
-        if (!this.pageContent.contactSection[key]) this.pageContent.contactSection[key] = {};
-        this.pageContent.contactSection[key]!.iconUrl = res.path || res.url || '';
+        this.contactCard(key).iconUrl = res.path || res.url || '';
         this.showToastMessage('Icono subido');
       },
       error: () => this.showToastMessage('Error al subir', 'error')
     });
   }
 
-  clearContactIcon(key: 'email' | 'phone' | 'address'): void {
-    if (this.pageContent.contactSection?.[key]) {
-      this.pageContent.contactSection[key]!.iconUrl = '';
-    }
+  clearContactIcon(key: ContactCardKey): void {
+    this.contactCard(key).iconUrl = '';
+  }
+
+  contactCard(key: ContactCardKey): ContactCardItem {
+    return this.pageContent.contactSection[key];
   }
 
   onSectionImageSelected(event: Event, index: number): void {
@@ -523,26 +538,21 @@ export class AdminContactoComponent implements OnInit {
     return meta;
   }
 
-  private buildContactSection(saved?: {
-    title?: string;
-    email?: { label?: string; iconUrl?: string };
-    phone?: { label?: string; iconUrl?: string };
-    address?: { label?: string; iconUrl?: string };
-  }) {
-    const defaults = this.pageContent.contactSection!;
+  private buildContactSection(saved?: Partial<ContactSection>): ContactSection {
+    const defaults = this.pageContent.contactSection;
     return {
       title: saved?.title || defaults.title,
       email: {
-        label: saved?.email?.label || defaults.email?.label || 'Email',
-        iconUrl: saved?.email?.iconUrl || defaults.email?.iconUrl || ''
+        label: saved?.email?.label || defaults.email.label,
+        iconUrl: saved?.email?.iconUrl || defaults.email.iconUrl
       },
       phone: {
-        label: saved?.phone?.label || defaults.phone?.label || 'Teléfono',
-        iconUrl: saved?.phone?.iconUrl || defaults.phone?.iconUrl || ''
+        label: saved?.phone?.label || defaults.phone.label,
+        iconUrl: saved?.phone?.iconUrl || defaults.phone.iconUrl
       },
       address: {
-        label: saved?.address?.label || defaults.address?.label || 'Dirección',
-        iconUrl: saved?.address?.iconUrl || defaults.address?.iconUrl || ''
+        label: saved?.address?.label || defaults.address.label,
+        iconUrl: saved?.address?.iconUrl || defaults.address.iconUrl
       }
     };
   }
