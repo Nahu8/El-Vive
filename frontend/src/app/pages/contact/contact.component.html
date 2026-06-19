@@ -95,7 +95,7 @@
       </div>
     </section>
 
-    <section *ngIf="mapImageUrl || contactInfo.mapEmbed" class="page-section py-16">
+    <section *ngIf="mapImageUrl || mapEmbedUrl || safeMapEmbedHtml" class="page-section py-16">
       <h2 class="page-heading text-3xl font-bold mb-4 text-center" appReveal revealVariant="fade-up">{{ mapTitle }}</h2>
       <p *ngIf="mapDescription" class="page-text-muted text-center mb-8 max-w-2xl mx-auto" appReveal revealVariant="fade-up">{{ mapDescription }}</p>
 
@@ -110,9 +110,17 @@
         </div>
       </a>
 
-      <div *ngIf="(!mapImageUrl || !googleMapsUrl) && contactInfo.mapEmbed"
-        class="map-embed-container rounded-2xl overflow-hidden border page-border-color shadow-xl">
-        <div class="map-embed-inner" [innerHTML]="getSafeMapEmbed()"></div>
+      <div *ngIf="(!mapImageUrl || !googleMapsUrl) && (mapEmbedUrl || safeMapEmbedHtml)"
+        class="map-embed-container rounded-2xl border page-border-color shadow-xl">
+        <iframe *ngIf="mapEmbedUrl; else mapEmbedHtmlFallback"
+          [src]="mapEmbedUrl"
+          title="Mapa de ubicación"
+          class="map-embed-iframe"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen></iframe>
+        <ng-template #mapEmbedHtmlFallback>
+          <div *ngIf="safeMapEmbedHtml" class="map-embed-inner" [innerHTML]="safeMapEmbedHtml"></div>
+        </ng-template>
       </div>
     </section>
 

@@ -65,6 +65,8 @@ export class ContactComponent implements OnInit {
   mapDescription = '';
   mapImageUrl = '';
   googleMapsUrl = '';
+  mapEmbedUrl: SafeResourceUrl | null = null;
+  safeMapEmbedHtml: SafeHtml | null = null;
 
   contactSectionTitle = '¿Cómo contactarnos?';
   contactCards = {
@@ -123,6 +125,7 @@ export class ContactComponent implements OnInit {
         this.mapDescription = pc.map?.description || '';
         this.mapImageUrl = pc.map?.imageUrl ? this.resolveUrl(pc.map.imageUrl) : '';
         this.googleMapsUrl = pc.map?.googleMapsUrl || '';
+        this.prepareMapEmbed(this.contactInfo.mapEmbed);
         this.scheduleMeta = pc.scheduleMeta || {};
         this.contactSectionTitle = pc.contactSection?.title || this.contactSectionTitle;
         this.contactCards = {
@@ -166,9 +169,24 @@ export class ContactComponent implements OnInit {
     return this.scheduleMeta[key]?.description || this.defaultScheduleMeta[key]?.description || '';
   }
 
-  getSafeMapEmbed(): SafeHtml {
-    const raw = this.normalizeMapEmbedHtml(this.contactInfo.mapEmbed || '');
-    return raw ? this.sanitizer.bypassSecurityTrustHtml(raw) : '';
+  private prepareMapEmbed(rawHtml: string): void {
+    const normalized = this.normalizeMapEmbedHtml(rawHtml);
+    const src = this.extractIframeSrc(normalized);
+    if (src) {
+      this.mapEmbedUrl = this.sanitizer.bypassSecurityTrustResourceUrl(src);
+      this.safeMapEmbedHtml = null;
+      return;
+    }
+    this.mapEmbedUrl = null;
+    this.safeMapEmbedHtml = normalized
+      ? this.sanitizer.bypassSecurityTrustHtml(normalized)
+      : null;
+  }
+
+  private extractIframeSrc(html: string): string | null {
+    if (!html) return null;
+    const match = html.match(/<iframe[^>]*\ssrc=["']([^"']+)["']/i);
+    return match?.[1] || null;
   }
 
   private normalizeSchedules(raw: Record<string, unknown>): Record<string, string> {
@@ -189,6 +207,7 @@ export class ContactComponent implements OnInit {
     return html
       .replace(/\swidth="[^"]*"/gi, '')
       .replace(/\sheight="[^"]*"/gi, '')
+      .replace(/\sloading="[^"]*"/gi, '')
       .replace(/<iframe/gi, '<iframe class="map-embed-iframe"');
   }
 
