@@ -140,7 +140,9 @@ export class AdminDiasReunionComponent implements OnInit {
       title: ['¿Quieres programar un evento especial?', Validators.required],
       description: ['Si deseas organizar un evento especial, boda, bautizo o reunión en nuestras instalaciones, contáctanos.', Validators.required],
       buttonText: ['Contactar coordinador', Validators.required],
-      buttonLink: ['/contacto', Validators.required]
+      buttonLink: ['/contacto', Validators.required],
+      buttonColorFrom: ['#4f46e5', Validators.required],
+      buttonColorTo: ['#7c3aed', Validators.required]
     });
 
   }

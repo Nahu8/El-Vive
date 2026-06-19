@@ -54,12 +54,30 @@ export class AdminGenericPageComponent implements OnInit {
       pastorName?: string;
       pastorRole?: string;
       pastorImageUrl?: string;
+      pastorDescription?: string;
+      pastorQuote?: string;
       pastoraName?: string;
       pastoraRole?: string;
       pastoraImageUrl?: string;
       groupTitle?: string;
       groupRole?: string;
       groupImageUrl?: string;
+    };
+    nosotrosLabels?: {
+      introTag?: string;
+      teamTag?: string;
+      teamHeading?: string;
+      teamSubtext?: string;
+      pillarsTag?: string;
+      pillarsHeading?: string;
+    };
+    nosotrosCta?: {
+      title: string;
+      subtitle?: string;
+      primaryButtonText?: string;
+      primaryButtonUrl?: string;
+      secondaryButtonText?: string;
+      secondaryButtonUrl?: string;
     };
     sections: Array<{ type: string; title?: string; content?: string; imageUrl?: string; videoUrl?: string; caption?: string; layout?: string }>;
   } = {
@@ -81,12 +99,30 @@ export class AdminGenericPageComponent implements OnInit {
       pastorName: '',
       pastorRole: '',
       pastorImageUrl: '',
+      pastorDescription: '',
+      pastorQuote: '',
       pastoraName: '',
       pastoraRole: '',
       pastoraImageUrl: '',
       groupTitle: '',
       groupRole: '',
       groupImageUrl: ''
+    },
+    nosotrosLabels: {
+      introTag: '',
+      teamTag: '',
+      teamHeading: '',
+      teamSubtext: '',
+      pillarsTag: '',
+      pillarsHeading: ''
+    },
+    nosotrosCta: {
+      title: '',
+      subtitle: '',
+      primaryButtonText: '',
+      primaryButtonUrl: '/ministerios',
+      secondaryButtonText: '',
+      secondaryButtonUrl: '/contacto'
     },
     sections: []
   };
@@ -136,12 +172,30 @@ export class AdminGenericPageComponent implements OnInit {
             pastorName: pc.leadership?.pastorName || '',
             pastorRole: pc.leadership?.pastorRole || '',
             pastorImageUrl: pc.leadership?.pastorImageUrl || '',
+            pastorDescription: pc.leadership?.pastorDescription || pc.pastor?.description || '',
+            pastorQuote: pc.leadership?.pastorQuote || pc.pastor?.quote || '',
             pastoraName: pc.leadership?.pastoraName || '',
             pastoraRole: pc.leadership?.pastoraRole || '',
             pastoraImageUrl: pc.leadership?.pastoraImageUrl || '',
             groupTitle: pc.leadership?.groupTitle || '',
             groupRole: pc.leadership?.groupRole || '',
             groupImageUrl: pc.leadership?.groupImageUrl || ''
+          },
+          nosotrosLabels: {
+            introTag: pc.nosotrosLabels?.introTag || '',
+            teamTag: pc.nosotrosLabels?.teamTag || '',
+            teamHeading: pc.nosotrosLabels?.teamHeading || '',
+            teamSubtext: pc.nosotrosLabels?.teamSubtext || '',
+            pillarsTag: pc.nosotrosLabels?.pillarsTag || '',
+            pillarsHeading: pc.nosotrosLabels?.pillarsHeading || ''
+          },
+          nosotrosCta: {
+            title: pc.nosotrosCta?.title || '',
+            subtitle: pc.nosotrosCta?.subtitle || '',
+            primaryButtonText: pc.nosotrosCta?.primaryButtonText || '',
+            primaryButtonUrl: pc.nosotrosCta?.primaryButtonUrl || '/ministerios',
+            secondaryButtonText: pc.nosotrosCta?.secondaryButtonText || '',
+            secondaryButtonUrl: pc.nosotrosCta?.secondaryButtonUrl || '/contacto'
           },
           sections: Array.isArray(pc.sections) ? [...pc.sections] : []
         };

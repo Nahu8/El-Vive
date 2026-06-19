@@ -86,7 +86,14 @@ export class AdminContactoComponent implements OnInit {
       fadeColorDark?: string;
     };
     intro: { title: string; content: string };
+    contactSection?: {
+      title?: string;
+      email?: { label?: string; iconUrl?: string };
+      phone?: { label?: string; iconUrl?: string };
+      address?: { label?: string; iconUrl?: string };
+    };
     map: { title: string; description: string; imageUrl?: string; googleMapsUrl?: string; mapEmbed?: string };
+    scheduleMeta?: Record<string, { title?: string; description?: string; icon?: string }>;
     sections: Array<{ type: string; title?: string; content?: string; imageUrl?: string; videoUrl?: string; caption?: string; layout?: string }>;
   } = {
     hero: {
@@ -99,7 +106,14 @@ export class AdminContactoComponent implements OnInit {
       fadeColorDark: '#000000'
     },
     intro: { title: '', content: '' },
+    contactSection: {
+      title: '¿Cómo contactarnos?',
+      email: { label: 'Email', iconUrl: '' },
+      phone: { label: 'Teléfono', iconUrl: '' },
+      address: { label: 'Dirección', iconUrl: '' }
+    },
     map: { title: 'Nuestra ubicación', description: '', googleMapsUrl: '', mapEmbed: '' },
+    scheduleMeta: {},
     sections: []
   };
 
@@ -177,7 +191,9 @@ export class AdminContactoComponent implements OnInit {
     this.pageContent = {
       hero: { ...this.pageContent.hero, ...pc.hero },
       intro: { ...this.pageContent.intro, ...pc.intro },
+      contactSection: this.buildContactSection(pc.contactSection),
       map: { ...this.pageContent.map, ...pc.map, mapEmbed: pc.map?.mapEmbed ?? (this.contactInfo as any).mapEmbed ?? '' },
+      scheduleMeta: this.buildScheduleMeta(pc.scheduleMeta),
       sections: Array.isArray(pc.sections) ? [...pc.sections] : []
     };
 
@@ -347,19 +363,27 @@ export class AdminContactoComponent implements OnInit {
     if (!this.contactInfo.departments) return '';
     return this.contactInfo.departments[departmentId] || '';
   }
+  getScheduleTitle(scheduleId: string): string {
+    return this.pageContent.scheduleMeta?.[scheduleId]?.title
+      || this.scheduleItems.find(s => s.id === scheduleId)?.title
+      || scheduleId;
+  }
+
+  getScheduleDescription(scheduleId: string): string {
+    return this.pageContent.scheduleMeta?.[scheduleId]?.description
+      || this.scheduleItems.find(s => s.id === scheduleId)?.description
+      || '';
+  }
+
   getScheduleIcon(scheduleId: string): string {
-    const schedule = this.scheduleItems.find(s => s.id === scheduleId);
-    return schedule ? schedule.icon : 'fas fa-clock';
+    return this.pageContent.scheduleMeta?.[scheduleId]?.icon
+      || this.scheduleItems.find(s => s.id === scheduleId)?.icon
+      || 'fas fa-clock';
   }
 
   getScheduleColor(scheduleId: string): string {
     const schedule = this.scheduleItems.find(s => s.id === scheduleId);
     return schedule ? schedule.color : 'from-gray-600 to-gray-800';
-  }
-
-  getScheduleTitle(scheduleId: string): string {
-    const schedule = this.scheduleItems.find(s => s.id === scheduleId);
-    return schedule ? schedule.title : scheduleId;
   }
 
   getDepartmentIcon(departmentId: string): string {
@@ -428,6 +452,28 @@ export class AdminContactoComponent implements OnInit {
     });
   }
 
+  onContactIconSelected(event: Event, key: 'email' | 'phone' | 'address'): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    const fd = new FormData();
+    fd.append('file', file);
+    this.http.post<any>(`${this.apiBase}/api/media/upload`, fd).subscribe({
+      next: (res) => {
+        if (!this.pageContent.contactSection) this.pageContent.contactSection = {};
+        if (!this.pageContent.contactSection[key]) this.pageContent.contactSection[key] = {};
+        this.pageContent.contactSection[key]!.iconUrl = res.path || res.url || '';
+        this.showToastMessage('Icono subido');
+      },
+      error: () => this.showToastMessage('Error al subir', 'error')
+    });
+  }
+
+  clearContactIcon(key: 'email' | 'phone' | 'address'): void {
+    if (this.pageContent.contactSection?.[key]) {
+      this.pageContent.contactSection[key]!.iconUrl = '';
+    }
+  }
+
   onSectionImageSelected(event: Event, index: number): void {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!file || !file.type.startsWith('image/')) return;
@@ -463,6 +509,54 @@ export class AdminContactoComponent implements OnInit {
     }).catch(() => {
       this.showToastMessage('Error al copiar', 'error');
     });
+  }
+
+  private buildScheduleMeta(saved?: Record<string, { title?: string; description?: string; icon?: string }>): Record<string, { title: string; description: string; icon: string }> {
+    const meta: Record<string, { title: string; description: string; icon: string }> = {};
+    for (const item of this.scheduleItems) {
+      meta[item.id] = {
+        title: saved?.[item.id]?.title || item.title,
+        description: saved?.[item.id]?.description || item.description,
+        icon: saved?.[item.id]?.icon || item.icon
+      };
+    }
+    return meta;
+  }
+
+  private buildContactSection(saved?: {
+    title?: string;
+    email?: { label?: string; iconUrl?: string };
+    phone?: { label?: string; iconUrl?: string };
+    address?: { label?: string; iconUrl?: string };
+  }) {
+    const defaults = this.pageContent.contactSection!;
+    return {
+      title: saved?.title || defaults.title,
+      email: {
+        label: saved?.email?.label || defaults.email?.label || 'Email',
+        iconUrl: saved?.email?.iconUrl || defaults.email?.iconUrl || ''
+      },
+      phone: {
+        label: saved?.phone?.label || defaults.phone?.label || 'Teléfono',
+        iconUrl: saved?.phone?.iconUrl || defaults.phone?.iconUrl || ''
+      },
+      address: {
+        label: saved?.address?.label || defaults.address?.label || 'Dirección',
+        iconUrl: saved?.address?.iconUrl || defaults.address?.iconUrl || ''
+      }
+    };
+  }
+
+  ensureScheduleMetaEntry(id: keyof Schedules): void {
+    if (!this.pageContent.scheduleMeta) this.pageContent.scheduleMeta = {};
+    if (!this.pageContent.scheduleMeta[id]) {
+      const defaults = this.scheduleItems.find(s => s.id === id);
+      this.pageContent.scheduleMeta[id] = {
+        title: defaults?.title || String(id),
+        description: defaults?.description || '',
+        icon: defaults?.icon || 'fas fa-clock'
+      };
+    }
   }
 
 }

@@ -19,6 +19,7 @@ const API_BASE = environment.apiBaseUrl;
 export class NosotrosComponent implements OnInit {
   heroTitle = 'NOSOTROS';
   heroSubtitle = 'Conocé nuestra historia, valores y visión como comunidad de fe.';
+  heroBadge = 'Conozca más acerca del ministerio';
   heroImageUrl = '';
   heroImageUrlLight = '';
   heroImageUrlDark = '';
@@ -31,6 +32,20 @@ export class NosotrosComponent implements OnInit {
 
   introTitle = '';
   introContent = '';
+  introTag = 'Quiénes somos';
+  teamTag = 'Liderazgo';
+  teamHeading = 'Presentación pastoral';
+  teamSubtext = 'Rostros que acompañan y sirven a esta casa semana a semana.';
+  pillarsTag = 'Fundamentos';
+  pillarsHeading = 'Lo que nos define';
+  nosotrosCta = {
+    title: '¿Querés ser parte?',
+    subtitle: 'Sumate a un ministerio o escribinos: nos encantaría conocerte.',
+    primaryButtonText: 'Ver ministerios',
+    primaryButtonUrl: '/ministerios',
+    secondaryButtonText: 'Contacto',
+    secondaryButtonUrl: '/contacto'
+  };
 
   pageSections: Array<{
     type: string;
@@ -77,6 +92,7 @@ export class NosotrosComponent implements OnInit {
         const pc = data.pageContent || {};
         this.heroTitle = pc.hero?.title || this.heroTitle;
         this.heroSubtitle = pc.hero?.subtitle || this.heroSubtitle;
+        this.heroBadge = pc.hero?.badge || this.heroBadge;
         this.heroImageUrl = this.resolveUrl(pc.hero?.backgroundImageUrl);
         this.heroImageUrlLight = this.resolveUrl(pc.hero?.backgroundImageUrlLight || pc.hero?.backgroundImageUrl);
         this.heroImageUrlDark = this.resolveUrl(pc.hero?.backgroundImageUrlDark || pc.hero?.backgroundImageUrl);
@@ -88,17 +104,31 @@ export class NosotrosComponent implements OnInit {
         this.heroFadeDarkColor = pc.hero?.fadeColorDark || '#000000';
         this.introTitle = pc.intro?.title || '';
         this.introContent = pc.intro?.content || '';
+        this.introTag = pc.nosotrosLabels?.introTag || this.introTag;
+        this.teamTag = pc.nosotrosLabels?.teamTag || this.teamTag;
+        this.teamHeading = pc.nosotrosLabels?.teamHeading || this.teamHeading;
+        this.teamSubtext = pc.nosotrosLabels?.teamSubtext || this.teamSubtext;
+        this.pillarsTag = pc.nosotrosLabels?.pillarsTag || this.pillarsTag;
+        this.pillarsHeading = pc.nosotrosLabels?.pillarsHeading || this.pillarsHeading;
+        this.nosotrosCta = {
+          title: pc.nosotrosCta?.title || this.nosotrosCta.title,
+          subtitle: pc.nosotrosCta?.subtitle || this.nosotrosCta.subtitle,
+          primaryButtonText: pc.nosotrosCta?.primaryButtonText || this.nosotrosCta.primaryButtonText,
+          primaryButtonUrl: pc.nosotrosCta?.primaryButtonUrl || this.nosotrosCta.primaryButtonUrl,
+          secondaryButtonText: pc.nosotrosCta?.secondaryButtonText || this.nosotrosCta.secondaryButtonText,
+          secondaryButtonUrl: pc.nosotrosCta?.secondaryButtonUrl || this.nosotrosCta.secondaryButtonUrl
+        };
         this.pageSections = (pc.sections || []).map((s: any) => ({
           ...s,
           imageUrl: s.imageUrl ? this.resolveUrl(s.imageUrl) : s.imageUrl,
           videoUrl: s.videoUrl
         }));
         this.pastor = {
-          name: pc.pastor?.name || this.pastor.name,
-          role: pc.pastor?.role || this.pastor.role,
-          description: pc.pastor?.description || this.pastor.description,
-          quote: pc.pastor?.quote || this.pastor.quote,
-          imageUrl: this.resolveUrl(pc.pastor?.imageUrl) || this.pastor.imageUrl
+          name: pc.leadership?.pastorName || pc.pastor?.name || this.pastor.name,
+          role: pc.leadership?.pastorRole || pc.pastor?.role || this.pastor.role,
+          description: pc.leadership?.pastorDescription || pc.pastor?.description || this.pastor.description,
+          quote: pc.leadership?.pastorQuote || pc.pastor?.quote || this.pastor.quote,
+          imageUrl: this.resolveUrl(pc.leadership?.pastorImageUrl || pc.pastor?.imageUrl) || this.pastor.imageUrl
         };
         this.pastora = {
           name: pc.leadership?.pastoraName || this.pastora.name,
@@ -109,13 +139,6 @@ export class NosotrosComponent implements OnInit {
           title: pc.leadership?.groupTitle || this.group.title,
           role: pc.leadership?.groupRole || this.group.role,
           imageUrl: this.resolveUrl(pc.leadership?.groupImageUrl) || this.group.imageUrl
-        };
-        this.pastor = {
-          name: pc.leadership?.pastorName || this.pastor.name,
-          role: pc.leadership?.pastorRole || this.pastor.role,
-          description: this.pastor.description,
-          quote: this.pastor.quote,
-          imageUrl: this.resolveUrl(pc.leadership?.pastorImageUrl) || this.pastor.imageUrl
         };
         this.highlights = Array.isArray(pc.highlights) && pc.highlights.length
           ? pc.highlights.map((h: any) => ({
@@ -275,6 +298,10 @@ export class NosotrosComponent implements OnInit {
         ...s,
         layout: s.layout || (index % 2 === 0 ? 'left' : 'right')
       }));
+  }
+
+  isExternalCtaLink(url: string): boolean {
+    return /^https?:\/\//i.test(String(url).trim());
   }
 
   get showHeroVideo(): boolean {

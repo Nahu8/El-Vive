@@ -61,6 +61,8 @@ export class DiasReunionComponent implements OnInit {
   eventCtaDescription: string = 'Si deseas organizar un evento especial, boda, bautizo o reunión en nuestras instalaciones, contáctanos.';
   eventCtaButtonText: string = 'Contactar coordinador';
   eventCtaButtonLink: string = '/contacto';
+  eventCtaButtonColorFrom: string = '#4f46e5';
+  eventCtaButtonColorTo: string = '#7c3aed';
 
   currentDate: Date = new Date();
   currentMonth: string = '';
@@ -171,6 +173,8 @@ export class DiasReunionComponent implements OnInit {
           this.eventCtaDescription = data.eventCta.description || this.eventCtaDescription;
           this.eventCtaButtonText = data.eventCta.buttonText || this.eventCtaButtonText;
           this.eventCtaButtonLink = data.eventCta.buttonLink || this.eventCtaButtonLink;
+          this.eventCtaButtonColorFrom = data.eventCta.buttonColorFrom || this.eventCtaButtonColorFrom;
+          this.eventCtaButtonColorTo = data.eventCta.buttonColorTo || this.eventCtaButtonColorTo;
         }
       },
       error: (error) => {
@@ -369,6 +373,10 @@ export class DiasReunionComponent implements OnInit {
     ];
 
     this.calendarEvents = december2025Events;
+  }
+
+  get eventCtaButtonStyle(): string {
+    return `linear-gradient(to right, ${this.eventCtaButtonColorFrom}, ${this.eventCtaButtonColorTo})`;
   }
 
   getDaysUntil(eventDate: Date): number {

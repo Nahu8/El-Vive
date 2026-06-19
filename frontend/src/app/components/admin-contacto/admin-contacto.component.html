@@ -264,6 +264,36 @@
           </div>
         </div>
       </form>
+
+      <div class="bg-gray-800/50 rounded-lg p-5 border border-indigo-900/30 space-y-4">
+        <h4 class="text-indigo-300 font-medium">Sección "¿Cómo contactarnos?"</h4>
+        <p class="text-gray-500 text-sm">Título e iconos PNG de las tarjetas de email, teléfono y dirección.</p>
+        <input type="text" [(ngModel)]="pageContent.contactSection!.title" placeholder="Título de la sección"
+          class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div *ngFor="let card of [{ key: 'email', name: 'Email' }, { key: 'phone', name: 'Teléfono' }, { key: 'address', name: 'Dirección' }]"
+            class="p-4 bg-gray-900 rounded-lg border border-gray-700 space-y-3">
+            <p class="text-gray-400 text-sm font-medium">{{ card.name }}</p>
+            <input type="text"
+              [(ngModel)]="pageContent.contactSection![card.key].label"
+              placeholder="Etiqueta"
+              class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm">
+            <input type="file"
+              (change)="onContactIconSelected($event, card.key)"
+              accept="image/png,image/jpeg,image/webp,image/svg+xml"
+              class="text-xs text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded file:bg-gray-700 file:text-gray-300">
+            <input type="text"
+              [(ngModel)]="pageContent.contactSection![card.key].iconUrl"
+              placeholder="URL del icono PNG"
+              class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-xs">
+            <div *ngIf="pageContent.contactSection![card.key].iconUrl" class="flex items-center gap-2">
+              <img [src]="resolvePageContentUrl(pageContent.contactSection![card.key].iconUrl!)" alt="" class="h-10 w-10 object-contain">
+              <button type="button" (click)="clearContactIcon(card.key)" class="text-red-400 text-xs">Eliminar icono</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     
@@ -271,19 +301,26 @@
       <div *ngIf="!isEditing" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div *ngFor="let schedule of scheduleItems"
           class="bg-gray-800/50 rounded-lg p-5 border border-gray-700/50">
-          <p class="text-gray-500 text-xs uppercase tracking-wider mb-1">{{ schedule.title }}</p>
+          <p class="text-gray-500 text-xs uppercase tracking-wider mb-1">{{ getScheduleTitle(schedule.id) }}</p>
           <p class="text-white">{{ getScheduleValue(schedule.id) || 'No configurado' }}</p>
-          <p class="text-gray-500 text-xs mt-1">{{ schedule.description }}</p>
+          <p class="text-gray-500 text-xs mt-1">{{ getScheduleDescription(schedule.id) }}</p>
         </div>
       </div>
 
       <form *ngIf="isEditing" [formGroup]="schedulesForm" class="space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div *ngFor="let schedule of scheduleItems">
-            <label class="block text-gray-400 mb-2 text-sm">
-              {{ schedule.title }} *
-              <span class="text-gray-600 text-xs block">{{ schedule.description }}</span>
-            </label>
+        <div class="grid grid-cols-1 gap-4">
+          <div *ngFor="let schedule of scheduleItems" class="p-4 bg-gray-900 rounded-lg border border-gray-700">
+            <p class="text-gray-400 text-sm font-medium mb-3">{{ schedule.title }}</p>
+            <label class="block text-gray-400 mb-2 text-sm">Título del servicio *</label>
+            <input type="text" [(ngModel)]="pageContent.scheduleMeta![schedule.id].title" [ngModelOptions]="{standalone: true}"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 focus:outline-none transition-all mb-3">
+            <label class="block text-gray-400 mb-2 text-sm">Descripción</label>
+            <textarea [(ngModel)]="pageContent.scheduleMeta![schedule.id].description" [ngModelOptions]="{standalone: true}" rows="2"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 focus:outline-none transition-all mb-3"></textarea>
+            <label class="block text-gray-400 mb-2 text-sm">Ícono (clase Font Awesome, ej. fas fa-book)</label>
+            <input type="text" [(ngModel)]="pageContent.scheduleMeta![schedule.id].icon" [ngModelOptions]="{standalone: true}"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 focus:outline-none transition-all mb-3">
+            <label class="block text-gray-400 mb-2 text-sm">Horario *</label>
             <input type="text" [formControlName]="schedule.id"
               class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 focus:outline-none transition-all"
               placeholder="Ej: 10:00 AM - 12:00 PM">

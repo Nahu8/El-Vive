@@ -44,11 +44,3 @@
 .donaciones-pay-card:hover {
   box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.35);
 }
-
-:host .page-section {
-  background: transparent !important;
-}
-
-:host .page-section + .page-section {
-  background: transparent !important;
-}

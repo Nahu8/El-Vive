@@ -1,4 +1,4 @@
-<div class="min-h-screen page-content no-section-gradient" [style.--card-bg]="pageBgColor">
+<div class="min-h-screen page-content" [style.--card-bg]="pageBgColor">
 
 <section class="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden">
     <div class="absolute inset-0 z-0" [style.background-color]="heroBgColor"></div>
@@ -324,9 +324,9 @@
     </div>
 </section>
 
-<section class="page-section relative py-16 overflow-hidden">
+<section class="page-section relative py-16">
     <div class="container mx-auto px-6 relative z-10">
-        <div class="max-w-3xl mx-auto text-center" appReveal revealVariant="zoom">
+        <div class="max-w-3xl mx-auto text-center" appReveal revealVariant="fade-up">
             <div
                 class="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-full border border-green-500/30 mb-8">
                 <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
@@ -340,7 +340,8 @@
 
             <div class="flex justify-center">
                 <a [routerLink]="eventCtaButtonLink"
-                    class="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-indigo-500/30">
+                    class="px-8 py-4 text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+                    [style.background]="eventCtaButtonStyle">
                     {{ eventCtaButtonText }}
                 </a>
             </div>

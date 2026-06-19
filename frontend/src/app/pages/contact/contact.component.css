@@ -143,21 +143,23 @@ textarea:focus {
   100% { transform: translateX(100%); }
 }
 
-
-:host .page-section {
-  background: transparent !important;
-  background-color: transparent !important;
+.map-embed-container {
+  width: 100%;
 }
 
-:host .page-section + .page-section {
-  background-image: none !important;
-  background: transparent !important;
-  background-color: transparent !important;
+.map-embed-inner {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  min-height: 320px;
+  background: var(--card-bg);
 }
 
-:host-context(html.dark-theme) .page-section + .page-section,
-:host-context(html.light-theme) .page-section + .page-section {
-  background-image: none !important;
-  background: transparent !important;
-  background-color: transparent !important;
+:host ::ng-deep .map-embed-inner iframe,
+:host ::ng-deep .map-embed-iframe {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 320px;
+  border: 0;
 }
