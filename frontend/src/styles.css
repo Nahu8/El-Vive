@@ -34,8 +34,9 @@
 
 
 html.dark-theme {
-  --page-bg: #0a0a0a;
+  --page-bg: #000000;
   --page-bg-section: #000000;
+  --page-bg-rgb: 0 0 0;
   --page-text: #ffffff;
   --page-text-muted: #9ca3af;
   --card-bg: rgba(17, 24, 39, 0.9);
@@ -67,25 +68,20 @@ html.light-theme .page-content {
 
 .page-section {
   background-color: var(--page-bg-section) !important;
+  background-image: none !important;
   color: var(--page-text) !important;
   position: relative;
 }
 
 
 html.dark-theme .page-section + .page-section {
-  background: linear-gradient(to bottom,
-    #141414 0%,
-    #0f0f0f 40px,
-    #000000 80px,
-    #000000 100%) !important;
+  background-color: #000000 !important;
+  background-image: none !important;
 }
 
 html.light-theme .page-section + .page-section {
-  background: linear-gradient(to bottom,
-    #ebe8e2 0%,
-    #f3f0ea 40px,
-    #faf8f5 80px,
-    #faf8f5 100%) !important;
+  background-color: var(--page-bg-section) !important;
+  background-image: none !important;
 }
 
 .page-section h1, .page-section h2, .page-section h3,
@@ -223,19 +219,17 @@ html {
 
 .no-section-gradient .page-section {
   background-image: none !important;
-  background: transparent !important;
-  background-color: var(--page-bg) !important;
+  background-color: var(--page-bg-section) !important;
 }
 
 .no-section-gradient .page-section + .page-section {
   background-image: none !important;
-  background: transparent !important;
-  background-color: var(--page-bg) !important;
+  background-color: var(--page-bg-section) !important;
 }
 
 
 .no-section-gradient .page-card-bg {
-  background-color: var(--page-bg) !important;
+  background-color: var(--page-bg-section) !important;
   background-image: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;

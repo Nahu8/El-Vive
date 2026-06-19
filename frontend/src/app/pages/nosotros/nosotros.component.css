@@ -60,7 +60,7 @@
 }
 
 .nos-section-tag {
-  background: rgb(var(--page-bg-rgb, 10 10 15) / 0.35);
+  background: rgb(var(--page-bg-rgb, 0 0 0) / 0.35);
 }
 
 :host-context(html.light-theme) .nos-section-tag {
@@ -73,7 +73,7 @@
 
 /* —— Team cards —— */
 .nos-team-card {
-  background: rgb(var(--page-bg-rgb, 15 15 20) / 0.55);
+  background: rgb(var(--page-bg-rgb, 0 0 0) / 0.55);
 }
 
 :host-context(html.light-theme) .nos-team-card {
@@ -95,7 +95,7 @@
 }
 
 .nos-quote {
-  background: rgb(var(--page-bg-rgb, 15 17 26) / 0.55);
+  background: rgb(var(--page-bg-rgb, 0 0 0) / 0.55);
 }
 
 :host-context(html.light-theme) .nos-quote {
@@ -112,7 +112,7 @@
 
 /* —— Pillars —— */
 .nos-pillar {
-  background: rgb(var(--page-bg-rgb, 15 17 26) / 0.45);
+  background: rgb(var(--page-bg-rgb, 0 0 0) / 0.45);
 }
 
 :host-context(html.light-theme) .nos-pillar {
@@ -151,7 +151,7 @@
 }
 
 .nos-media-placeholder {
-  background: rgb(var(--page-bg-rgb, 15 17 26) / 0.65);
+  background: rgb(var(--page-bg-rgb, 0 0 0) / 0.65);
 }
 
 /* —— CTA —— */
