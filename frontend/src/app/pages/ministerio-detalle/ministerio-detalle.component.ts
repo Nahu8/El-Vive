@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { PublicApiService } from '../../services/public-api.service';
+import { SeoService } from '../../services/seo.service';
 import { RevealOnScrollDirective } from '../../directives/reveal-on-scroll.directive';
 
 export interface MinistryPhotoItem {
@@ -41,7 +42,8 @@ export class MinisterioDetalleComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     public publicApi: PublicApiService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private seo: SeoService
   ) {}
 
   ngOnInit(): void {
@@ -94,6 +96,12 @@ export class MinisterioDetalleComponent implements OnInit {
           data.volunteerCount = vc;
         }
         this.hasStats = (Number.isFinite(vc) && vc > 0) || this.impactLines.length > 0;
+
+        this.seo.updateMinistryDetail(
+          data.title || data.name || 'Ministerio',
+          data.description || data.subtitle || '',
+          id
+        );
 
         this.loading = false;
       },
