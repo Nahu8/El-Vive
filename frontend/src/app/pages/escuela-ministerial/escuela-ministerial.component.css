@@ -1,0 +1,12 @@
+:host .page-section {
+  background: transparent !important;
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.55s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

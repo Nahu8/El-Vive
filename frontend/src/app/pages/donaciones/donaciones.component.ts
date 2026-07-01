@@ -39,9 +39,9 @@ export interface DonacionesCta {
   styleUrls: ['./donaciones.component.css']
 })
 export class DonacionesComponent implements OnInit {
-  heroTitle = 'DONACIONES';
-  heroBadge = '';
-  heroSubtitle = 'Tu aporte ayuda a sostener la obra de la iglesia y bendecir a nuestra comunidad.';
+  heroTitle = 'OFRENDAS';
+  heroBadge = 'Ofrenda voluntaria';
+  heroSubtitle = 'Tu participación voluntaria sostiene el ministerio y nos permite seguir acompañando a más personas.';
   heroImageUrl = '';
   heroImageUrlLight = '';
   heroImageUrlDark = '';

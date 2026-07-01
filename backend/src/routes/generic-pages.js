@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { dbGet, dbRun, parseJson, stringifyJson } from '../db/index.js';
 import { enrichDonacionesPageContent } from '../lib/donaciones-page-defaults.js';
+import { enrichNosotrosPageContent } from '../lib/nosotros-page-defaults.js';
+import { enrichEscuelaMinisterialPageContent } from '../lib/escuela-ministerial-page-defaults.js';
 import { asyncHandler } from '../lib/async-handler.js';
 
 const router = Router();
@@ -21,6 +23,10 @@ router.get(
     let pageContent = parseJson(row.page_content) ?? {};
     if (req.params.pageKey === 'donaciones') {
       pageContent = enrichDonacionesPageContent(pageContent);
+    } else if (req.params.pageKey === 'nosotros') {
+      pageContent = enrichNosotrosPageContent(pageContent);
+    } else if (req.params.pageKey === 'escuela-ministerial') {
+      pageContent = enrichEscuelaMinisterialPageContent(pageContent);
     }
     res.json({ pageKey: row.page_key, pageContent });
   })

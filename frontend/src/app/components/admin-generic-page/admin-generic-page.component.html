@@ -74,60 +74,75 @@
           class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white"></textarea>
       </div>
 
-      <div *ngIf="pageKey === 'donaciones'" class="bg-gray-800/50 rounded-lg p-4 border border-emerald-900/40">
-        <h4 class="text-emerald-300 font-medium mb-3">Por qué damos (3 tarjetas con imagen)</h4>
-        <p class="text-gray-500 text-sm mb-4">Se muestran en la página pública en un grid moderno. Podés subir imagen o pegar URL.</p>
-        <div class="space-y-4">
-          <div *ngFor="let w of pageContent.whyGive; let i = index" class="p-4 bg-gray-900 rounded-lg border border-gray-700">
-            <div class="flex justify-between items-center mb-2">
-              <span class="text-gray-400 text-sm">Tarjeta {{ i + 1 }}</span>
-              <button type="button" (click)="removeWhyGive(i)" class="text-red-400 text-xs">Eliminar</button>
-            </div>
-            <input type="text" [(ngModel)]="w.title" placeholder="Título" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2">
-            <textarea [(ngModel)]="w.content" rows="2" placeholder="Texto" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2"></textarea>
-            <input type="file" (change)="onWhyGiveImageSelected($event, i)" accept="image/*" class="text-xs text-gray-400 file:mr-2 file:py-1 file:rounded file:bg-gray-700 mb-1">
-            <input type="text" [(ngModel)]="w.imageUrl" placeholder="URL imagen (opcional)" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-1 text-white text-xs">
-            <img *ngIf="w.imageUrl" [src]="resolveUrl(w.imageUrl)" alt="" class="mt-2 h-24 w-full object-cover rounded">
-          </div>
-          <button type="button" (click)="addWhyGive()" class="px-4 py-2 bg-emerald-900/50 hover:bg-emerald-900/70 text-emerald-200 text-sm rounded-lg">+ Agregar tarjeta</button>
-        </div>
-      </div>
-
-      <div *ngIf="pageKey === 'donaciones'" class="bg-gray-800/50 rounded-lg p-4 border border-indigo-900/40">
-        <h4 class="text-indigo-300 font-medium mb-3">Medios de pago</h4>
-        <p class="text-gray-500 text-sm mb-4">CBU, alias, links de Mercado Pago, etc. El visitante podrá copiar el texto con un botón.</p>
-        <div class="space-y-4">
-          <div *ngFor="let pm of pageContent.paymentMethods; let i = index" class="p-4 bg-gray-900 rounded-lg border border-gray-700">
-            <div class="flex justify-between items-center mb-2">
-              <span class="text-gray-400 text-sm">Método {{ i + 1 }}</span>
-              <button type="button" (click)="removePaymentMethod(i)" class="text-red-400 text-xs">Eliminar</button>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
-              <input type="text" [(ngModel)]="pm.label" placeholder="Título (ej. Transferencia bancaria)" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm">
-              <input type="text" [(ngModel)]="pm.icon" placeholder="Emoji / ícono (ej. 🏦)" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm">
-            </div>
-            <textarea [(ngModel)]="pm.description" rows="2" placeholder="Descripción corta" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2"></textarea>
-            <textarea [(ngModel)]="pm.detail" rows="4" placeholder="Datos para copiar: CBU, alias, link..." class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2 font-mono text-xs"></textarea>
-            <input type="file" (change)="onPaymentMethodImageSelected($event, i)" accept="image/*" class="text-xs text-gray-400 file:mr-2 file:py-1 file:rounded file:bg-gray-700 mb-1">
-            <input type="text" [(ngModel)]="pm.imageUrl" placeholder="URL imagen lateral (opcional)" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-1 text-white text-xs">
-            <img *ngIf="pm.imageUrl" [src]="resolveUrl(pm.imageUrl)" alt="" class="mt-2 h-20 object-cover rounded max-w-xs">
-          </div>
-          <button type="button" (click)="addPaymentMethod()" class="px-4 py-2 bg-indigo-900/50 hover:bg-indigo-900/70 text-indigo-200 text-sm rounded-lg">+ Agregar medio de pago</button>
-        </div>
-      </div>
-
       <div *ngIf="pageKey === 'donaciones'" class="bg-gray-800/50 rounded-lg p-4 border border-amber-900/30">
-        <h4 class="text-amber-200 font-medium mb-3">Bloque final (CTA)</h4>
-        <input type="text" [(ngModel)]="pageContent.donacionesCta!.title" placeholder="Título" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white mb-2">
+        <h4 class="text-amber-200 font-medium mb-3">Botón principal (Contactanos)</h4>
+        <p class="text-gray-500 text-sm mb-4">El visitante verá un botón para ir a contacto. Podés personalizar el bloque final opcional.</p>
+        <input type="text" [(ngModel)]="pageContent.donacionesCta!.title" placeholder="Título del bloque final (opcional)" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white mb-2">
         <textarea [(ngModel)]="pageContent.donacionesCta!.subtitle" rows="2" placeholder="Subtítulo" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white mb-2"></textarea>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
-          <input type="text" [(ngModel)]="pageContent.donacionesCta!.buttonText" placeholder="Texto del botón" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
+          <input type="text" [(ngModel)]="pageContent.donacionesCta!.buttonText" placeholder="Texto del botón (ej. Contactanos)" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
           <input type="text" [(ngModel)]="pageContent.donacionesCta!.buttonUrl" placeholder="Ruta (ej. /contacto)" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
         </div>
-        <label class="block text-gray-500 text-sm mb-1">Imagen de fondo / lateral del CTA</label>
         <input type="file" (change)="onDonacionesCtaImageSelected($event)" accept="image/*" class="text-xs text-gray-400 file:mr-2 file:py-1 file:rounded file:bg-gray-700 mb-1">
-        <input type="text" [(ngModel)]="pageContent.donacionesCta!.imageUrl" placeholder="URL imagen" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-1 text-white text-xs">
-        <img *ngIf="pageContent.donacionesCta?.imageUrl" [src]="resolveUrl(pageContent.donacionesCta!.imageUrl!)" alt="" class="mt-2 h-24 object-cover rounded max-w-sm">
+        <input type="text" [(ngModel)]="pageContent.donacionesCta!.imageUrl" placeholder="URL imagen fondo CTA" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-1 text-white text-xs">
+      </div>
+
+      <div *ngIf="pageKey === 'escuela-ministerial'" class="space-y-4">
+        <div class="bg-gray-800/50 rounded-lg p-4 border border-indigo-900/40">
+          <h4 class="text-indigo-300 font-medium mb-3">Objetivo</h4>
+          <input type="text" [(ngModel)]="pageContent.objective!.title" placeholder="Título" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white mb-2">
+          <textarea [(ngModel)]="pageContent.objective!.content" rows="3" placeholder="Contenido" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white"></textarea>
+        </div>
+        <div class="bg-gray-800/50 rounded-lg p-4 border border-violet-900/40">
+          <h4 class="text-violet-300 font-medium mb-3">Información general</h4>
+          <input type="text" [(ngModel)]="pageContent.generalInfo!.title" placeholder="Título" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white mb-2">
+          <textarea [(ngModel)]="pageContent.generalInfo!.content" rows="3" placeholder="Contenido" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white"></textarea>
+        </div>
+        <div class="bg-gray-800/50 rounded-lg p-4">
+          <h4 class="text-gray-300 font-medium mb-3">Programa</h4>
+          <input type="text" [(ngModel)]="pageContent.program!.title" placeholder="Título" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white mb-2">
+          <textarea [(ngModel)]="pageContent.program!.content" rows="2" placeholder="Descripción" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white mb-2"></textarea>
+          <div *ngFor="let item of pageContent.program!.items; let i = index" class="flex gap-2 mb-2">
+            <input type="text" [(ngModel)]="pageContent.program!.items[i]" placeholder="Ítem del programa" class="flex-1 bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm">
+            <button type="button" (click)="removeProgramItem(i)" class="text-red-400 text-xs px-2">×</button>
+          </div>
+          <button type="button" (click)="addProgramItem()" class="px-3 py-1.5 bg-gray-700 text-white text-sm rounded">+ Ítem</button>
+        </div>
+        <div class="bg-gray-800/50 rounded-lg p-4">
+          <h4 class="text-gray-300 font-medium mb-3">Requisitos</h4>
+          <input type="text" [(ngModel)]="pageContent.requirements!.title" placeholder="Título" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white mb-2">
+          <div *ngFor="let req of pageContent.requirements!.items; let i = index" class="flex gap-2 mb-2">
+            <input type="text" [(ngModel)]="pageContent.requirements!.items[i]" placeholder="Requisito" class="flex-1 bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm">
+            <button type="button" (click)="removeRequirementItem(i)" class="text-red-400 text-xs px-2">×</button>
+          </div>
+          <button type="button" (click)="addRequirementItem()" class="px-3 py-1.5 bg-gray-700 text-white text-sm rounded">+ Requisito</button>
+        </div>
+        <div class="bg-gray-800/50 rounded-lg p-4">
+          <h4 class="text-gray-300 font-medium mb-3">Inscripción</h4>
+          <input type="text" [(ngModel)]="pageContent.registration!.title" placeholder="Título" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white mb-2">
+          <textarea [(ngModel)]="pageContent.registration!.content" rows="2" placeholder="Texto" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white mb-2"></textarea>
+          <input type="text" [(ngModel)]="pageContent.registration!.formUrl" placeholder="URL formulario (o ruta interna)" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm mb-2">
+          <input type="text" [(ngModel)]="pageContent.registration!.pdfUrl" placeholder="URL PDF ficha" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
+        </div>
+        <div class="bg-gray-800/50 rounded-lg p-4">
+          <h4 class="text-gray-300 font-medium mb-3">Video de presentación (YouTube)</h4>
+          <input type="text" [(ngModel)]="pageContent.presentationVideo!.url" placeholder="URL YouTube" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
+        </div>
+        <div class="bg-gray-800/50 rounded-lg p-4">
+          <h4 class="text-gray-300 font-medium mb-3">Imágenes</h4>
+          <div *ngFor="let img of pageContent.images; let i = index" class="p-3 bg-gray-900 rounded border border-gray-700 mb-2">
+            <input type="file" (change)="onEscuelaImageSelected($event, i)" accept="image/*" class="text-xs text-gray-400 mb-1">
+            <input type="text" [(ngModel)]="img.url" placeholder="URL imagen" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-1 text-white text-xs mb-1">
+            <input type="text" [(ngModel)]="img.caption" placeholder="Leyenda" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-1 text-white text-xs">
+            <button type="button" (click)="removeEscuelaImage(i)" class="text-red-400 text-xs mt-1">Eliminar</button>
+          </div>
+          <button type="button" (click)="addEscuelaImage()" class="px-3 py-1.5 bg-gray-700 text-white text-sm rounded">+ Imagen</button>
+        </div>
+        <div class="bg-gray-800/50 rounded-lg p-4 border border-pink-900/30">
+          <h4 class="text-pink-300 font-medium mb-3">Redes sociales (Escuela Ministerial)</h4>
+          <input type="text" [(ngModel)]="pageContent.socialMedia!.facebook" placeholder="Facebook URL" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm mb-2">
+          <input type="text" [(ngModel)]="pageContent.socialMedia!.instagram" placeholder="Instagram URL" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
+        </div>
       </div>
 
       <div *ngIf="pageKey === 'nosotros'" class="bg-gray-800/50 rounded-lg p-4">
@@ -150,7 +165,10 @@
       </div>
 
       <div *ngIf="pageKey === 'nosotros'" class="bg-gray-800/50 rounded-lg p-4">
-        <h4 class="text-gray-300 font-medium mb-3">Presentación pastoral (Pastor / Pastora / Grupo)</h4>
+        <h4 class="text-gray-300 font-medium mb-3">Pastores principales</h4>
+        <input type="text" [(ngModel)]="pageContent.leadershipIntro!.title" placeholder="Título sección" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white mb-2">
+        <textarea [(ngModel)]="pageContent.leadershipIntro!.subtitle" rows="2" placeholder="Subtítulo" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white mb-4"></textarea>
+        <h4 class="text-gray-300 font-medium mb-3">Pastor / Pastora / Grupo</h4>
         <div class="space-y-4">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div class="p-3 bg-gray-900 rounded border border-gray-700">
@@ -176,6 +194,50 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <div *ngIf="pageKey === 'nosotros'" class="bg-gray-800/50 rounded-lg p-4 border border-teal-900/30">
+        <h4 class="text-teal-300 font-medium mb-3">Cobertura pastoral</h4>
+        <input type="text" [(ngModel)]="pageContent.pastoralCoverage!.title" placeholder="Título" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white mb-2">
+        <textarea [(ngModel)]="pageContent.pastoralCoverage!.description" rows="3" placeholder="Descripción" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white mb-3"></textarea>
+        <div *ngFor="let z of pageContent.pastoralCoverage!.zones; let i = index" class="p-3 bg-gray-900 rounded border border-gray-700 mb-2">
+          <input type="text" [(ngModel)]="z.zone" placeholder="Zona / área" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2">
+          <input type="text" [(ngModel)]="z.pastor" placeholder="Pastor responsable" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2">
+          <input type="text" [(ngModel)]="z.contact" placeholder="Contacto (opcional)" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2">
+          <button type="button" (click)="removeCoverageZone(i)" class="text-red-400 text-xs">Eliminar zona</button>
+        </div>
+        <button type="button" (click)="addCoverageZone()" class="px-3 py-1.5 bg-teal-900/50 text-teal-200 text-sm rounded">+ Zona</button>
+      </div>
+
+      <div *ngIf="pageKey === 'nosotros'" class="bg-gray-800/50 rounded-lg p-4 border border-indigo-900/30">
+        <h4 class="text-indigo-300 font-medium mb-3">Conocé al Pastor</h4>
+        <input type="text" [(ngModel)]="pageContent.pastorProfile!.title" placeholder="Título sección" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white mb-2">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
+          <input type="text" [(ngModel)]="pageContent.pastorProfile!.name" placeholder="Nombre" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
+          <input type="text" [(ngModel)]="pageContent.pastorProfile!.role" placeholder="Rol" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
+        </div>
+        <textarea [(ngModel)]="pageContent.pastorProfile!.description" rows="3" placeholder="Descripción" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white mb-2"></textarea>
+        <textarea [(ngModel)]="pageContent.pastorProfile!.ministryInfo" rows="3" placeholder="Información del ministerio pastoral" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white mb-2"></textarea>
+        <input type="file" (change)="onPastorProfileImageSelected($event)" accept="image/*" class="text-xs text-gray-400 mb-1">
+        <input type="text" [(ngModel)]="pageContent.pastorProfile!.imageUrl" placeholder="URL foto" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-1 text-white text-xs">
+      </div>
+
+      <div *ngIf="pageKey === 'nosotros'" class="bg-gray-800/50 rounded-lg p-4 border border-amber-900/30">
+        <h4 class="text-amber-200 font-medium mb-3">Proyecto Pastor</h4>
+        <input type="text" [(ngModel)]="pageContent.proyectoPastor!.title" placeholder="Título" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white mb-2">
+        <textarea [(ngModel)]="pageContent.proyectoPastor!.subtitle" rows="2" placeholder="Subtítulo" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white mb-3"></textarea>
+        <div *ngFor="let p of pageContent.proyectoPastor!.projects; let pi = index" class="p-4 bg-gray-900 rounded border border-gray-700 mb-3">
+          <div class="flex justify-between mb-2">
+            <span class="text-gray-400 text-sm">Proyecto {{ pi + 1 }}</span>
+            <button type="button" (click)="removeProyecto(pi)" class="text-red-400 text-xs">Eliminar</button>
+          </div>
+          <input type="text" [(ngModel)]="p.title" placeholder="Título" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2">
+          <textarea [(ngModel)]="p.description" rows="2" placeholder="Descripción" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2"></textarea>
+          <input type="text" [(ngModel)]="p.status" placeholder="Estado (opcional)" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2">
+          <input type="file" (change)="onProyectoImageSelected($event, pi, 0)" accept="image/*" class="text-xs text-gray-400 mb-1">
+          <input type="text" [(ngModel)]="p.imageUrls![0]" placeholder="URL imagen principal" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-1 text-white text-xs">
+        </div>
+        <button type="button" (click)="addProyecto()" class="px-3 py-1.5 bg-amber-900/50 text-amber-200 text-sm rounded">+ Proyecto</button>
       </div>
 
       <div class="bg-gray-800/50 rounded-lg p-4">

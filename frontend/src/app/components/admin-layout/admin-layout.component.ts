@@ -46,6 +46,7 @@ export class AdminLayoutComponent implements OnInit {
       footerTermsUrl: [''],
       quickLinks: this.fb.array([]),
       whatsappNumber: [''],
+      showThemeToggle: [false],
       headerIconUrl: [null as string | null],
       footerIconUrl: [null as string | null],
       maintenanceMode: [false]
@@ -120,6 +121,7 @@ export class AdminLayoutComponent implements OnInit {
           footerPrivacyUrl: data.footerPrivacyUrl || '',
           footerTermsUrl: data.footerTermsUrl || '',
           whatsappNumber: data.whatsappNumber || '',
+          showThemeToggle: !!data.showThemeToggle,
           headerIconUrl: data.headerIconUrl || null,
           footerIconUrl: data.footerIconUrl || null,
           maintenanceMode: !!data.maintenanceMode
@@ -152,7 +154,8 @@ export class AdminLayoutComponent implements OnInit {
       footerPrivacyUrl: value.footerPrivacyUrl,
       footerTermsUrl: value.footerTermsUrl,
       whatsappNumber: value.whatsappNumber,
-      maintenanceMode: value.maintenanceMode
+      maintenanceMode: value.maintenanceMode,
+      showThemeToggle: value.showThemeToggle
     };
     this.apiService.updateLayout(payload).subscribe({
       next: () => {

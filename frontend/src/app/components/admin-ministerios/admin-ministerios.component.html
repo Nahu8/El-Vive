@@ -643,6 +643,26 @@
               <label class="block text-gray-300 mb-1 text-sm">Email de Contacto</label>
               <input type="email" [(ngModel)]="currentMinistry.contactEmail" [ngModelOptions]="{standalone: true}" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm">
             </div>
+            <div>
+              <label class="block text-gray-300 mb-1 text-sm">Teléfono / WhatsApp</label>
+              <input type="text" [(ngModel)]="currentMinistry.contactPhone" [ngModelOptions]="{standalone: true}" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" placeholder="Ej: +54 9 11 1234-5678">
+            </div>
+            <div>
+              <label class="block text-gray-300 mb-1 text-sm">Redes del ministerio (Facebook / Instagram)</label>
+              <input type="text" [(ngModel)]="currentMinistry.socialMedia.facebook" [ngModelOptions]="{standalone: true}" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm mb-2" placeholder="Facebook URL">
+              <input type="text" [(ngModel)]="currentMinistry.socialMedia.instagram" [ngModelOptions]="{standalone: true}" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" placeholder="Instagram URL">
+              <p class="text-xs text-gray-500 mt-1">Independientes de las redes generales de la iglesia. Útil para Círculo Ministerial u otros.</p>
+            </div>
+            <div>
+              <label class="block text-gray-300 mb-1 text-sm">Responsables</label>
+              <div *ngFor="let r of currentMinistry.responsibles; let ri = index" class="p-2 bg-gray-900 rounded border border-gray-700 mb-2">
+                <input type="text" [(ngModel)]="r.name" [ngModelOptions]="{standalone: true}" placeholder="Nombre" class="w-full bg-gray-800 border border-gray-700 rounded px-2 py-1 text-white text-xs mb-1">
+                <input type="text" [(ngModel)]="r.role" [ngModelOptions]="{standalone: true}" placeholder="Rol" class="w-full bg-gray-800 border border-gray-700 rounded px-2 py-1 text-white text-xs mb-1">
+                <input type="text" [(ngModel)]="r.contact" [ngModelOptions]="{standalone: true}" placeholder="Contacto" class="w-full bg-gray-800 border border-gray-700 rounded px-2 py-1 text-white text-xs mb-1">
+                <button type="button" (click)="currentMinistry.responsibles.splice(ri, 1)" class="text-red-400 text-xs">Eliminar</button>
+              </div>
+              <button type="button" (click)="addResponsible()" class="px-2 py-1 bg-gray-700 text-white text-xs rounded">+ Responsable</button>
+            </div>
             <div class="flex items-center gap-2">
               <input type="checkbox" id="showContact" [(ngModel)]="currentMinistry.showContactSection" [ngModelOptions]="{standalone: true}" class="rounded w-4 h-4">
               <label for="showContact" class="text-gray-300 text-sm">Mostrar sección "Contactanos" en el detalle</label>

@@ -48,6 +48,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   @ViewChild(AdminContactoComponent) adminContacto!: AdminContactoComponent;
   @ViewChild(AdminLayoutComponent) adminLayout!: AdminLayoutComponent;
   @ViewChild('adminDonaciones') adminDonaciones!: AdminGenericPageComponent;
+  @ViewChild('adminEscuela') adminEscuela!: AdminGenericPageComponent;
   @ViewChild('adminNosotros') adminNosotros!: AdminGenericPageComponent;
 
   sidebarItems: SidebarItem[] = [
@@ -55,7 +56,8 @@ export class AdminComponent implements OnInit, OnDestroy {
     { id: 'layout', label: 'Header y Footer', icon: 'layout' },
     { id: 'ministries', label: 'Ministerios', icon: 'users' },
     { id: 'events', label: 'Dias de Reunion', icon: 'calendar' },
-    { id: 'donaciones', label: 'Donaciones', icon: 'donate' },
+    { id: 'donaciones', label: 'Ofrendas', icon: 'donate' },
+    { id: 'escuela', label: 'Escuela Ministerial', icon: 'info' },
     { id: 'nosotros', label: 'Nosotros', icon: 'info' },
     { id: 'contact', label: 'Contacto', icon: 'mail' }
   ];
@@ -131,6 +133,7 @@ export class AdminComponent implements OnInit, OnDestroy {
       if (this.adminLayout) promises.push(this.adminLayout.saveAll());
       if (this.adminMinisterios) promises.push(this.adminMinisterios.saveAll());
       if (this.adminDonaciones) promises.push(this.adminDonaciones.saveAll());
+      if (this.adminEscuela) promises.push(this.adminEscuela.saveAll());
       if (this.adminNosotros) promises.push(this.adminNosotros.saveAll());
       if (this.adminDiasReunion) promises.push(this.adminDiasReunion.saveAll());
       if (this.adminContacto) promises.push(this.adminContacto.saveAll());

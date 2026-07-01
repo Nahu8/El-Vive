@@ -50,6 +50,10 @@ export class PublicApiService {
     return this.http.get<any>(`${this.publicUrl}/config/nosotros`);
   }
 
+  getEscuelaMinisterialConfig(): Observable<any> {
+    return this.http.get<any>(`${this.publicUrl}/config/escuela-ministerial`);
+  }
+
   getUpcomingEvents(): Observable<any> {
     return this.http.get<any>(`${this.publicUrl}/events/upcoming`);
   }

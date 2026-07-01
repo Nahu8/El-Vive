@@ -2,6 +2,8 @@ import { Router } from 'express';
 import { dbGet, dbRun, dbAll, parseJson } from '../db/index.js';
 import { isMiercolesTheme } from '../lib/argentina-time.js';
 import { enrichDonacionesPageContent } from '../lib/donaciones-page-defaults.js';
+import { enrichNosotrosPageContent } from '../lib/nosotros-page-defaults.js';
+import { enrichEscuelaMinisterialPageContent } from '../lib/escuela-ministerial-page-defaults.js';
 import { asyncHandler } from '../lib/async-handler.js';
 
 const router = Router();
@@ -235,6 +237,7 @@ router.get(
       footerIconUrlLight: footerIconLight ? '/api/section-icon/layout/footer-light' : null,
       footerIconUrlDark: footerIconDark ? '/api/section-icon/layout/footer-dark' : null,
       maintenanceMode: !!(layout.maintenanceMode === 1 || layout.maintenanceMode === true),
+      showThemeToggle: !!(layout.showThemeToggle === 1 || layout.showThemeToggle === true),
     });
   })
 );
@@ -358,7 +361,21 @@ router.get(
       await dbRun('INSERT INTO generic_pages (page_key, page_content) VALUES (?, ?)', ['nosotros', '{}']);
       row = await dbGet('SELECT * FROM generic_pages WHERE page_key=?', ['nosotros']);
     }
-    res.json({ pageContent: parseJson(row.page_content) ?? {} });
+    const raw = parseJson(row.page_content) ?? {};
+    res.json({ pageContent: enrichNosotrosPageContent(raw) });
+  })
+);
+
+router.get(
+  '/config/escuela-ministerial',
+  asyncHandler(async (req, res) => {
+    let row = await dbGet('SELECT * FROM generic_pages WHERE page_key=?', ['escuela-ministerial']);
+    if (!row) {
+      await dbRun('INSERT INTO generic_pages (page_key, page_content) VALUES (?, ?)', ['escuela-ministerial', '{}']);
+      row = await dbGet('SELECT * FROM generic_pages WHERE page_key=?', ['escuela-ministerial']);
+    }
+    const raw = parseJson(row.page_content) ?? {};
+    res.json({ pageContent: enrichEscuelaMinisterialPageContent(raw) });
   })
 );
 

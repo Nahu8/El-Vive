@@ -9,14 +9,14 @@ const defaultNav = [
   { label: 'Nosotros', path: '/nosotros' },
   { label: 'Ministerios', path: '/ministerios' },
   { label: 'Días de Reunión', path: '/dias-reunion' },
-  { label: 'Donaciones', path: '/donaciones' },
+  { label: 'Ofrendas', path: '/ofrendas' },
   { label: 'Contacto', path: '/contacto' },
 ];
 const defaultQuick = [
   { label: 'Nosotros', path: '/nosotros' },
   { label: 'Ministerios', path: '/ministerios' },
   { label: 'Días de Reunión', path: '/dias-reunion' },
-  { label: 'Donaciones', path: '/donaciones' },
+  { label: 'Ofrendas', path: '/ofrendas' },
   { label: 'Contacto', path: '/contacto' },
 ];
 
@@ -72,6 +72,7 @@ router.get(
       footerIconUrlLight: footerIconLight ? '/api/section-icon/layout/footer-light' : null,
       footerIconUrlDark: footerIconDark ? '/api/section-icon/layout/footer-dark' : null,
       maintenanceMode: !!(layout.maintenanceMode === 1 || layout.maintenanceMode === true),
+      showThemeToggle: !!(layout.showThemeToggle === 1 || layout.showThemeToggle === true),
     });
   })
 );
@@ -95,11 +96,12 @@ const putLayout = asyncHandler(async (req, res) => {
     'quickLinks',
     'whatsappNumber',
     'maintenanceMode',
+    'showThemeToggle',
   ];
   for (const f of fields) {
     if (body[f] === undefined) continue;
     const val =
-      f === 'maintenanceMode'
+      f === 'maintenanceMode' || f === 'showThemeToggle'
         ? body[f] === true || body[f] === 1 || body[f] === '1'
           ? 1
           : 0

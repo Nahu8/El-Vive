@@ -170,8 +170,12 @@
         <app-admin-dias-reunion></app-admin-dias-reunion>
       </div>
       <div [hidden]="activeSection !== 'donaciones'">
-        <app-admin-generic-page #adminDonaciones pageKey="donaciones" pageTitle="Donaciones"
-          defaultHeroTitle="DONACIONES" defaultHeroSubtitle="Cada gesto de generosidad sostiene la misión en nuestra ciudad."></app-admin-generic-page>
+        <app-admin-generic-page #adminDonaciones pageKey="donaciones" pageTitle="Ofrendas"
+          defaultHeroTitle="OFRENDAS" defaultHeroSubtitle="Tu participación voluntaria sostiene el ministerio."></app-admin-generic-page>
+      </div>
+      <div [hidden]="activeSection !== 'escuela'">
+        <app-admin-generic-page #adminEscuela pageKey="escuela-ministerial" pageTitle="Escuela Ministerial"
+          defaultHeroTitle="ESCUELA MINISTERIAL" defaultHeroSubtitle="Formación para servir con excelencia."></app-admin-generic-page>
       </div>
       <div [hidden]="activeSection !== 'nosotros'">
         <app-admin-generic-page #adminNosotros pageKey="nosotros" pageTitle="Nosotros"

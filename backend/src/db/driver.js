@@ -96,6 +96,13 @@ async function ensureMysqlLayoutMaintenanceMode(pool) {
     if (!row?.c) {
       await pool.query('ALTER TABLE layouts ADD COLUMN maintenanceMode TINYINT(1) NOT NULL DEFAULT 0');
     }
+    const [rows2] = await pool.query(
+      `SELECT COUNT(*) AS c FROM information_schema.COLUMNS
+       WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'layouts' AND COLUMN_NAME = 'showThemeToggle'`
+    );
+    if (!rows2?.[0]?.c) {
+      await pool.query('ALTER TABLE layouts ADD COLUMN showThemeToggle TINYINT(1) NOT NULL DEFAULT 0');
+    }
   } catch (_) {}
 }
 

@@ -15,7 +15,7 @@
         class="header-nav-link uppercase text-sm transition-colors">
         {{ link.label }}
       </a>
-      <app-theme-toggle></app-theme-toggle>
+      <app-theme-toggle *ngIf="showThemeToggle"></app-theme-toggle>
     </nav>
 
     <button type="button"
@@ -46,9 +46,9 @@
         {{ link.label }}
       </a>
 
-      <div class="pt-4 sidebar-link"
+      <div *ngIf="showThemeToggle" class="pt-4 sidebar-link"
         [style.transition-delay.ms]="isMenuOpen ? 80 + navLinks.length * 50 : 0">
-        <app-theme-toggle></app-theme-toggle>
+        <app-theme-toggle *ngIf="showThemeToggle"></app-theme-toggle>
       </div>
     </nav>
   </aside>

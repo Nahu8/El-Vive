@@ -142,6 +142,45 @@
         </article>
       }
 
+      @if (ministry.responsibles?.length) {
+        <section class="md-detail__section" appReveal revealVariant="fade-up" [revealDelay]="60">
+          <h2 class="md-detail__h2">Responsables</h2>
+          <ul class="grid gap-4 md:grid-cols-2" role="list">
+            @for (r of ministry.responsibles; track $index) {
+              <li class="rounded-2xl border p-5 page-border-color">
+                <h3 class="page-heading font-bold">{{ r.name }}</h3>
+                @if (r.role) {
+                  <p class="mt-1 text-sm page-text-muted">{{ r.role }}</p>
+                }
+                @if (r.contact) {
+                  <p class="mt-2 text-sm text-indigo-400">{{ r.contact }}</p>
+                }
+              </li>
+            }
+          </ul>
+        </section>
+      }
+
+      @if (ministry.socialMedia?.facebook || ministry.socialMedia?.instagram) {
+        <section class="md-detail__section text-center" appReveal revealVariant="fade-up" [revealDelay]="70">
+          <h2 class="md-detail__h2">Redes del ministerio</h2>
+          <div class="flex flex-wrap items-center justify-center gap-3">
+            @if (ministry.socialMedia.facebook) {
+              <a [href]="ministry.socialMedia.facebook" target="_blank" rel="noopener noreferrer"
+                class="px-5 py-2.5 rounded-full border page-border-color text-sm font-semibold page-text-muted hover:text-white transition-colors">
+                Facebook
+              </a>
+            }
+            @if (ministry.socialMedia.instagram) {
+              <a [href]="ministry.socialMedia.instagram" target="_blank" rel="noopener noreferrer"
+                class="px-5 py-2.5 rounded-full border page-border-color text-sm font-semibold page-text-muted hover:text-white transition-colors">
+                Instagram
+              </a>
+            }
+          </div>
+        </section>
+      }
+
       @if (internalVideos.length > 0 || videoEmbeds.length > 0) {
         <section class="md-detail__section" appReveal revealVariant="fade-up" [revealDelay]="80">
           @if (internalVideos.length > 0) {
@@ -244,7 +283,7 @@
         </section>
       }
 
-      @if (ministry.contactEmail && ministry.showContactSection !== false) {
+      @if ((ministry.contactEmail || ministry.contactPhone) && ministry.showContactSection !== false) {
         <section class="md-detail__cta" appReveal revealVariant="fade-up" [revealDelay]="180">
           <div class="md-detail__cta-inner">
             <div class="md-detail__cta-icon"
@@ -256,7 +295,12 @@
             <div class="md-detail__cta-copy">
               <h2 class="md-detail__cta-title">¿Querés sumarte o hacer una consulta?</h2>
               <p class="md-detail__cta-text page-text-muted">Escribinos y te respondemos a la brevedad.</p>
-              <a [href]="'mailto:' + ministry.contactEmail" class="md-detail__cta-mail">{{ ministry.contactEmail }}</a>
+              @if (ministry.contactEmail) {
+                <a [href]="'mailto:' + ministry.contactEmail" class="md-detail__cta-mail">{{ ministry.contactEmail }}</a>
+              }
+              @if (ministry.contactPhone) {
+                <p class="md-detail__cta-mail mt-2">{{ ministry.contactPhone }}</p>
+              }
             </div>
           </div>
         </section>

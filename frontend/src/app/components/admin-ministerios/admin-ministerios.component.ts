@@ -454,6 +454,9 @@ export class AdminMinisteriosComponent implements OnInit {
       location: [ministry?.location || ''],
       leader: [ministry?.leader || ''],
       contactEmail: [ministry?.contactEmail || ''],
+      contactPhone: [ministry?.contactPhone || ''],
+      socialMedia: [ministry?.socialMedia || { facebook: '', instagram: '' }],
+      responsibles: [ministry?.responsibles || []],
       showContactSection: [ministry?.showContactSection !== false],
       requirements: [ministry?.requirements || []],
       status: [ministry?.status || 'active', Validators.required],
@@ -549,6 +552,9 @@ export class AdminMinisteriosComponent implements OnInit {
       location: '',
       leader: '',
       contactEmail: '',
+      contactPhone: '',
+      socialMedia: { facebook: '', instagram: '' },
+      responsibles: [] as Array<{ name: string; role: string; contact?: string }>,
       showContactSection: true,
       requirements: [],
       status: 'active',
@@ -560,6 +566,11 @@ export class AdminMinisteriosComponent implements OnInit {
   closeMinistryModal(): void {
     this.showMinistryModal = false;
     this.currentMinistry = null;
+  }
+
+  addResponsible(): void {
+    if (!this.currentMinistry.responsibles) this.currentMinistry.responsibles = [];
+    this.currentMinistry.responsibles.push({ name: '', role: '', contact: '' });
   }
 
   saveMinistry(): void {
@@ -852,7 +863,14 @@ export class AdminMinisteriosComponent implements OnInit {
   }
 
   openMinistryModal(ministry?: any): void {
-    this.currentMinistry = ministry ? { ...ministry, videos: [...(ministry.videos || [])] } : this.getEmptyMinistry();
+    this.currentMinistry = ministry
+      ? {
+          ...ministry,
+          videos: [...(ministry.videos || [])],
+          socialMedia: ministry.socialMedia || { facebook: '', instagram: '' },
+          responsibles: [...(ministry.responsibles || [])]
+        }
+      : this.getEmptyMinistry();
 
     if (!this.currentMinistry?.id) {
       this.currentMinistry.id = this.generateId();
@@ -893,6 +911,9 @@ export class AdminMinisteriosComponent implements OnInit {
       location: [ministry?.location || ''],
       leader: [ministry?.leader || ''],
       contactEmail: [ministry?.contactEmail || ''],
+      contactPhone: [ministry?.contactPhone || ''],
+      socialMedia: [ministry?.socialMedia || { facebook: '', instagram: '' }],
+      responsibles: [ministry?.responsibles || []],
       showContactSection: [ministry?.showContactSection !== false],
       requirements: [ministry?.requirements || []],
       status: [ministry?.status || 'active', Validators.required],

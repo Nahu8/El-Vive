@@ -41,16 +41,20 @@ export class NosotrosComponent implements OnInit {
     caption?: string;
     layout?: 'left' | 'right';
   }> = [];
+  leadershipIntro = { title: 'Pastores principales', subtitle: '' };
+  pastoralCoverage = { title: 'Cobertura pastoral', description: '', zones: [] as Array<{ zone: string; pastor: string; contact?: string }> };
+  pastorProfile = { title: 'Conocé al Pastor', name: '', role: '', description: '', ministryInfo: '', imageUrl: '' };
+  proyectoPastor = { title: 'Proyecto Pastor', subtitle: '', projects: [] as Array<{ title: string; description: string; status?: string; imageUrls?: string[]; videoUrls?: string[] }> };
   pastor = {
-    name: 'Ps. Juan Pérez',
+    name: 'Hugo Aranda',
     role: 'Pastor Principal',
-    description: 'Con más de 15 años de ministerio, su pasión es acompañar familias en su crecimiento espiritual y servir a la comunidad con amor.',
-    quote: 'Creemos en una iglesia viva, cercana y transformadora.',
+    description: '',
+    quote: '',
     imageUrl: ''
   };
   pastora = {
-    name: 'Ps. María González',
-    role: 'Pastora',
+    name: 'Débora Aranda',
+    role: 'Pastora Principal',
     imageUrl: ''
   };
   group = {
@@ -93,13 +97,6 @@ export class NosotrosComponent implements OnInit {
           imageUrl: s.imageUrl ? this.resolveUrl(s.imageUrl) : s.imageUrl,
           videoUrl: s.videoUrl
         }));
-        this.pastor = {
-          name: pc.pastor?.name || this.pastor.name,
-          role: pc.pastor?.role || this.pastor.role,
-          description: pc.pastor?.description || this.pastor.description,
-          quote: pc.pastor?.quote || this.pastor.quote,
-          imageUrl: this.resolveUrl(pc.pastor?.imageUrl) || this.pastor.imageUrl
-        };
         this.pastora = {
           name: pc.leadership?.pastoraName || this.pastora.name,
           role: pc.leadership?.pastoraRole || this.pastora.role,
@@ -113,9 +110,45 @@ export class NosotrosComponent implements OnInit {
         this.pastor = {
           name: pc.leadership?.pastorName || this.pastor.name,
           role: pc.leadership?.pastorRole || this.pastor.role,
-          description: this.pastor.description,
-          quote: this.pastor.quote,
+          description: pc.pastor?.description || this.pastor.description,
+          quote: pc.pastor?.quote || this.pastor.quote,
           imageUrl: this.resolveUrl(pc.leadership?.pastorImageUrl) || this.pastor.imageUrl
+        };
+        this.leadershipIntro = {
+          title: pc.leadershipIntro?.title || 'Pastores principales',
+          subtitle: pc.leadershipIntro?.subtitle || 'Hugo y Débora Aranda lideran el ministerio pastoral de nuestra iglesia.'
+        };
+        this.pastoralCoverage = {
+          title: pc.pastoralCoverage?.title || 'Cobertura pastoral',
+          description: pc.pastoralCoverage?.description || '',
+          zones: Array.isArray(pc.pastoralCoverage?.zones)
+            ? pc.pastoralCoverage.zones.map((z: any) => ({
+                zone: z.zone || '',
+                pastor: z.pastor || '',
+                contact: z.contact || ''
+              }))
+            : []
+        };
+        this.pastorProfile = {
+          title: pc.pastorProfile?.title || 'Conocé al Pastor',
+          name: pc.pastorProfile?.name || this.pastor.name,
+          role: pc.pastorProfile?.role || this.pastor.role,
+          description: pc.pastorProfile?.description || '',
+          ministryInfo: pc.pastorProfile?.ministryInfo || '',
+          imageUrl: this.resolveUrl(pc.pastorProfile?.imageUrl) || ''
+        };
+        this.proyectoPastor = {
+          title: pc.proyectoPastor?.title || 'Proyecto Pastor',
+          subtitle: pc.proyectoPastor?.subtitle || '',
+          projects: Array.isArray(pc.proyectoPastor?.projects)
+            ? pc.proyectoPastor.projects.map((p: any) => ({
+                title: p.title || '',
+                description: p.description || '',
+                status: p.status || '',
+                imageUrls: (p.imageUrls || []).map((u: string) => this.resolveUrl(u)),
+                videoUrls: p.videoUrls || []
+              }))
+            : []
         };
         this.highlights = Array.isArray(pc.highlights) && pc.highlights.length
           ? pc.highlights.map((h: any) => ({
@@ -219,7 +252,46 @@ export class NosotrosComponent implements OnInit {
     ];
   }
 
-  /** Tarjetas del equipo pastoral para la grilla (orden fijo). */
+  /** Tarjetas de pastores principales (Hugo y Débora). */
+  get mainPastorSlots(): Array<{
+    key: string;
+    name: string;
+    role: string;
+    imageUrl: string;
+    placeholderLabel: string;
+  }> {
+    return [
+      {
+        key: 'pastor',
+        name: this.pastor.name,
+        role: this.pastor.role,
+        imageUrl: this.pastor.imageUrl,
+        placeholderLabel: 'Pastor'
+      },
+      {
+        key: 'pastora',
+        name: this.pastora.name,
+        role: this.pastora.role,
+        imageUrl: this.pastora.imageUrl,
+        placeholderLabel: 'Pastora'
+      }
+    ];
+  }
+
+  get hasPastoralCoverage(): boolean {
+    return !!(this.pastoralCoverage.description || this.pastoralCoverage.zones.length);
+  }
+
+  get hasPastorProfile(): boolean {
+    const p = this.pastorProfile;
+    return !!(p.name || p.description || p.ministryInfo || p.imageUrl);
+  }
+
+  get hasProyectoPastor(): boolean {
+    return this.proyectoPastor.projects.length > 0 || !!this.proyectoPastor.subtitle;
+  }
+
+  /** ponytail: grupo pastoral opcional, fuera del bloque principal */
   get leadershipSlots(): Array<{
     key: string;
     name: string;

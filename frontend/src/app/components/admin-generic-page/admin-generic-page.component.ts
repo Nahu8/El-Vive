@@ -13,9 +13,9 @@ import { environment } from '../../../environments/environment';
   styleUrls: ['./admin-generic-page.component.css']
 })
 export class AdminGenericPageComponent implements OnInit {
-  @Input() pageKey: 'donaciones' | 'nosotros' = 'donaciones';
-  @Input() pageTitle = 'Donaciones';
-  @Input() defaultHeroTitle = 'DONACIONES';
+  @Input() pageKey: 'donaciones' | 'nosotros' | 'escuela-ministerial' = 'donaciones';
+  @Input() pageTitle = 'Ofrendas';
+  @Input() defaultHeroTitle = 'OFRENDAS';
   @Input() defaultHeroSubtitle = 'Tu aporte ayuda a sostener la obra.';
 
   pageContent: {
@@ -61,6 +61,23 @@ export class AdminGenericPageComponent implements OnInit {
       groupRole?: string;
       groupImageUrl?: string;
     };
+    leadershipIntro?: { title?: string; subtitle?: string };
+    pastoralCoverage?: { title?: string; description?: string; zones?: Array<{ zone: string; pastor: string; contact?: string }> };
+    pastor?: { name?: string; role?: string; description?: string; quote?: string; imageUrl?: string };
+    pastorProfile?: { title?: string; name?: string; role?: string; description?: string; ministryInfo?: string; imageUrl?: string };
+    proyectoPastor?: {
+      title?: string;
+      subtitle?: string;
+      projects?: Array<{ title: string; description: string; status?: string; imageUrls?: string[]; videoUrls?: string[] }>;
+    };
+    objective?: { title: string; content: string };
+    generalInfo?: { title: string; content: string };
+    program?: { title: string; content: string; items: string[] };
+    requirements?: { title: string; items: string[] };
+    registration?: { title: string; content: string; formUrl?: string; pdfUrl?: string };
+    presentationVideo?: { url: string };
+    images?: Array<{ url: string; caption?: string }>;
+    socialMedia?: { facebook?: string; instagram?: string };
     sections: Array<{ type: string; title?: string; content?: string; imageUrl?: string; videoUrl?: string; caption?: string; layout?: string }>;
   } = {
     hero: {
@@ -88,6 +105,19 @@ export class AdminGenericPageComponent implements OnInit {
       groupRole: '',
       groupImageUrl: ''
     },
+    leadershipIntro: { title: 'Pastores principales', subtitle: '' },
+    pastoralCoverage: { title: 'Cobertura pastoral', description: '', zones: [] },
+    pastor: { name: '', role: '', description: '', quote: '', imageUrl: '' },
+    pastorProfile: { title: 'Conocé al Pastor', name: '', role: '', description: '', ministryInfo: '', imageUrl: '' },
+    proyectoPastor: { title: 'Proyecto Pastor', subtitle: '', projects: [] },
+    objective: { title: '', content: '' },
+    generalInfo: { title: '', content: '' },
+    program: { title: '', content: '', items: [] },
+    requirements: { title: '', items: [] },
+    registration: { title: '', content: '', formUrl: '', pdfUrl: '' },
+    presentationVideo: { url: '' },
+    images: [],
+    socialMedia: { facebook: '', instagram: '' },
     sections: []
   };
 
@@ -142,6 +172,58 @@ export class AdminGenericPageComponent implements OnInit {
             groupTitle: pc.leadership?.groupTitle || '',
             groupRole: pc.leadership?.groupRole || '',
             groupImageUrl: pc.leadership?.groupImageUrl || ''
+          },
+          leadershipIntro: {
+            title: pc.leadershipIntro?.title || 'Pastores principales',
+            subtitle: pc.leadershipIntro?.subtitle || ''
+          },
+          pastoralCoverage: {
+            title: pc.pastoralCoverage?.title || 'Cobertura pastoral',
+            description: pc.pastoralCoverage?.description || '',
+            zones: Array.isArray(pc.pastoralCoverage?.zones) ? [...pc.pastoralCoverage.zones] : []
+          },
+          pastor: {
+            name: pc.pastor?.name || '',
+            role: pc.pastor?.role || '',
+            description: pc.pastor?.description || '',
+            quote: pc.pastor?.quote || '',
+            imageUrl: pc.pastor?.imageUrl || ''
+          },
+          pastorProfile: {
+            title: pc.pastorProfile?.title || 'Conocé al Pastor',
+            name: pc.pastorProfile?.name || '',
+            role: pc.pastorProfile?.role || '',
+            description: pc.pastorProfile?.description || '',
+            ministryInfo: pc.pastorProfile?.ministryInfo || '',
+            imageUrl: pc.pastorProfile?.imageUrl || ''
+          },
+          proyectoPastor: {
+            title: pc.proyectoPastor?.title || 'Proyecto Pastor',
+            subtitle: pc.proyectoPastor?.subtitle || '',
+            projects: Array.isArray(pc.proyectoPastor?.projects) ? [...pc.proyectoPastor.projects] : []
+          },
+          objective: { title: pc.objective?.title || '', content: pc.objective?.content || '' },
+          generalInfo: { title: pc.generalInfo?.title || '', content: pc.generalInfo?.content || '' },
+          program: {
+            title: pc.program?.title || '',
+            content: pc.program?.content || '',
+            items: Array.isArray(pc.program?.items) ? [...pc.program.items] : []
+          },
+          requirements: {
+            title: pc.requirements?.title || '',
+            items: Array.isArray(pc.requirements?.items) ? [...pc.requirements.items] : []
+          },
+          registration: {
+            title: pc.registration?.title || '',
+            content: pc.registration?.content || '',
+            formUrl: pc.registration?.formUrl || '',
+            pdfUrl: pc.registration?.pdfUrl || ''
+          },
+          presentationVideo: { url: pc.presentationVideo?.url || '' },
+          images: Array.isArray(pc.images) ? [...pc.images] : [],
+          socialMedia: {
+            facebook: pc.socialMedia?.facebook || '',
+            instagram: pc.socialMedia?.instagram || ''
           },
           sections: Array.isArray(pc.sections) ? [...pc.sections] : []
         };
@@ -240,6 +322,89 @@ export class AdminGenericPageComponent implements OnInit {
 
   removeHighlight(i: number) {
     this.pageContent.highlights?.splice(i, 1);
+  }
+
+  addCoverageZone() {
+    if (!this.pageContent.pastoralCoverage) this.pageContent.pastoralCoverage = { title: '', description: '', zones: [] };
+    if (!this.pageContent.pastoralCoverage.zones) this.pageContent.pastoralCoverage.zones = [];
+    this.pageContent.pastoralCoverage.zones.push({ zone: '', pastor: '', contact: '' });
+  }
+
+  removeCoverageZone(i: number) {
+    this.pageContent.pastoralCoverage?.zones?.splice(i, 1);
+  }
+
+  addProyecto() {
+    if (!this.pageContent.proyectoPastor) this.pageContent.proyectoPastor = { title: '', subtitle: '', projects: [] };
+    if (!this.pageContent.proyectoPastor.projects) this.pageContent.proyectoPastor.projects = [];
+    this.pageContent.proyectoPastor.projects.push({ title: '', description: '', status: '', imageUrls: [''], videoUrls: [] });
+  }
+
+  removeProyecto(i: number) {
+    this.pageContent.proyectoPastor?.projects?.splice(i, 1);
+  }
+
+  addProgramItem() {
+    if (!this.pageContent.program) this.pageContent.program = { title: '', content: '', items: [] };
+    this.pageContent.program.items.push('');
+  }
+
+  removeProgramItem(i: number) {
+    this.pageContent.program?.items?.splice(i, 1);
+  }
+
+  addRequirementItem() {
+    if (!this.pageContent.requirements) this.pageContent.requirements = { title: '', items: [] };
+    this.pageContent.requirements.items.push('');
+  }
+
+  removeRequirementItem(i: number) {
+    this.pageContent.requirements?.items?.splice(i, 1);
+  }
+
+  addEscuelaImage() {
+    if (!this.pageContent.images) this.pageContent.images = [];
+    this.pageContent.images.push({ url: '', caption: '' });
+  }
+
+  removeEscuelaImage(i: number) {
+    this.pageContent.images?.splice(i, 1);
+  }
+
+  onPastorProfileImageSelected(event: Event) {
+    this.uploadImage(event, (path) => {
+      if (!this.pageContent.pastorProfile) this.pageContent.pastorProfile = { title: '', name: '', role: '', description: '', ministryInfo: '', imageUrl: '' };
+      this.pageContent.pastorProfile.imageUrl = path;
+    });
+  }
+
+  onEscuelaImageSelected(event: Event, index: number) {
+    this.uploadImage(event, (path) => {
+      if (this.pageContent.images?.[index]) this.pageContent.images[index].url = path;
+    });
+  }
+
+  onProyectoImageSelected(event: Event, projectIndex: number, imageIndex: number) {
+    this.uploadImage(event, (path) => {
+      const proj = this.pageContent.proyectoPastor?.projects?.[projectIndex];
+      if (!proj) return;
+      if (!proj.imageUrls) proj.imageUrls = [];
+      proj.imageUrls[imageIndex] = path;
+    });
+  }
+
+  private uploadImage(event: Event, onSuccess: (path: string) => void) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file?.type.startsWith('image/')) return;
+    const fd = new FormData();
+    fd.append('file', file);
+    this.http.post<any>(`${this.apiBase}/api/media/upload`, fd).subscribe({
+      next: (res) => {
+        onSuccess(res.path || res.url || '');
+        this.showToastMsg('Imagen subida');
+      },
+      error: () => this.showToastMsg('Error al subir', 'error')
+    });
   }
 
   removeSection(i: number) {

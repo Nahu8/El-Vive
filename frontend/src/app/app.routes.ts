@@ -10,6 +10,7 @@ import { ContactComponent } from './pages/contact/contact.component';
 import { MinisterioDetalleComponent } from './pages/ministerio-detalle/ministerio-detalle.component';
 import { DonacionesComponent } from './pages/donaciones/donaciones.component';
 import { NosotrosComponent } from './pages/nosotros/nosotros.component';
+import { EscuelaMinisterialComponent } from './pages/escuela-ministerial/escuela-ministerial.component';
 import { MantenimientoComponent } from './pages/mantenimiento/mantenimiento.component';
 
 export const routes: Routes = [
@@ -25,7 +26,9 @@ export const routes: Routes = [
       { path: 'ministerios', component: MinisteriosComponent },
       { path: 'ministerios/:id', component: MinisterioDetalleComponent },
       { path: 'contacto', component: ContactComponent },
-      { path: 'donaciones', component: DonacionesComponent },
+      { path: 'ofrendas', component: DonacionesComponent },
+      { path: 'donaciones', redirectTo: 'ofrendas', pathMatch: 'full' },
+      { path: 'escuela-ministerial', component: EscuelaMinisterialComponent },
       { path: 'nosotros', component: NosotrosComponent },
       { path: '**', redirectTo: '' }
     ]

@@ -28,9 +28,10 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     { label: 'Nosotros', path: '/nosotros' },
     { label: 'Ministerios', path: '/ministerios' },
     { label: 'Días de Reunión', path: '/dias-reunion' },
-    { label: 'Donaciones', path: '/donaciones' },
+    { label: 'Ofrendas', path: '/ofrendas' },
     { label: 'Contacto', path: '/contacto' }
   ];
+  showThemeToggle = false;
 
   constructor(
     private publicApi: PublicApiService,
@@ -75,6 +76,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     }).subscribe({
       next: ({ layout, home }) => {
         if (layout.navLinks?.length) this.navLinks = layout.navLinks;
+        this.showThemeToggle = !!layout.showThemeToggle;
         this.headerIconUrl = layout.headerIconUrl || '';
         this.headerIconUrlLight = layout.headerIconUrlLight || '';
         this.headerIconUrlDark = layout.headerIconUrlDark || '';

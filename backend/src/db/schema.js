@@ -236,6 +236,9 @@ export function runMigrations(db) {
     if (!cols.some(c => c.name === 'maintenanceMode')) {
       db.prepare('ALTER TABLE layouts ADD COLUMN maintenanceMode INTEGER NOT NULL DEFAULT 0').run();
     }
+    if (!cols.some(c => c.name === 'showThemeToggle')) {
+      db.prepare('ALTER TABLE layouts ADD COLUMN showThemeToggle INTEGER NOT NULL DEFAULT 0').run();
+    }
   } catch (_) {}
 
   try {

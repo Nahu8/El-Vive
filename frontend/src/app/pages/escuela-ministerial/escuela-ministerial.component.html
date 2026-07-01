@@ -1,0 +1,156 @@
+<div class="em-page min-h-screen page-content animate-fadeIn no-section-gradient" [style.--page-bg]="pageBgColor" [style.--page-bg-section]="pageBgColor">
+
+  <section class="page-hero relative min-h-[58vh] flex items-center justify-center overflow-hidden pt-20 md:pt-24">
+    <div class="absolute inset-0" [style.background-color]="heroBgColor"></div>
+    @if (heroVideoUrl) {
+      <video [src]="heroVideoUrl" autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover"></video>
+    } @else if (currentHeroImageUrl) {
+      <div class="absolute inset-0 bg-cover bg-center scale-105" [style.background-image]="'url(' + currentHeroImageUrl + ')'"></div>
+    } @else {
+      <div class="absolute inset-0 bg-gradient-to-br from-indigo-950 via-violet-950/90 to-black"></div>
+    }
+    @if (heroFadeEnabled) {
+      <div class="absolute inset-0" [style.background]="heroFadeStyle"></div>
+    }
+    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/35 to-black/25"></div>
+    <div class="relative z-10 text-center px-6 py-20 max-w-4xl mx-auto">
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-white mb-5 drop-shadow-lg">{{ heroTitle }}</h1>
+      <p class="text-lg md:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed font-medium">{{ heroSubtitle }}</p>
+    </div>
+  </section>
+
+  <div class="container mx-auto px-4 sm:px-6 pb-24 max-w-6xl">
+
+    @if (intro.title || intro.content) {
+      <section class="page-section py-14 md:py-18" appReveal revealVariant="fade-up">
+        <div class="max-w-3xl mx-auto text-center rounded-3xl px-6 py-10 md:px-10 border page-border-color">
+          <h2 class="page-heading text-2xl md:text-3xl font-bold mb-5">{{ intro.title }}</h2>
+          <p class="text-base md:text-lg leading-relaxed whitespace-pre-line page-text-muted">{{ intro.content }}</p>
+        </div>
+      </section>
+    }
+
+    @if (objective.content) {
+      <section class="page-section py-10" appReveal revealVariant="fade-up">
+        <h2 class="page-heading text-2xl md:text-3xl font-bold mb-4 text-center">{{ objective.title }}</h2>
+        <p class="max-w-3xl mx-auto text-center whitespace-pre-line page-text-muted leading-relaxed">{{ objective.content }}</p>
+      </section>
+    }
+
+    @if (generalInfo.content) {
+      <section class="page-section py-10" appReveal revealVariant="fade-up">
+        <div class="rounded-3xl border p-8 md:p-10 page-border-color max-w-4xl mx-auto">
+          <h2 class="page-heading text-2xl font-bold mb-4">{{ generalInfo.title }}</h2>
+          <p class="whitespace-pre-line page-text-muted leading-relaxed">{{ generalInfo.content }}</p>
+        </div>
+      </section>
+    }
+
+    @if (presentationVideoUrl && getSafeVideoUrl(presentationVideoUrl)) {
+      <section class="page-section py-10" appReveal revealVariant="fade-up">
+        <h2 class="page-heading text-2xl font-bold mb-6 text-center">Video de presentación</h2>
+        <div class="max-w-4xl mx-auto aspect-video rounded-2xl overflow-hidden shadow-2xl bg-gray-900">
+          <iframe [src]="getSafeVideoUrl(presentationVideoUrl)!" allowfullscreen class="w-full h-full border-0"></iframe>
+        </div>
+      </section>
+    }
+
+    @if (program.items.length || program.content) {
+      <section class="page-section py-10" appReveal revealVariant="fade-up">
+        <h2 class="page-heading text-2xl md:text-3xl font-bold mb-6 text-center">{{ program.title }}</h2>
+        @if (program.content) {
+          <p class="max-w-3xl mx-auto text-center mb-8 whitespace-pre-line page-text-muted">{{ program.content }}</p>
+        }
+        @if (program.items.length) {
+          <ul class="max-w-2xl mx-auto space-y-3">
+            @for (item of program.items; track $index) {
+              <li class="flex gap-3 rounded-xl border px-4 py-3 page-border-color">
+                <span class="text-indigo-400 font-bold">{{ $index + 1 }}.</span>
+                <span class="page-text-muted">{{ item }}</span>
+              </li>
+            }
+          </ul>
+        }
+      </section>
+    }
+
+    @if (requirements.items.length) {
+      <section class="page-section py-10" appReveal revealVariant="fade-up">
+        <h2 class="page-heading text-2xl md:text-3xl font-bold mb-6 text-center">{{ requirements.title }}</h2>
+        <ul class="max-w-2xl mx-auto grid gap-3 md:grid-cols-2">
+          @for (req of requirements.items; track $index) {
+            <li class="rounded-xl border px-4 py-3 text-sm page-border-color page-text-muted">{{ req }}</li>
+          }
+        </ul>
+      </section>
+    }
+
+    @if (images.length) {
+      <section class="page-section py-10" appReveal revealVariant="fade-up">
+        <h2 class="page-heading text-2xl font-bold mb-8 text-center">Galería</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+          @for (img of images; track img.url) {
+            <figure class="rounded-2xl overflow-hidden border page-border-color aspect-square">
+              <img [src]="img.url" [alt]="img.caption || 'Escuela Ministerial'" loading="lazy" class="w-full h-full object-cover" />
+              @if (img.caption) {
+                <figcaption class="px-3 py-2 text-xs page-text-muted text-center">{{ img.caption }}</figcaption>
+              }
+            </figure>
+          }
+        </div>
+      </section>
+    }
+
+    @if (registration.title || registration.content || registration.formUrl || registration.pdfUrl) {
+      <section class="page-section py-12" appReveal revealVariant="fade-up">
+        <div class="rounded-3xl border p-8 md:p-10 text-center max-w-3xl mx-auto page-border-color">
+          <h2 class="page-heading text-2xl md:text-3xl font-bold mb-4">{{ registration.title }}</h2>
+          @if (registration.content) {
+            <p class="mb-8 whitespace-pre-line page-text-muted">{{ registration.content }}</p>
+          }
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+            @if (registration.formUrl) {
+              @if (isExternalLink(registration.formUrl)) {
+                <a [href]="registration.formUrl" target="_blank" rel="noopener noreferrer"
+                  class="inline-flex px-6 py-3 rounded-xl font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition-colors">
+                  Formulario de inscripción
+                </a>
+              } @else {
+                <a [routerLink]="registration.formUrl"
+                  class="inline-flex px-6 py-3 rounded-xl font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition-colors">
+                  Formulario de inscripción
+                </a>
+              }
+            }
+            @if (registration.pdfUrl) {
+              <a [href]="registration.pdfUrl" target="_blank" rel="noopener noreferrer"
+                class="inline-flex px-6 py-3 rounded-xl font-semibold border page-border-color page-text-muted hover:bg-white/5 transition-colors">
+                Descargar ficha PDF
+              </a>
+            }
+          </div>
+        </div>
+      </section>
+    }
+
+    @if (hasSocialMedia) {
+      <section class="page-section py-8 text-center" appReveal revealVariant="fade-up">
+        <h2 class="page-heading text-lg font-bold mb-4">Seguinos en redes</h2>
+        <div class="flex items-center justify-center gap-4">
+          @if (socialMedia.facebook) {
+            <a [href]="socialMedia.facebook" target="_blank" rel="noopener noreferrer"
+              class="px-5 py-2.5 rounded-full border page-border-color text-sm font-semibold page-text-muted hover:text-white transition-colors">
+              Facebook
+            </a>
+          }
+          @if (socialMedia.instagram) {
+            <a [href]="socialMedia.instagram" target="_blank" rel="noopener noreferrer"
+              class="px-5 py-2.5 rounded-full border page-border-color text-sm font-semibold page-text-muted hover:text-white transition-colors">
+              Instagram
+            </a>
+          }
+        </div>
+      </section>
+    }
+  </div>
+</div>
