@@ -69,7 +69,11 @@ const authLimiter = rateLimit({
   message: { error: 'Demasiados intentos de acceso. Probá de nuevo más tarde.' },
 });
 
-app.use('/uploads', express.static(path.join(getUploadsDir())));
+app.use('/uploads', express.static(path.join(getUploadsDir()), {
+  setHeaders(res) {
+    res.setHeader('Cache-Control', 'no-cache, must-revalidate');
+  },
+}));
 
 app.use('/auth', authLimiter, authRoutes);
 app.use('/public', publicRoutes);
@@ -149,6 +153,19 @@ app.use('/api/media', mediaRoutes);
 app.use('/api/generic-pages', genericPagesRoutes);
 
 const spaRoot = resolveAngularStaticRoot(__dirname);
+
+const SITEMAP_PATHS = ['/', '/nosotros', '/ministerios', '/dias-reunion', '/donaciones', '/contacto'];
+
+app.get('/sitemap.xml', (req, res) => {
+  const base = `${req.protocol}://${req.get('host')}`;
+  const urls = SITEMAP_PATHS.map(
+    (p) => `  <url><loc>${base}${p}</loc><changefreq>weekly</changefreq></url>`
+  ).join('\n');
+  res.type('application/xml').send(
+    `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>`
+  );
+});
+
 if (spaRoot) {
   app.use(express.static(spaRoot));
   app.use((req, res, next) => {

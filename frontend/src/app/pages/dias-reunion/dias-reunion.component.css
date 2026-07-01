@@ -151,22 +151,3 @@
     min-height: 4rem;
   }
 }
-
-
-:host .page-section {
-  background: transparent !important;
-  background-color: transparent !important;
-}
-
-:host .page-section + .page-section {
-  background-image: none !important;
-  background: transparent !important;
-  background-color: transparent !important;
-}
-
-:host-context(html.dark-theme) .page-section + .page-section,
-:host-context(html.light-theme) .page-section + .page-section {
-  background-image: none !important;
-  background: transparent !important;
-  background-color: transparent !important;
-}

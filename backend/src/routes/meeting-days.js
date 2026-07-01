@@ -53,16 +53,23 @@ router.get(
     const heroLightIcon = await dbGet('SELECT 1 FROM section_icons WHERE page_key=? AND section_key=?', ['meeting-days', 'hero-light']);
     const heroDarkIcon = await dbGet('SELECT 1 FROM section_icons WHERE page_key=? AND section_key=?', ['meeting-days', 'hero-dark']);
 
+    const heroBase = parseJson(md.hero) || {};
+    const heroImageUrlLight = heroLightIcon ? '/api/section-icon/meeting-days/hero-light' : null;
+    const heroImageUrlDark = heroDarkIcon ? '/api/section-icon/meeting-days/hero-dark' : null;
     res.json({
       id: md.id,
       sectionTitle: cal.sectionTitle ?? 'CALENDARIO DE EVENTOS',
       sectionSubtitle: cal.sectionSubtitle ?? '',
-      hero: parseJson(md.hero) || null,
+      hero: {
+        ...heroBase,
+        heroImageUrlLight,
+        heroImageUrlDark,
+      },
       hasHeroImage,
       heroImageName: md.heroImageName ?? '',
       heroImageUrl: hasHeroImage ? '/api/meeting-days/hero-image' : null,
-      heroImageUrlLight: heroLightIcon ? '/api/section-icon/meeting-days/hero-light' : null,
-      heroImageUrlDark: heroDarkIcon ? '/api/section-icon/meeting-days/hero-dark' : null,
+      heroImageUrlLight,
+      heroImageUrlDark,
       calendarEvents: cal,
       upcomingEvents: Object.keys(upcoming).length ? upcoming : null,
       upcomingEventsIconUrl: upcomingIcon ? '/api/section-icon/meeting-days/upcoming-events' : null,

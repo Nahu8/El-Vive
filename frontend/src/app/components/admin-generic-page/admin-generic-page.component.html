@@ -10,18 +10,24 @@
             class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white">
           <input type="text" [(ngModel)]="pageContent.hero.subtitle" placeholder="Subtítulo"
             class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white">
-          <input *ngIf="pageKey === 'donaciones'" type="text" [(ngModel)]="pageContent.hero.badge" placeholder="Etiqueta sobre el título (ej. Generosidad que sostiene la misión)"
+          <input *ngIf="pageKey === 'donaciones' || pageKey === 'nosotros'" type="text" [(ngModel)]="pageContent.hero.badge" placeholder="Etiqueta sobre el título (ej. Conozca más acerca del ministerio)"
             class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
               <label class="block text-gray-500 text-sm mb-1">Imagen modo día</label>
               <input type="file" (change)="onHeroImageSelected($event, 'light')" accept="image/*" class="text-gray-400 text-sm file:mr-2 file:py-1 file:px-2 file:rounded file:bg-gray-700 file:text-gray-300">
-              <img *ngIf="pageContent.hero.backgroundImageUrlLight" [src]="resolveUrl(pageContent.hero.backgroundImageUrlLight)" class="mt-2 h-20 object-cover rounded">
+              <div *ngIf="pageContent.hero.backgroundImageUrlLight" class="mt-2 flex items-center gap-2">
+                <img [src]="resolveUrl(pageContent.hero.backgroundImageUrlLight)" class="h-20 object-cover rounded">
+                <button type="button" (click)="clearHeroImage('light')" class="text-red-400 text-xs">Eliminar</button>
+              </div>
             </div>
             <div>
               <label class="block text-gray-500 text-sm mb-1">Imagen modo noche</label>
               <input type="file" (change)="onHeroImageSelected($event, 'dark')" accept="image/*" class="text-gray-400 text-sm file:mr-2 file:py-1 file:px-2 file:rounded file:bg-gray-700 file:text-gray-300">
-              <img *ngIf="pageContent.hero.backgroundImageUrlDark" [src]="resolveUrl(pageContent.hero.backgroundImageUrlDark)" class="mt-2 h-20 object-cover rounded">
+              <div *ngIf="pageContent.hero.backgroundImageUrlDark" class="mt-2 flex items-center gap-2">
+                <img [src]="resolveUrl(pageContent.hero.backgroundImageUrlDark)" class="h-20 object-cover rounded">
+                <button type="button" (click)="clearHeroImage('dark')" class="text-red-400 text-xs">Eliminar</button>
+              </div>
             </div>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -146,6 +152,24 @@
       </div>
 
       <div *ngIf="pageKey === 'nosotros'" class="bg-gray-800/50 rounded-lg p-4">
+        <h4 class="text-gray-300 font-medium mb-3">Etiquetas de secciones</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <input type="text" [(ngModel)]="pageContent.nosotrosLabels!.introTag" placeholder="Etiqueta intro (ej. Quiénes somos)"
+            class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
+          <input type="text" [(ngModel)]="pageContent.nosotrosLabels!.teamTag" placeholder="Etiqueta equipo (ej. Liderazgo)"
+            class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
+          <input type="text" [(ngModel)]="pageContent.nosotrosLabels!.teamHeading" placeholder="Título equipo (ej. Presentación pastoral)"
+            class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
+          <input type="text" [(ngModel)]="pageContent.nosotrosLabels!.pillarsTag" placeholder="Etiqueta pilares (ej. Fundamentos)"
+            class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
+          <input type="text" [(ngModel)]="pageContent.nosotrosLabels!.pillarsHeading" placeholder="Título pilares (ej. Lo que nos define)"
+            class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm md:col-span-2">
+          <textarea [(ngModel)]="pageContent.nosotrosLabels!.teamSubtext" rows="2" placeholder="Subtítulo equipo"
+            class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm md:col-span-2"></textarea>
+        </div>
+      </div>
+
+      <div *ngIf="pageKey === 'nosotros'" class="bg-gray-800/50 rounded-lg p-4">
         <h4 class="text-gray-300 font-medium mb-3">Bloque 3 columnas (Creencias / Valores / Equipo)</h4>
         <div class="space-y-3">
           <div *ngFor="let h of pageContent.highlights; let i = index" class="p-3 bg-gray-900 rounded border border-gray-700">
@@ -175,6 +199,10 @@
               <label class="block text-gray-500 text-sm mb-2">Pastor</label>
               <input type="text" [(ngModel)]="pageContent.leadership!.pastorName" placeholder="Nombre" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2">
               <input type="text" [(ngModel)]="pageContent.leadership!.pastorRole" placeholder="Rol" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2">
+              <textarea [(ngModel)]="pageContent.leadership!.pastorDescription" rows="2" placeholder="Descripción del pastor"
+                class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2"></textarea>
+              <input type="text" [(ngModel)]="pageContent.leadership!.pastorQuote" placeholder="Cita / frase destacada"
+                class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm mb-2">
               <input type="file" (change)="onLeadershipImageSelected($event, 'pastorImageUrl')" accept="image/*" class="text-xs text-gray-400 file:mr-2 file:py-1 file:rounded file:bg-gray-700">
               <img *ngIf="pageContent.leadership!.pastorImageUrl" [src]="resolveUrl(pageContent.leadership!.pastorImageUrl!)" class="mt-2 h-20 w-20 rounded-full object-cover">
             </div>
@@ -238,6 +266,24 @@
           <input type="text" [(ngModel)]="p.imageUrls![0]" placeholder="URL imagen principal" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-1 text-white text-xs">
         </div>
         <button type="button" (click)="addProyecto()" class="px-3 py-1.5 bg-amber-900/50 text-amber-200 text-sm rounded">+ Proyecto</button>
+      </div>
+
+      <div *ngIf="pageKey === 'nosotros'" class="bg-gray-800/50 rounded-lg p-4 border border-indigo-900/30">
+        <h4 class="text-indigo-300 font-medium mb-3">Bloque de contacto (CTA)</h4>
+        <input type="text" [(ngModel)]="pageContent.nosotrosCta!.title" placeholder="Título (ej. ¿Querés ser parte?)"
+          class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white mb-2">
+        <textarea [(ngModel)]="pageContent.nosotrosCta!.subtitle" rows="2" placeholder="Subtítulo"
+          class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white mb-2"></textarea>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
+          <input type="text" [(ngModel)]="pageContent.nosotrosCta!.primaryButtonText" placeholder="Texto botón principal"
+            class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
+          <input type="text" [(ngModel)]="pageContent.nosotrosCta!.primaryButtonUrl" placeholder="Ruta botón principal (ej. /ministerios)"
+            class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
+          <input type="text" [(ngModel)]="pageContent.nosotrosCta!.secondaryButtonText" placeholder="Texto botón secundario"
+            class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
+          <input type="text" [(ngModel)]="pageContent.nosotrosCta!.secondaryButtonUrl" placeholder="Ruta botón secundario (ej. /contacto)"
+            class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm">
+        </div>
       </div>
 
       <div class="bg-gray-800/50 rounded-lg p-4">

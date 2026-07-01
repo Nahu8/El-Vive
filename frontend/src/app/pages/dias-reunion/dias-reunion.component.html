@@ -1,4 +1,4 @@
-<div class="min-h-screen page-content no-section-gradient" [style.--page-bg]="pageBgColor" [style.--page-bg-section]="pageBgColor" [style.--card-bg]="pageBgColor">
+<div class="min-h-screen page-content" [style.--card-bg]="pageBgColor">
 
 <section class="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden">
     <div class="absolute inset-0 z-0" [style.background-color]="heroBgColor"></div>
@@ -139,10 +139,7 @@
                     <div class="space-y-2 relative z-10 hidden md:block">
                         <ng-container *ngIf="getEventsForDate(day).length === 1; else multipleEvents">
                             <div *ngFor="let event of getEventsForDate(day)"
-                                class="text-xs p-2 rounded-lg text-white truncate" [style.background]="event.backgroundUrl ? 'transparent' : (event.type === 'reunion' ? 'linear-gradient(135deg, #3b82f6, #06b6d4)' : 
-                                  event.type === 'especial' ? 'linear-gradient(135deg, #ec4899, #f472b6)' : 
-                                  event.type === 'celebración' ? 'linear-gradient(135deg, #f59e0b, #f97316)' : 
-                                  'linear-gradient(135deg, #10b981, #059669)')">
+                                class="text-xs p-2 rounded-lg text-white truncate" [style.background]="event.backgroundUrl ? 'transparent' : getEventGradient(event)">
                                 <div class="flex items-center gap-1">
                                     <img *ngIf="event.iconUrl" [src]="event.iconUrl" alt="" class="w-4 h-4 object-contain">
                                     <span class="font-medium">{{ event.time }}</span>
@@ -189,10 +186,7 @@
                     class="page-card-bg rounded-xl border page-border-color p-6 hover:border-indigo-500/50 transition-all duration-300 hover:scale-[1.01]">
                         <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
                         <div class="flex items-start gap-4 mb-4 md:mb-0">
-                            <div class="p-3 rounded-xl text-2xl flex items-center justify-center min-w-[48px] min-h-[48px]" [style.background]="event.type === 'reunion' ? 'linear-gradient(135deg, #3b82f6, #06b6d4)' : 
-                                    event.type === 'especial' ? 'linear-gradient(135deg, #ec4899, #f472b6)' : 
-                                    event.type === 'celebración' ? 'linear-gradient(135deg, #f59e0b, #f97316)' : 
-                                    'linear-gradient(135deg, #10b981, #059669)'">
+                            <div class="p-3 rounded-xl text-2xl flex items-center justify-center min-w-[48px] min-h-[48px]" [style.background]="getEventGradient(event)">
                                 <img *ngIf="event.iconUrl" [src]="event.iconUrl" alt="" class="w-8 h-8 object-contain">
                             </div>
                             <div>
@@ -276,11 +270,7 @@
                 appReveal revealVariant="fade-up" [revealDelay]="(i % 3) * 100"
                 class="page-card-bg rounded-2xl border page-border-color overflow-hidden hover:border-indigo-500/50 transition-all duration-300 hover:scale-[1.02]">
                 <div class="p-6 border-b page-border-color relative min-h-[140px] overflow-hidden" 
-                    [style.background]="event.backgroundUrl ? 'none' : ('linear-gradient(135deg, ' + 
-          (event.type === 'reunion' ? '#1e40af, #0e7490' : 
-           event.type === 'especial' ? '#be185d, #db2777' : 
-           event.type === 'celebración' ? '#b45309, #ea580c' : 
-           '#047857, #0d9488') + ')')">
+                    [style.background]="event.backgroundUrl ? 'none' : getEventGradient(event)">
                     <img *ngIf="event.backgroundUrl" [src]="event.backgroundUrl" alt="" class="absolute inset-0 w-full h-full object-cover z-0">
                     <div *ngIf="event.backgroundUrl" class="absolute inset-0 bg-black/40 z-[1]"></div>
                     <div class="relative z-10">
@@ -298,7 +288,7 @@
                     <p class="page-text-muted mb-4 line-clamp-2">{{ event.description }}</p>
                     <div class="flex items-center gap-2">
                         <span class="text-sm page-text-muted">Faltan:</span>
-                        <span class="font-semibold">{{ getDaysUntil(event.date) }} dias</span>
+                        <span class="font-semibold">{{ getDaysUntil(event.date) }} días</span>
                     </div>
                 </div>
             </div>
@@ -310,11 +300,7 @@
                 <div *ngFor="let event of upcomingEvents"
                     class="w-[280px] flex-shrink-0 page-card-bg rounded-2xl border page-border-color overflow-hidden">
                     <div class="p-5 border-b page-border-color relative min-h-[120px] overflow-hidden"
-                        [style.background]="event.backgroundUrl ? 'none' : ('linear-gradient(135deg, ' + 
-              (event.type === 'reunion' ? '#1e40af, #0e7490' : 
-               event.type === 'especial' ? '#be185d, #db2777' : 
-               event.type === 'celebración' ? '#b45309, #ea580c' : 
-               '#047857, #0d9488') + ')')">
+                        [style.background]="event.backgroundUrl ? 'none' : getEventGradient(event)">
                         <img *ngIf="event.backgroundUrl" [src]="event.backgroundUrl" alt="" class="absolute inset-0 w-full h-full object-cover z-0">
                         <div *ngIf="event.backgroundUrl" class="absolute inset-0 bg-black/40 z-[1]"></div>
                         <div class="relative z-10">
@@ -330,7 +316,7 @@
                     </div>
                     <div class="p-4">
                         <p class="page-text-muted text-sm mb-3 line-clamp-2">{{ event.description }}</p>
-                        <span class="text-xs page-text-muted">Faltan {{ getDaysUntil(event.date) }} dias</span>
+                        <span class="text-xs page-text-muted">Faltan {{ getDaysUntil(event.date) }} días</span>
                     </div>
                 </div>
             </div>
@@ -338,9 +324,9 @@
     </div>
 </section>
 
-<section class="page-section relative py-16 overflow-hidden">
+<section class="page-section relative py-16">
     <div class="container mx-auto px-6 relative z-10">
-        <div class="max-w-3xl mx-auto text-center" appReveal revealVariant="zoom">
+        <div class="max-w-3xl mx-auto text-center" appReveal revealVariant="fade-up">
             <div
                 class="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-full border border-green-500/30 mb-8">
                 <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
@@ -354,7 +340,8 @@
 
             <div class="flex justify-center">
                 <a [routerLink]="eventCtaButtonLink"
-                    class="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-indigo-500/30">
+                    class="px-8 py-4 text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+                    [style.background]="eventCtaButtonStyle">
                     {{ eventCtaButtonText }}
                 </a>
             </div>

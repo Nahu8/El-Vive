@@ -327,7 +327,7 @@ router.get(
   asyncHandler(async (req, res) => {
     const md = await dbGet('SELECT upcomingEvents FROM meeting_days LIMIT 1');
     const section = parseJson(md?.upcomingEvents);
-    const events = await dbAll('SELECT * FROM events WHERE date >= date("now") ORDER BY date, time');
+    const events = await dbAll('SELECT * FROM events WHERE `date` >= date("now") ORDER BY `date`, time');
     res.json({ section, events });
   })
 );

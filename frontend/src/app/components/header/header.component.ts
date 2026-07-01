@@ -3,7 +3,6 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PublicApiService } from '../../services/public-api.service';
 import { ThemeService } from '../../services/theme.service';
-import { environment } from '../../../environments/environment';
 import { forkJoin } from 'rxjs';
 import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
 
@@ -40,8 +39,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
 
   private resolveIconUrl(path: string): string {
     if (!path) return '';
-    if (path.startsWith('http')) return path;
-    return path.startsWith('/') ? environment.apiBaseUrl + path : environment.apiBaseUrl + '/' + path;
+    return this.publicApi.resolveAssetUrl(path);
   }
 
   toggleMenu() {

@@ -14,6 +14,8 @@ interface CalendarEvent {
   time: string;
   type: 'reunion' | 'especial' | 'celebración' | 'estudio';
   color: string;
+  colorFrom?: string;
+  colorTo?: string;
   icon: string;
   iconUrl?: string;
   backgroundUrl?: string;
@@ -59,6 +61,8 @@ export class DiasReunionComponent implements OnInit {
   eventCtaDescription: string = 'Si deseas organizar un evento especial, boda, bautizo o reunión en nuestras instalaciones, contáctanos.';
   eventCtaButtonText: string = 'Contactar coordinador';
   eventCtaButtonLink: string = '/contacto';
+  eventCtaButtonColorFrom: string = '#4f46e5';
+  eventCtaButtonColorTo: string = '#7c3aed';
 
   currentDate: Date = new Date();
   currentMonth: string = '';
@@ -112,10 +116,12 @@ export class DiasReunionComponent implements OnInit {
           this.heroSubtitle = data.hero.subtitle || this.heroSubtitle;
         }
         if (data.hasHeroImage) {
-          this.heroImageUrl = `${environment.apiBaseUrl}/api/meeting-days/hero-image`;
+          this.heroImageUrl = this.apiService.resolveAssetUrl('/api/meeting-days/hero-image');
         }
-        this.heroImageUrlLight = data.hero?.heroImageUrlLight ? this.apiService.resolveAssetUrl(data.hero.heroImageUrlLight) : null;
-        this.heroImageUrlDark = data.hero?.heroImageUrlDark ? this.apiService.resolveAssetUrl(data.hero.heroImageUrlDark) : null;
+        const lightUrl = data.hero?.heroImageUrlLight || data.heroImageUrlLight;
+        const darkUrl = data.hero?.heroImageUrlDark || data.heroImageUrlDark;
+        this.heroImageUrlLight = lightUrl ? this.apiService.resolveAssetUrl(lightUrl) : null;
+        this.heroImageUrlDark = darkUrl ? this.apiService.resolveAssetUrl(darkUrl) : null;
         this.heroBgLightColor = data.hero?.bgColorLight || '#ffffff';
         this.heroBgDarkColor = data.hero?.bgColorDark || '#000000';
         this.heroFadeEnabled = data.hero?.fadeEnabled !== false;
@@ -153,7 +159,9 @@ export class DiasReunionComponent implements OnInit {
               backgroundUrl: event.backgroundUrl ? this.apiService.resolveAssetUrl(event.backgroundUrl) : undefined,
               location: event.location || '',
               speakers: event.speakers ? (typeof event.speakers === 'string' ? event.speakers.split(',').map((s: string) => s.trim()) : event.speakers) : [],
-              registrationLink: event.registrationLink
+              registrationLink: event.registrationLink,
+              colorFrom: event.colorFrom || '#3b82f6',
+              colorTo: event.colorTo || '#06b6d4'
             }));
           }
         }
@@ -165,6 +173,8 @@ export class DiasReunionComponent implements OnInit {
           this.eventCtaDescription = data.eventCta.description || this.eventCtaDescription;
           this.eventCtaButtonText = data.eventCta.buttonText || this.eventCtaButtonText;
           this.eventCtaButtonLink = data.eventCta.buttonLink || this.eventCtaButtonLink;
+          this.eventCtaButtonColorFrom = data.eventCta.buttonColorFrom || this.eventCtaButtonColorFrom;
+          this.eventCtaButtonColorTo = data.eventCta.buttonColorTo || this.eventCtaButtonColorTo;
         }
       },
       error: (error) => {
@@ -365,6 +375,10 @@ export class DiasReunionComponent implements OnInit {
     this.calendarEvents = december2025Events;
   }
 
+  get eventCtaButtonStyle(): string {
+    return `linear-gradient(to right, ${this.eventCtaButtonColorFrom}, ${this.eventCtaButtonColorTo})`;
+  }
+
   getDaysUntil(eventDate: Date): number {
     const today = new Date();
     const timeDiff = eventDate.getTime() - today.getTime();
@@ -372,8 +386,13 @@ export class DiasReunionComponent implements OnInit {
     return daysDiff;
   }
 
-  get upcomingEvents(): CalendarEvent[] {
+  getEventGradient(event: CalendarEvent): string {
+    const from = (event as any).colorFrom || '#3b82f6';
+    const to = (event as any).colorTo || '#06b6d4';
+    return `linear-gradient(135deg, ${from}, ${to})`;
+  }
 
+  get upcomingEvents(): CalendarEvent[] {
     if (this.upcomingEventsList.length > 0) {
       return this.upcomingEventsList
         .filter(event => {

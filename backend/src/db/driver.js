@@ -46,10 +46,10 @@ export function translateSql(sql) {
 
   const t = s.trim().replace(/\s+/g, ' ');
   if (t.startsWith('INSERT INTO section_icons')) {
-    return `INSERT INTO section_icons (page_key, section_key, imagePath, imageMime, imageName) VALUES (?,?,?,?,?) AS new ON DUPLICATE KEY UPDATE imagePath=new.imagePath, imageMime=new.imageMime, imageName=new.imageName, updated_at=UTC_TIMESTAMP()`;
+    return `INSERT INTO section_icons (page_key, section_key, imagePath, imageMime, imageName) VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE imagePath=VALUES(imagePath), imageMime=VALUES(imageMime), imageName=VALUES(imageName), updated_at=UTC_TIMESTAMP()`;
   }
   if (t.startsWith('INSERT INTO meeting_card_images')) {
-    return `INSERT INTO meeting_card_images (cardIndex, imagePath, imageMime, imageName) VALUES (?,?,?,?) AS new ON DUPLICATE KEY UPDATE imagePath=new.imagePath, imageMime=new.imageMime, imageName=new.imageName, updated_at=UTC_TIMESTAMP()`;
+    return `INSERT INTO meeting_card_images (cardIndex, imagePath, imageMime, imageName) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE imagePath=VALUES(imagePath), imageMime=VALUES(imageMime), imageName=VALUES(imageName), updated_at=UTC_TIMESTAMP()`;
   }
   return s;
 }

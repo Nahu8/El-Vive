@@ -237,11 +237,18 @@ export class ApiService {
     return `${this.apiUrl}/event/${eventId}/background`;
   }
 
-  resolveAssetUrl(path: string): string {
+  resolveAssetUrl(path: string, bustCache = true): string {
     if (!path) return '';
-    if (path.startsWith('http')) return path;
+    if (path.startsWith('http')) return bustCache ? this.cacheBust(path) : path;
     const base = this.apiUrl.replace(/\/api\/?$/, '');
-    return (path.startsWith('/') ? base + path : base + '/' + path);
+    const url = path.startsWith('/') ? base + path : base + '/' + path;
+    return bustCache ? this.cacheBust(url) : url;
+  }
+
+  cacheBust(url: string): string {
+    if (!url) return '';
+    const sep = url.includes('?') ? '&' : '?';
+    return `${url}${sep}v=${Date.now()}`;
   }
 
   uploadSectionIcon(pageKey: string, sectionKey: string, file: File): Observable<any> {

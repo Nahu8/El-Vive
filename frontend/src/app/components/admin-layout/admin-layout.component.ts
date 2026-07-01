@@ -126,12 +126,12 @@ export class AdminLayoutComponent implements OnInit {
           footerIconUrl: data.footerIconUrl || null,
           maintenanceMode: !!data.maintenanceMode
         });
-        this.headerIconPreview = data.headerIconUrl ? this.apiBase + data.headerIconUrl + '?t=' + Date.now() : '';
-        this.headerIconLightPreview = data.headerIconUrlLight ? this.apiBase + data.headerIconUrlLight + '?t=' + Date.now() : '';
-        this.headerIconDarkPreview = data.headerIconUrlDark ? this.apiBase + data.headerIconUrlDark + '?t=' + Date.now() : '';
-        this.footerIconPreview = data.footerIconUrl ? this.apiBase + data.footerIconUrl + '?t=' + Date.now() : '';
-        this.footerIconLightPreview = data.footerIconUrlLight ? this.apiBase + data.footerIconUrlLight + '?t=' + Date.now() : '';
-        this.footerIconDarkPreview = data.footerIconUrlDark ? this.apiBase + data.footerIconUrlDark + '?t=' + Date.now() : '';
+        this.headerIconPreview = data.headerIconUrl ? this.apiService.resolveAssetUrl(data.headerIconUrl) : '';
+        this.headerIconLightPreview = data.headerIconUrlLight ? this.apiService.resolveAssetUrl(data.headerIconUrlLight) : '';
+        this.headerIconDarkPreview = data.headerIconUrlDark ? this.apiService.resolveAssetUrl(data.headerIconUrlDark) : '';
+        this.footerIconPreview = data.footerIconUrl ? this.apiService.resolveAssetUrl(data.footerIconUrl) : '';
+        this.footerIconLightPreview = data.footerIconUrlLight ? this.apiService.resolveAssetUrl(data.footerIconUrlLight) : '';
+        this.footerIconDarkPreview = data.footerIconUrlDark ? this.apiService.resolveAssetUrl(data.footerIconUrlDark) : '';
       },
       error: () => this.showToastMsg('Error al cargar', 'error')
     });
@@ -167,30 +167,36 @@ export class AdminLayoutComponent implements OnInit {
   }
 
   onHeaderIconSelected(event: Event, mode: 'light' | 'dark'): void {
-    const file = (event.target as HTMLInputElement).files?.[0];
+    const input = event.target as HTMLInputElement;
+    const file = input?.files?.[0];
     if (!file?.type.startsWith('image/')) return;
     const sectionKey = mode === 'light' ? 'header-light' : 'header-dark';
     this.apiService.uploadSectionIcon('layout', sectionKey, file).subscribe({
       next: () => {
-        if (mode === 'light') this.headerIconLightPreview = this.apiBase + '/api/section-icon/layout/header-light?t=' + Date.now();
-        else this.headerIconDarkPreview = this.apiBase + '/api/section-icon/layout/header-dark?t=' + Date.now();
+        const url = this.apiService.getSectionIconUrl('layout', sectionKey) + '?t=' + Date.now();
+        if (mode === 'light') this.headerIconLightPreview = url;
+        else this.headerIconDarkPreview = url;
         this.showToastMsg('Ícono de header subido');
+        input.value = '';
       },
-      error: () => this.showToastMsg('Error al subir', 'error')
+      error: (err) => this.showToastMsg('Error al subir: ' + (err.error?.error || err.message), 'error')
     });
   }
 
   onFooterIconSelected(event: Event, mode: 'light' | 'dark'): void {
-    const file = (event.target as HTMLInputElement).files?.[0];
+    const input = event.target as HTMLInputElement;
+    const file = input?.files?.[0];
     if (!file?.type.startsWith('image/')) return;
     const sectionKey = mode === 'light' ? 'footer-light' : 'footer-dark';
     this.apiService.uploadSectionIcon('layout', sectionKey, file).subscribe({
       next: () => {
-        if (mode === 'light') this.footerIconLightPreview = this.apiBase + '/api/section-icon/layout/footer-light?t=' + Date.now();
-        else this.footerIconDarkPreview = this.apiBase + '/api/section-icon/layout/footer-dark?t=' + Date.now();
+        const url = this.apiService.getSectionIconUrl('layout', sectionKey) + '?t=' + Date.now();
+        if (mode === 'light') this.footerIconLightPreview = url;
+        else this.footerIconDarkPreview = url;
         this.showToastMsg('Ícono de footer subido');
+        input.value = '';
       },
-      error: () => this.showToastMsg('Error al subir', 'error')
+      error: (err) => this.showToastMsg('Error al subir: ' + (err.error?.error || err.message), 'error')
     });
   }
 

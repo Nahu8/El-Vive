@@ -1,12 +1,10 @@
-<div class="nos min-h-screen page-content animate-fadeIn no-section-gradient"
-  [style.--page-bg]="pageBgColor"
-  [style.--page-bg-section]="pageBgColor"
+<div class="nos min-h-screen page-content animate-fadeIn"
   [style.--nos-accent]="'linear-gradient(135deg, var(--theme-primary, #6366f1), var(--theme-secondary, #7c3aed))'">
 
   <!-- Hero -->
   <section class="nos-hero page-hero relative flex min-h-[58vh] items-center justify-center overflow-hidden md:min-h-[62vh]">
     <div class="absolute inset-0" [style.background-color]="heroBgColor"></div>
-    @if (heroVideoUrl) {
+    @if (showHeroVideo) {
       <video [src]="heroVideoUrl" autoplay muted loop playsinline
         class="absolute inset-0 h-full w-full object-cover"></video>
     } @else if (currentHeroImageUrl) {
@@ -16,14 +14,14 @@
       <div class="nos-hero__abstract absolute inset-0"></div>
     }
     @if (heroFadeEnabled) {
-      <div class="absolute inset-0" [style.background]="heroFadeStyle"></div>
+      <div class="absolute bottom-0 left-0 right-0 h-16 md:h-20 z-[1]" [style.background]="heroFadeStyle"></div>
     }
     <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/25"></div>
     <div class="nos-hero__grain pointer-events-none absolute inset-0 opacity-[0.35]"></div>
 
     <div class="relative z-10 mx-auto max-w-5xl px-6 py-20 text-center md:py-24">
-      <p class="nos-hero__eyebrow mb-4 text-xs font-semibold uppercase tracking-[0.35em] text-white/85 md:text-sm">
-        Conozca más acerca del ministerio
+      <p *ngIf="heroBadge" class="nos-hero__eyebrow mb-4 text-xs font-semibold uppercase tracking-[0.35em] text-white/85 md:text-sm">
+        {{ heroBadge }}
       </p>
       <h1 class="nos-hero__title mb-6 font-black uppercase tracking-tight text-white drop-shadow-lg md:tracking-tighter">
         {{ heroTitle }}
@@ -40,8 +38,8 @@
     <!-- Intro -->
     <section class="nos-intro page-section py-16 md:py-24" appReveal revealVariant="fade-up">
       <div class="nos-intro__panel relative mx-auto max-w-3xl px-2 text-center md:px-6">
-        <span class="nos-section-tag mb-5 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] page-border-color page-text-muted">
-          Quiénes somos
+        <span *ngIf="introTag" class="nos-section-tag mb-5 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] page-border-color page-text-muted">
+          {{ introTag }}
         </span>
         <h2 class="page-heading mb-8 text-3xl font-bold tracking-tight md:text-4xl">
           {{ introTitle || 'Una comunidad con propósito' }}
@@ -58,14 +56,14 @@
     <!-- Pastores principales -->
     <section class="nos-team page-section py-12 md:py-20" aria-labelledby="nos-team-heading">
       <header class="mx-auto mb-14 max-w-2xl text-center" appReveal revealVariant="fade-up">
-        <span class="nos-section-tag mb-4 inline-flex rounded-full border px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] page-border-color page-text-muted">
-          Liderazgo
+        <span *ngIf="teamTag" class="nos-section-tag mb-4 inline-flex rounded-full border px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] page-border-color page-text-muted">
+          {{ teamTag }}
         </span>
         <h2 id="nos-team-heading" class="page-heading text-3xl font-bold md:text-4xl">
-          {{ leadershipIntro.title }}
+          {{ teamHeading }}
         </h2>
-        <p class="mt-4 text-base page-text-muted md:text-lg">
-          {{ leadershipIntro.subtitle }}
+        <p *ngIf="teamSubtext" class="mt-4 text-base page-text-muted md:text-lg">
+          {{ teamSubtext }}
         </p>
       </header>
 
@@ -199,11 +197,11 @@
     <!-- Pilares / highlights -->
     <section class="nos-pillars page-section py-10 md:py-16" aria-labelledby="nos-pillars-heading">
       <div class="mx-auto mb-12 max-w-2xl text-center" appReveal revealVariant="fade-up">
-        <span class="nos-section-tag mb-4 inline-flex rounded-full border px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] page-border-color page-text-muted">
-          Fundamentos
+        <span *ngIf="pillarsTag" class="nos-section-tag mb-4 inline-flex rounded-full border px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] page-border-color page-text-muted">
+          {{ pillarsTag }}
         </span>
         <h2 id="nos-pillars-heading" class="page-heading text-3xl font-bold md:text-4xl">
-          Lo que nos define
+          {{ pillarsHeading }}
         </h2>
       </div>
 
@@ -212,9 +210,6 @@
           <article class="nos-pillar relative overflow-hidden rounded-3xl border p-8 page-border-color md:p-10"
             appReveal revealVariant="fade-up"
             [revealDelay]="idx * 90">
-            <span class="nos-pillar__num mb-6 inline-flex h-11 w-11 items-center justify-center rounded-2xl text-sm font-bold tabular-nums">
-              {{ idx + 1 | number: '2.0-0' }}
-            </span>
             <h3 class="page-heading mb-4 text-xl font-bold md:text-2xl">{{ card.title }}</h3>
             <p class="mb-8 min-h-[5rem] text-base leading-relaxed page-text-muted">{{ card.content }}</p>
             @if (highlightHasLink(card)) {
@@ -245,29 +240,27 @@
     @if (zigzagSections.length > 0) {
       <section class="nos-zigzag page-section space-y-20 py-14 md:space-y-28 md:py-20" aria-label="Historias y contenidos">
         @for (section of zigzagSections; track $index; let zi = $index) {
-          <div class="nos-zigzag-row grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-14 xl:gap-16"
-            [ngClass]="{ 'lg:grid-flow-dense': section.layout === 'right' }">
+          <div class="nos-zigzag-row grid grid-cols-1 items-center gap-10"
+            [ngClass]="{
+              'lg:grid-cols-2 lg:gap-14 xl:gap-16': section.type !== 'text',
+              'lg:grid-flow-dense': section.layout === 'right' && section.type !== 'text'
+            }">
             <div class="nos-zigzag-copy order-2 lg:max-w-xl"
               appReveal
               [revealVariant]="section.layout === 'right' ? 'fade-right' : 'fade-left'"
               [ngClass]="{
-                'lg:order-2 lg:justify-self-end': section.layout === 'right',
-                'lg:order-1': section.layout !== 'right'
+                'lg:order-2 lg:justify-self-end': section.layout === 'right' && section.type !== 'text',
+                'lg:order-1': section.layout !== 'right' || section.type === 'text',
+                'mx-auto text-center lg:col-span-2': section.type === 'text'
               }">
-              <span class="nos-zigzag-index mb-4 inline-flex text-xs font-bold tabular-nums tracking-[0.25em] page-text-muted">
-                {{ zi + 1 | number: '2.0-0' }}
-              </span>
-              <h3 class="page-heading mb-5 text-2xl font-bold md:text-3xl">
-                {{ section.title || 'Nuestra visión' }}
+              <h3 *ngIf="section.title" class="page-heading mb-5 text-2xl font-bold md:text-3xl">
+                {{ section.title }}
               </h3>
-              <p class="leading-relaxed whitespace-pre-line page-text-muted md:text-lg">
-                {{
-                  section.content ||
-                    'Seguimos creciendo como comunidad, desarrollando espacios donde cada persona pueda conocer, vivir y compartir su fe.'
-                }}
+              <p *ngIf="section.content" class="leading-relaxed whitespace-pre-line page-text-muted md:text-lg">
+                {{ section.content }}
               </p>
             </div>
-            <div class="nos-zigzag-media order-1"
+            <div *ngIf="section.type !== 'text'" class="nos-zigzag-media order-1"
               appReveal
               [revealVariant]="section.layout === 'right' ? 'fade-left' : 'fade-right'"
               [revealDelay]="80"
@@ -287,10 +280,6 @@
                   <img [src]="section.imageUrl" [alt]="section.title || 'Imagen'" loading="lazy"
                     class="aspect-video w-full object-cover lg:aspect-[4/3]" />
                 </div>
-              } @else {
-                <div class="nos-media-placeholder flex aspect-video items-center justify-center rounded-3xl border border-dashed page-border-color lg:aspect-[4/3]">
-                  <span class="text-5xl opacity-40">✨</span>
-                </div>
               }
             </div>
           </div>
@@ -299,25 +288,42 @@
     }
 
     <!-- Cierre -->
-    <section class="nos-cta page-section py-16 md:py-20" appReveal revealVariant="fade-up">
-      <div class="nos-cta__inner relative overflow-hidden rounded-[2rem] px-8 py-12 text-center md:px-14 md:py-16">
-        <div class="nos-cta__glow pointer-events-none absolute -left-24 top-0 h-64 w-64 rounded-full blur-3xl opacity-40"></div>
-        <div class="nos-cta__glow pointer-events-none absolute -right-16 bottom-0 h-56 w-56 rounded-full blur-3xl opacity-35"></div>
-        <h2 class="relative z-[1] mb-4 text-2xl font-bold text-white md:text-3xl">
-          ¿Querés ser parte?
+    <section *ngIf="nosotrosCta.title || nosotrosCta.subtitle || nosotrosCta.primaryButtonText || nosotrosCta.secondaryButtonText"
+      class="nos-cta page-section py-16 md:py-20" appReveal revealVariant="fade-up">
+      <div class="mx-auto max-w-2xl px-2 text-center">
+        <h2 *ngIf="nosotrosCta.title" class="page-heading mb-4 text-2xl font-bold md:text-3xl">
+          {{ nosotrosCta.title }}
         </h2>
-        <p class="relative z-[1] mx-auto mb-10 max-w-lg text-base text-white/85 md:text-lg">
-          Sumate a un ministerio o escribinos: nos encantaría conocerte.
+        <p *ngIf="nosotrosCta.subtitle" class="mx-auto mb-10 max-w-lg text-base page-text-muted md:text-lg">
+          {{ nosotrosCta.subtitle }}
         </p>
-        <div class="relative z-[1] flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-6">
-          <a routerLink="/ministerios"
-            class="nos-cta-btn nos-cta-btn--solid inline-flex min-w-[200px] items-center justify-center rounded-full px-8 py-3.5 text-sm font-semibold transition-transform hover:scale-[1.02] active:scale-[0.98]">
-            Ver ministerios
-          </a>
-          <a routerLink="/contacto"
-            class="nos-cta-btn nos-cta-btn--outline inline-flex min-w-[200px] items-center justify-center rounded-full border-2 border-white/70 px-8 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-white/10">
-            Contacto
-          </a>
+        <div class="flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-6">
+          @if (nosotrosCta.primaryButtonText && nosotrosCta.primaryButtonUrl) {
+            @if (isExternalCtaLink(nosotrosCta.primaryButtonUrl)) {
+              <a [href]="nosotrosCta.primaryButtonUrl" target="_blank" rel="noopener noreferrer"
+                class="nos-cta-btn inline-flex min-w-[200px] items-center justify-center rounded-full px-8 py-3.5 text-sm font-semibold transition-transform hover:scale-[1.02] active:scale-[0.98]">
+                {{ nosotrosCta.primaryButtonText }}
+              </a>
+            } @else {
+              <a [routerLink]="nosotrosCta.primaryButtonUrl"
+                class="nos-cta-btn inline-flex min-w-[200px] items-center justify-center rounded-full px-8 py-3.5 text-sm font-semibold transition-transform hover:scale-[1.02] active:scale-[0.98]">
+                {{ nosotrosCta.primaryButtonText }}
+              </a>
+            }
+          }
+          @if (nosotrosCta.secondaryButtonText && nosotrosCta.secondaryButtonUrl) {
+            @if (isExternalCtaLink(nosotrosCta.secondaryButtonUrl)) {
+              <a [href]="nosotrosCta.secondaryButtonUrl" target="_blank" rel="noopener noreferrer"
+                class="nos-cta-btn nos-cta-btn--outline inline-flex min-w-[200px] items-center justify-center rounded-full border-2 px-8 py-3.5 text-sm font-semibold transition-colors">
+                {{ nosotrosCta.secondaryButtonText }}
+              </a>
+            } @else {
+              <a [routerLink]="nosotrosCta.secondaryButtonUrl"
+                class="nos-cta-btn nos-cta-btn--outline inline-flex min-w-[200px] items-center justify-center rounded-full border-2 px-8 py-3.5 text-sm font-semibold transition-colors">
+                {{ nosotrosCta.secondaryButtonText }}
+              </a>
+            }
+          }
         </div>
       </div>
     </section>

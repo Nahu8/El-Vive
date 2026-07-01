@@ -11,14 +11,6 @@
   animation: fadeIn 0.55s ease-out;
 }
 
-:host .page-section {
-  background: transparent !important;
-}
-
-:host .page-section + .page-section {
-  background: transparent !important;
-}
-
 /* —— Hero —— */
 .nos-hero__abstract {
   background:
@@ -68,7 +60,7 @@
 }
 
 .nos-section-tag {
-  background: rgb(var(--page-bg-rgb, 10 10 15) / 0.35);
+  background: rgb(var(--page-bg-rgb, 0 0 0) / 0.35);
 }
 
 :host-context(html.light-theme) .nos-section-tag {
@@ -81,7 +73,7 @@
 
 /* —— Team cards —— */
 .nos-team-card {
-  background: rgb(var(--page-bg-rgb, 15 15 20) / 0.55);
+  background: rgb(var(--page-bg-rgb, 0 0 0) / 0.55);
 }
 
 :host-context(html.light-theme) .nos-team-card {
@@ -103,7 +95,7 @@
 }
 
 .nos-quote {
-  background: rgb(var(--page-bg-rgb, 15 17 26) / 0.55);
+  background: rgb(var(--page-bg-rgb, 0 0 0) / 0.55);
 }
 
 :host-context(html.light-theme) .nos-quote {
@@ -120,26 +112,12 @@
 
 /* —— Pillars —— */
 .nos-pillar {
-  background: rgb(var(--page-bg-rgb, 15 17 26) / 0.45);
+  background: rgb(var(--page-bg-rgb, 0 0 0) / 0.45);
 }
 
 :host-context(html.light-theme) .nos-pillar {
   background: rgb(255 255 255 / 0.72);
   box-shadow: 0 8px 32px rgb(15 23 42 / 0.05);
-}
-
-.nos-pillar__num {
-  background: linear-gradient(
-    135deg,
-    rgb(99 102 241 / 0.22),
-    rgb(168 85 247 / 0.18)
-  );
-  color: rgb(199 210 254 / 0.95);
-}
-
-:host-context(html.light-theme) .nos-pillar__num {
-  background: linear-gradient(135deg, rgb(99 102 241 / 0.14), rgb(168 85 247 / 0.12));
-  color: rgb(67 56 202 / 0.95);
 }
 
 .nos-pillar__cta {
@@ -173,29 +151,22 @@
 }
 
 .nos-media-placeholder {
-  background: rgb(var(--page-bg-rgb, 15 17 26) / 0.65);
+  background: rgb(var(--page-bg-rgb, 0 0 0) / 0.65);
 }
 
-/* —— CTA strip —— */
-.nos-cta__inner {
-  background: linear-gradient(
-    135deg,
-    rgb(49 46 129 / 0.98) 0%,
-    rgb(76 29 149 / 0.96) 48%,
-    rgb(30 27 75 / 0.98) 100%
-  );
-  border: 1px solid rgb(255 255 255 / 0.12);
+/* —— CTA —— */
+.nos-cta-btn {
+  background: linear-gradient(135deg, var(--theme-primary, #6366f1), var(--theme-secondary, #7c3aed));
+  color: #ffffff;
 }
 
-.nos-cta__glow {
-  background: radial-gradient(circle, rgb(139 92 246 / 0.65), transparent 70%);
+.nos-cta-btn--outline {
+  background: transparent;
+  border-color: var(--border-color);
+  color: var(--page-text);
 }
 
-.nos-cta-btn--solid {
-  background: rgb(255 255 255 / 0.96);
-  color: rgb(49 46 129);
-}
-
-.nos-cta-btn--solid:hover {
-  background: rgb(255 255 255 / 1);
+.nos-cta-btn--outline:hover {
+  border-color: var(--theme-primary-light, #818cf8);
+  color: var(--theme-primary-light, #818cf8);
 }

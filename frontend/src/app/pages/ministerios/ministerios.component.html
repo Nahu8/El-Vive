@@ -1,8 +1,9 @@
-<div class="min-h-screen page-content no-section-gradient" [style.--page-bg]="pageBgColor" [style.--page-bg-section]="pageBgColor" [style.--card-bg]="pageBgColor">
+<div class="min-h-screen page-content">
 
-<section class="relative pt-24 pb-20 md:pt-32 md:pb-28 overflow-hidden"
-    [style.background]="currentHeroImageUrl ? '' : ('linear-gradient(135deg, ' + heroBackgroundGradient.from + ', ' + heroBackgroundGradient.via + ', ' + heroBackgroundGradient.to + ')')">
-    <div class="absolute inset-0 z-0" [style.background-color]="heroBgColor"></div>
+<section class="relative pt-24 pb-20 md:pt-32 md:pb-28 overflow-hidden">
+    <div class="absolute inset-0 z-0"
+      [style.background]="!currentHeroImageUrl ? ('linear-gradient(135deg, ' + heroBackgroundGradient.from + ', ' + heroBackgroundGradient.via + ', ' + heroBackgroundGradient.to + ')') : ''"
+      [style.background-color]="currentHeroImageUrl ? heroBgColor : 'transparent'"></div>
     <div *ngIf="currentHeroImageUrl" class="absolute inset-0 z-0">
         <img [src]="currentHeroImageUrl" alt="" class="w-full h-full object-cover">
         <div class="absolute inset-0 bg-black/45"></div>

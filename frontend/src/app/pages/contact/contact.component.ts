@@ -26,13 +26,15 @@ export class ContactComponent implements OnInit {
   };
 
   schedules: Record<string, string> = {};
-  scheduleItems = [
-    { key: 'sunday', label: 'Servicio Dominical' },
-    { key: 'wednesday', label: 'Estudio Bíblico' },
-    { key: 'friday', label: 'Jóvenes' },
-    { key: 'officeHours', label: 'Horario de Oficina' },
-    { key: 'emergencyHours', label: 'Emergencia' }
-  ];
+  scheduleMeta: Record<string, { title?: string; description?: string; icon?: string }> = {};
+  scheduleKeys = ['sunday', 'wednesday', 'friday', 'officeHours', 'emergencyHours'];
+  defaultScheduleMeta: Record<string, { title: string; description: string }> = {
+    sunday: { title: 'Servicio Dominical', description: 'Culto principal de adoración' },
+    wednesday: { title: 'Estudio Bíblico', description: 'Estudio profundo de la Palabra' },
+    friday: { title: 'Jóvenes', description: 'Reunión especial para jóvenes' },
+    officeHours: { title: 'Horario de Oficina', description: 'Atención administrativa' },
+    emergencyHours: { title: 'Emergencia', description: 'Para necesidades urgentes' }
+  };
 
   heroTitle = 'CONTACTO';
   heroSubtitle = 'Estamos aquí para servirte. No dudes en contactarnos.';
@@ -63,6 +65,15 @@ export class ContactComponent implements OnInit {
   mapDescription = '';
   mapImageUrl = '';
   googleMapsUrl = '';
+  mapEmbedUrl: SafeResourceUrl | null = null;
+  safeMapEmbedHtml: SafeHtml | null = null;
+
+  contactSectionTitle = '¿Cómo contactarnos?';
+  contactCards = {
+    email: { label: 'Email', iconUrl: '' },
+    phone: { label: 'Teléfono', iconUrl: '' },
+    address: { label: 'Dirección', iconUrl: '' }
+  };
 
   constructor(
     private publicApi: PublicApiService,
@@ -78,17 +89,17 @@ export class ContactComponent implements OnInit {
   loadContactInfo() {
     this.publicApi.getContactConfig().subscribe({
       next: (data) => {
+        const pc = data.pageContent || {};
         this.contactInfo = {
           email: data.email || '',
           phone: data.phone || '',
           address: data.address || '',
           city: data.city || '',
-          mapEmbed: data.mapEmbed || '',
+          mapEmbed: data.mapEmbed || pc.map?.mapEmbed || '',
           additionalInfo: data.additionalInfo || ''
         };
-        this.schedules = data.schedules || {};
+        this.schedules = this.normalizeSchedules(data.schedules || {});
 
-        const pc = data.pageContent || {};
         this.heroTitle = pc.hero?.title || this.heroTitle;
         this.heroSubtitle = pc.hero?.subtitle || this.heroSubtitle;
         this.heroImageUrl = this.resolveUrl(pc.hero?.backgroundImageUrl);
@@ -114,6 +125,23 @@ export class ContactComponent implements OnInit {
         this.mapDescription = pc.map?.description || '';
         this.mapImageUrl = pc.map?.imageUrl ? this.resolveUrl(pc.map.imageUrl) : '';
         this.googleMapsUrl = pc.map?.googleMapsUrl || '';
+        this.prepareMapEmbed(this.contactInfo.mapEmbed);
+        this.scheduleMeta = pc.scheduleMeta || {};
+        this.contactSectionTitle = pc.contactSection?.title || this.contactSectionTitle;
+        this.contactCards = {
+          email: {
+            label: pc.contactSection?.email?.label || this.contactCards.email.label,
+            iconUrl: pc.contactSection?.email?.iconUrl ? this.resolveUrl(pc.contactSection.email.iconUrl) : ''
+          },
+          phone: {
+            label: pc.contactSection?.phone?.label || this.contactCards.phone.label,
+            iconUrl: pc.contactSection?.phone?.iconUrl ? this.resolveUrl(pc.contactSection.phone.iconUrl) : ''
+          },
+          address: {
+            label: pc.contactSection?.address?.label || this.contactCards.address.label,
+            iconUrl: pc.contactSection?.address?.iconUrl ? this.resolveUrl(pc.contactSection.address.iconUrl) : ''
+          }
+        };
       },
       error: () => undefined
     });
@@ -133,9 +161,54 @@ export class ContactComponent implements OnInit {
     return this.schedules[key] || '';
   }
 
-  getSafeMapEmbed(): SafeHtml {
-    const raw = this.contactInfo.mapEmbed || '';
-    return raw ? this.sanitizer.bypassSecurityTrustHtml(raw) : '';
+  getScheduleTitle(key: string): string {
+    return this.scheduleMeta[key]?.title || this.defaultScheduleMeta[key]?.title || key;
+  }
+
+  getScheduleDescription(key: string): string {
+    return this.scheduleMeta[key]?.description || this.defaultScheduleMeta[key]?.description || '';
+  }
+
+  private prepareMapEmbed(rawHtml: string): void {
+    const normalized = this.normalizeMapEmbedHtml(rawHtml);
+    const src = this.extractIframeSrc(normalized);
+    if (src) {
+      this.mapEmbedUrl = this.sanitizer.bypassSecurityTrustResourceUrl(src);
+      this.safeMapEmbedHtml = null;
+      return;
+    }
+    this.mapEmbedUrl = null;
+    this.safeMapEmbedHtml = normalized
+      ? this.sanitizer.bypassSecurityTrustHtml(normalized)
+      : null;
+  }
+
+  private extractIframeSrc(html: string): string | null {
+    if (!html) return null;
+    const match = html.match(/<iframe[^>]*\ssrc=["']([^"']+)["']/i);
+    return match?.[1] || null;
+  }
+
+  private normalizeSchedules(raw: Record<string, unknown>): Record<string, string> {
+    const schedules: Record<string, string> = {};
+    for (const key of this.scheduleKeys) {
+      const value = raw[key];
+      if (typeof value === 'string') {
+        schedules[key] = value;
+      } else if (value && typeof value === 'object' && 'time' in (value as object)) {
+        schedules[key] = String((value as { time?: string }).time || '');
+      }
+    }
+    return schedules;
+  }
+
+  private normalizeMapEmbedHtml(html: string): string {
+    if (!html) return '';
+    return html
+      .replace(/\swidth="[^"]*"/gi, '')
+      .replace(/\sheight="[^"]*"/gi, '')
+      .replace(/\sloading="[^"]*"/gi, '')
+      .replace(/<iframe/gi, '<iframe class="map-embed-iframe"');
   }
 
   getSafeVideoUrl(url: string | undefined): SafeResourceUrl | null {

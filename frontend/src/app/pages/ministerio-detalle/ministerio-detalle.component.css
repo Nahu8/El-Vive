@@ -9,7 +9,7 @@
 
 .md-detail__loading {
   min-height: 100vh;
-  background: var(--page-bg, #0a0a0f);
+  background: var(--page-bg, #000000);
 }
 
 .md-detail__skeleton {

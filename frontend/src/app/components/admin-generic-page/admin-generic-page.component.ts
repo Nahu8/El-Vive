@@ -54,6 +54,8 @@ export class AdminGenericPageComponent implements OnInit {
       pastorName?: string;
       pastorRole?: string;
       pastorImageUrl?: string;
+      pastorDescription?: string;
+      pastorQuote?: string;
       pastoraName?: string;
       pastoraRole?: string;
       pastoraImageUrl?: string;
@@ -78,6 +80,22 @@ export class AdminGenericPageComponent implements OnInit {
     presentationVideo?: { url: string };
     images?: Array<{ url: string; caption?: string }>;
     socialMedia?: { facebook?: string; instagram?: string };
+    nosotrosLabels?: {
+      introTag?: string;
+      teamTag?: string;
+      teamHeading?: string;
+      teamSubtext?: string;
+      pillarsTag?: string;
+      pillarsHeading?: string;
+    };
+    nosotrosCta?: {
+      title: string;
+      subtitle?: string;
+      primaryButtonText?: string;
+      primaryButtonUrl?: string;
+      secondaryButtonText?: string;
+      secondaryButtonUrl?: string;
+    };
     sections: Array<{ type: string; title?: string; content?: string; imageUrl?: string; videoUrl?: string; caption?: string; layout?: string }>;
   } = {
     hero: {
@@ -98,6 +116,8 @@ export class AdminGenericPageComponent implements OnInit {
       pastorName: '',
       pastorRole: '',
       pastorImageUrl: '',
+      pastorDescription: '',
+      pastorQuote: '',
       pastoraName: '',
       pastoraRole: '',
       pastoraImageUrl: '',
@@ -118,6 +138,22 @@ export class AdminGenericPageComponent implements OnInit {
     presentationVideo: { url: '' },
     images: [],
     socialMedia: { facebook: '', instagram: '' },
+    nosotrosLabels: {
+      introTag: '',
+      teamTag: '',
+      teamHeading: '',
+      teamSubtext: '',
+      pillarsTag: '',
+      pillarsHeading: ''
+    },
+    nosotrosCta: {
+      title: '',
+      subtitle: '',
+      primaryButtonText: '',
+      primaryButtonUrl: '/ministerios',
+      secondaryButtonText: '',
+      secondaryButtonUrl: '/contacto'
+    },
     sections: []
   };
 
@@ -166,6 +202,8 @@ export class AdminGenericPageComponent implements OnInit {
             pastorName: pc.leadership?.pastorName || '',
             pastorRole: pc.leadership?.pastorRole || '',
             pastorImageUrl: pc.leadership?.pastorImageUrl || '',
+            pastorDescription: pc.leadership?.pastorDescription || pc.pastor?.description || '',
+            pastorQuote: pc.leadership?.pastorQuote || pc.pastor?.quote || '',
             pastoraName: pc.leadership?.pastoraName || '',
             pastoraRole: pc.leadership?.pastoraRole || '',
             pastoraImageUrl: pc.leadership?.pastoraImageUrl || '',
@@ -224,6 +262,22 @@ export class AdminGenericPageComponent implements OnInit {
           socialMedia: {
             facebook: pc.socialMedia?.facebook || '',
             instagram: pc.socialMedia?.instagram || ''
+          },
+          nosotrosLabels: {
+            introTag: pc.nosotrosLabels?.introTag || '',
+            teamTag: pc.nosotrosLabels?.teamTag || '',
+            teamHeading: pc.nosotrosLabels?.teamHeading || '',
+            teamSubtext: pc.nosotrosLabels?.teamSubtext || '',
+            pillarsTag: pc.nosotrosLabels?.pillarsTag || '',
+            pillarsHeading: pc.nosotrosLabels?.pillarsHeading || ''
+          },
+          nosotrosCta: {
+            title: pc.nosotrosCta?.title || '',
+            subtitle: pc.nosotrosCta?.subtitle || '',
+            primaryButtonText: pc.nosotrosCta?.primaryButtonText || '',
+            primaryButtonUrl: pc.nosotrosCta?.primaryButtonUrl || '/ministerios',
+            secondaryButtonText: pc.nosotrosCta?.secondaryButtonText || '',
+            secondaryButtonUrl: pc.nosotrosCta?.secondaryButtonUrl || '/contacto'
           },
           sections: Array.isArray(pc.sections) ? [...pc.sections] : []
         };
@@ -421,10 +475,17 @@ export class AdminGenericPageComponent implements OnInit {
         const imagePath = res.path || res.url || '';
         if (mode === 'light') this.pageContent.hero.backgroundImageUrlLight = imagePath;
         else this.pageContent.hero.backgroundImageUrlDark = imagePath;
-        this.showToastMsg('Imagen subida');
+        this.pageContent.hero.backgroundVideoUrl = '';
+        this.persistContent('Imagen subida y guardada');
       },
       error: () => this.showToastMsg('Error al subir', 'error')
     });
+  }
+
+  clearHeroImage(mode: 'light' | 'dark') {
+    if (mode === 'light') this.pageContent.hero.backgroundImageUrlLight = '';
+    else this.pageContent.hero.backgroundImageUrlDark = '';
+    this.persistContent('Imagen eliminada');
   }
 
   onSectionImageSelected(event: Event, index: number) {
@@ -437,7 +498,7 @@ export class AdminGenericPageComponent implements OnInit {
         if (this.pageContent.sections[index]) {
           this.pageContent.sections[index].imageUrl = res.path || res.url || '';
         }
-        this.showToastMsg('Imagen subida');
+        this.persistContent('Imagen subida y guardada');
       },
       error: () => this.showToastMsg('Error al subir', 'error')
     });
@@ -466,6 +527,13 @@ export class AdminGenericPageComponent implements OnInit {
       p = '/uploads' + p;
     }
     return this.apiBase + p;
+  }
+
+  private persistContent(successMsg: string) {
+    this.apiService.updateGenericPage(this.pageKey, this.pageContent).subscribe({
+      next: () => this.showToastMsg(successMsg),
+      error: () => this.showToastMsg('Error al guardar', 'error')
+    });
   }
 
   private showToastMsg(msg: string, type: 'success' | 'error' = 'success') {

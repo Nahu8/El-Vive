@@ -1,4 +1,4 @@
-<div class="min-h-screen page-content no-section-gradient" [style.--page-bg]="pageBgColor" [style.--page-bg-section]="pageBgColor">
+<div class="min-h-screen page-content">
   
   <section class="page-hero relative min-h-[50vh] flex items-center justify-center overflow-hidden">
     <div class="absolute inset-0" [style.background-color]="heroBgColor"></div>
@@ -65,36 +65,39 @@
     </ng-container>
 
     <section class="page-section py-16 border-t page-border-color">
-      <h2 class="page-heading text-3xl font-bold mb-10 text-center" appReveal revealVariant="fade-up">¿Cómo contactarnos?</h2>
+      <h2 class="page-heading text-3xl font-bold mb-10 text-center" appReveal revealVariant="fade-up">{{ contactSectionTitle }}</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
         <a *ngIf="contactInfo.email" [href]="'mailto:' + contactInfo.email"
           appReveal revealVariant="fade-up" [revealDelay]="0"
           class="group flex flex-col items-center text-center p-6 rounded-2xl border page-border-color hover:border-indigo-500/40 transition-all hover:opacity-90">
-          <span class="text-4xl mb-3">✉</span>
-          <span class="text-sm page-text-muted mb-1">Email</span>
+          <img *ngIf="contactCards.email.iconUrl" [src]="contactCards.email.iconUrl" [alt]="contactCards.email.label"
+            class="mb-3 h-12 w-12 object-contain" loading="lazy">
+          <span class="text-sm page-text-muted mb-1">{{ contactCards.email.label }}</span>
           <span class="font-medium group-hover:text-indigo-400 transition-colors break-all">{{ contactInfo.email }}</span>
         </a>
         <a *ngIf="contactInfo.phone" [href]="'tel:' + contactInfo.phone"
           appReveal revealVariant="fade-up" [revealDelay]="120"
           class="group flex flex-col items-center text-center p-6 rounded-2xl border page-border-color hover:border-indigo-500/40 transition-all hover:opacity-90">
-          <span class="text-4xl mb-3">📞</span>
-          <span class="text-sm page-text-muted mb-1">Teléfono</span>
+          <img *ngIf="contactCards.phone.iconUrl" [src]="contactCards.phone.iconUrl" [alt]="contactCards.phone.label"
+            class="mb-3 h-12 w-12 object-contain" loading="lazy">
+          <span class="text-sm page-text-muted mb-1">{{ contactCards.phone.label }}</span>
           <span class="font-medium group-hover:text-indigo-400 transition-colors">{{ contactInfo.phone }}</span>
         </a>
         <div *ngIf="contactInfo.address"
           appReveal revealVariant="fade-up" [revealDelay]="240"
           class="flex flex-col items-center text-center p-6 rounded-2xl border page-border-color">
-          <span class="text-4xl mb-3">📍</span>
-          <span class="text-sm page-text-muted mb-1">Dirección</span>
+          <img *ngIf="contactCards.address.iconUrl" [src]="contactCards.address.iconUrl" [alt]="contactCards.address.label"
+            class="mb-3 h-12 w-12 object-contain" loading="lazy">
+          <span class="text-sm page-text-muted mb-1">{{ contactCards.address.label }}</span>
           <span class="font-medium">{{ contactInfo.address }}</span>
           <span *ngIf="contactInfo.city" class="page-text-muted text-sm mt-1">{{ contactInfo.city }}</span>
         </div>
       </div>
     </section>
 
-    <section *ngIf="mapImageUrl || contactInfo.mapEmbed" class="page-section py-16" appReveal revealVariant="zoom">
-      <h2 class="page-heading text-3xl font-bold mb-4 text-center">{{ mapTitle }}</h2>
-      <p *ngIf="mapDescription" class="page-text-muted text-center mb-8 max-w-2xl mx-auto">{{ mapDescription }}</p>
+    <section *ngIf="mapImageUrl || mapEmbedUrl || safeMapEmbedHtml" class="page-section py-16">
+      <h2 class="page-heading text-3xl font-bold mb-4 text-center" appReveal revealVariant="fade-up">{{ mapTitle }}</h2>
+      <p *ngIf="mapDescription" class="page-text-muted text-center mb-8 max-w-2xl mx-auto" appReveal revealVariant="fade-up">{{ mapDescription }}</p>
 
       
       <a *ngIf="mapImageUrl && googleMapsUrl" [href]="googleMapsUrl" target="_blank" rel="noopener noreferrer"
@@ -107,18 +110,30 @@
         </div>
       </a>
 
-      <div *ngIf="(!mapImageUrl || !googleMapsUrl) && contactInfo.mapEmbed" class="rounded-2xl overflow-hidden border page-border-color shadow-xl">
-        <div class="aspect-video w-full" [innerHTML]="getSafeMapEmbed()"></div>
+      <div *ngIf="(!mapImageUrl || !googleMapsUrl) && (mapEmbedUrl || safeMapEmbedHtml)"
+        class="map-embed-container rounded-2xl border page-border-color shadow-xl">
+        <iframe *ngIf="mapEmbedUrl; else mapEmbedHtmlFallback"
+          [src]="mapEmbedUrl"
+          title="Mapa de ubicación"
+          class="map-embed-iframe"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen></iframe>
+        <ng-template #mapEmbedHtmlFallback>
+          <div *ngIf="safeMapEmbedHtml" class="map-embed-inner" [innerHTML]="safeMapEmbedHtml"></div>
+        </ng-template>
       </div>
     </section>
 
     <section class="page-section py-16 border-t page-border-color" appReveal revealVariant="fade-up">
       <h2 class="page-heading text-3xl font-bold mb-8 text-center">Horario de servicios</h2>
       <div class="max-w-2xl mx-auto space-y-4">
-        <div *ngFor="let item of scheduleItems" class="flex justify-between items-center py-4 border-b page-border-color last:border-0"
-          [class.hidden]="!getScheduleValue(item.key)">
-          <span class="page-text-muted">{{ item.label }}</span>
-          <span class="font-medium">{{ getScheduleValue(item.key) }}</span>
+        <div *ngFor="let key of scheduleKeys" class="flex justify-between items-start gap-6 py-4 border-b page-border-color last:border-0"
+          [class.hidden]="!getScheduleValue(key)">
+          <div>
+            <span class="block font-medium">{{ getScheduleTitle(key) }}</span>
+            <span *ngIf="getScheduleDescription(key)" class="block text-sm page-text-muted mt-1">{{ getScheduleDescription(key) }}</span>
+          </div>
+          <span class="font-medium shrink-0">{{ getScheduleValue(key) }}</span>
         </div>
       </div>
     </section>
