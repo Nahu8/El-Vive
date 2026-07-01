@@ -98,6 +98,7 @@ export class DiasReunionComponent implements OnInit {
   ngOnInit(): void {
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.updateCalendar();
 
     this.loadMeetingDays();
 
@@ -253,126 +254,16 @@ export class DiasReunionComponent implements OnInit {
 
         this.updateCalendar();
       },
-      error: (error) => {
-
-        this.generateCalendarEvents();
+      error: () => {
+        this.calendarEvents = [];
+        this.updateCalendar();
       }
     });
   }
 
   generateCalendarEvents(): void {
-    const december2025Events: CalendarEvent[] = [
-      {
-        id: '1',
-        title: 'SLR - Servicio y Estudio',
-        description: 'Reunión semanal de estudio bíblico y oración',
-        date: new Date(2025, 11, 3),
-        time: '19:00',
-        type: 'reunion',
-        color: 'from-blue-500 to-cyan-500',
-        icon: 'fas fa-hands-praying',
-        location: 'Templo Principal',
-        speakers: ['Pastor Juan Pérez']
-      },
-      {
-        id: '2',
-        title: 'Escuela Bíblica',
-        description: 'Clase bíblica para todas las edades',
-        date: new Date(2025, 11, 6),
-        time: '09:00',
-        type: 'estudio',
-        color: 'from-green-500 to-emerald-500',
-        icon: 'fas fa-book-open',
-        location: 'Salón de Clases',
-        speakers: ['Prof. María García', 'Prof. Carlos López']
-      },
-      {
-        id: '3',
-        title: 'Santa Cena',
-        description: 'Celebración de la Santa Cena dominical',
-        date: new Date(2025, 11, 7),
-        time: '10:00',
-        type: 'celebración',
-        color: 'from-purple-500 to-pink-500',
-        icon: 'fas fa-wine-glass',
-        location: 'Templo Principal',
-        speakers: ['Pastor Juan Pérez']
-      },
-      {
-        id: '4',
-        title: 'Culto de Jóvenes',
-        description: 'Reunión especial para jóvenes',
-        date: new Date(2025, 11, 12),
-        time: '20:00',
-        type: 'reunion',
-        color: 'from-indigo-500 to-violet-500',
-        icon: 'fas fa-fire',
-        location: 'Salón de Jóvenes',
-        speakers: ['Líder Juvenil Ana Martínez']
-      },
-      {
-        id: '5',
-        title: 'Noche de Alabanza',
-        description: 'Noche especial de alabanza y adoración',
-        date: new Date(2025, 11, 14),
-        time: '19:30',
-        type: 'celebración',
-        color: 'from-yellow-500 to-orange-500',
-        icon: 'fas fa-music',
-        location: 'Templo Principal',
-        speakers: ['Grupo de Alabanza']
-      },
-      {
-        id: '6',
-        title: 'Estudio de Profecía',
-        description: 'Estudio profundo sobre las profecías bíblicas',
-        date: new Date(2025, 11, 17),
-        time: '19:00',
-        type: 'estudio',
-        color: 'from-teal-500 to-blue-500',
-        icon: 'fas fa-eye',
-        location: 'Biblioteca',
-        speakers: ['Dr. Roberto Sánchez']
-      },
-      {
-        id: '7',
-        title: 'Cena Navideña',
-        description: 'Cena de celebración navideña familiar',
-        date: new Date(2025, 11, 21),
-        time: '18:00',
-        type: 'especial',
-        color: 'from-red-500 to-pink-500',
-        icon: 'fas fa-tree',
-        location: 'Patio de la Iglesia',
-        registrationLink: '/registro/cena-navidena'
-      },
-      {
-        id: '8',
-        title: 'Culto de Navidad',
-        description: 'Celebración especial de Navidad',
-        date: new Date(2025, 11, 24),
-        time: '22:00',
-        type: 'celebración',
-        color: 'from-green-500 to-red-500',
-        icon: 'fas fa-star',
-        location: 'Templo Principal',
-        speakers: ['Pastor Juan Pérez', 'Coro Navideño']
-      },
-      {
-        id: '9',
-        title: 'Culto de Fin de Año',
-        description: 'Reunión de agradecimiento por el año',
-        date: new Date(2025, 11, 31),
-        time: '22:00',
-        type: 'especial',
-        color: 'from-gold-500 to-yellow-500',
-        icon: 'fas fa-sparkles',
-        location: 'Templo Principal',
-        speakers: ['Pastor Juan Pérez']
-      }
-    ];
-
-    this.calendarEvents = december2025Events;
+    this.calendarEvents = [];
+    this.updateCalendar();
   }
 
   get eventCtaButtonStyle(): string {

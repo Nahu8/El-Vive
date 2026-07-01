@@ -5,20 +5,27 @@
       <p class="page-text-muted">{{ sectionSubtitle }}</p>
     </div>
 
-    
     <div class="hidden sm:grid sm:grid-cols-2 md:grid-cols-3 gap-6" *ngIf="meetings.length > 0">
       <ng-container *ngFor="let m of meetings; index as i">
         <ng-container *ngTemplateOutlet="meetingCard; context: { $implicit: m, i: i }"></ng-container>
       </ng-container>
     </div>
 
-    
     <div class="sm:hidden overflow-x-auto -mx-6 px-6 pb-4 scrollbar-hide" *ngIf="meetings.length > 0">
       <div class="flex gap-4" [style.width.px]="meetings.length * 280">
         <div *ngFor="let m of meetings; index as i" class="w-[260px] flex-shrink-0">
           <ng-container *ngTemplateOutlet="meetingCard; context: { $implicit: m, i: i }"></ng-container>
         </div>
       </div>
+    </div>
+
+    <div *ngIf="meetings.length === 0" class="text-center py-8">
+      <p class="page-text-muted mb-4">Consultá el calendario completo para ver reuniones y eventos programados.</p>
+      <a routerLink="/dias-reunion"
+        class="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-500 hover:to-purple-500 transition-colors">
+        Ver calendario
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+      </a>
     </div>
 
     <ng-template #meetingCard let-m let-i="i">

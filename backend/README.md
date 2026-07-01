@@ -40,7 +40,7 @@ Tras `npm run init-db` se crea un usuario:
 - `PORT`: Puerto (por defecto 3000)
 - `JWT_SECRET`: Secreto para JWT (por defecto `elvive-iglesia-secret-2024`)
 - `DB_PATH`: Ruta del archivo SQLite (por defecto `data/elvive.db`)
-- `UPLOADS_DIR`: Carpeta de subidas (por defecto `uploads/`)
+- `UPLOADS_DIR`: Carpeta de subidas (por defecto `uploads/` en desarrollo; en producción `~/elvive-uploads` para que sobreviva deploys en Hostinger)
 
 ## Endpoints
 

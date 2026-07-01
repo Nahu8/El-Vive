@@ -1,12 +1,13 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, ViewChildren, ViewChild, QueryList, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { PublicApiService } from '../../services/public-api.service';
 import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-meeting-days',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './meeting-days.component.html',
   styleUrls: ['./meeting-days.component.css']
 })

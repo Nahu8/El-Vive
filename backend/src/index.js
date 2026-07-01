@@ -24,7 +24,7 @@ import contactMessagesRoutes from './routes/contact-messages.js';
 import ministryMediaRoutes from './routes/ministry-media.js';
 import mediaRoutes from './routes/media.js';
 import genericPagesRoutes from './routes/generic-pages.js';
-import { getUploadsDir } from './lib/uploads.js';
+import { getUploadsDir, migrateLegacyUploadsIfNeeded } from './lib/uploads.js';
 import { resolveAngularStaticRoot, isApiOrAssetPath } from './lib/angular-static.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -119,6 +119,7 @@ function isPublicApiGet(req) {
     return true;
   if (p.startsWith('/api/home/card-image/')) return true;
   if (p === '/api/meeting-days/hero-image') return true;
+  if (p === '/api/meeting-days' || p === '/api/meeting-days/') return true;
   if (/^\/api\/event\/[^/]+\/(icon|background)$/.test(p)) return true;
   if (/^\/api\/section-icon\/[^/]+\/[^/]+$/.test(p)) return true;
   if (/^\/api\/ministry\/[^/]+\/(icon|card-image|pdf)$/.test(p)) return true;
@@ -197,6 +198,13 @@ if (!skipDbInit) {
   }
 } else {
   appendBootLog('initDatabase: omitido (SKIP_DB_INIT)');
+}
+
+try {
+  migrateLegacyUploadsIfNeeded();
+  appendBootLog(`uploads: ${getUploadsDir()}`);
+} catch (err) {
+  appendBootLog(`uploads migrate: ${err?.message || err}`);
 }
 
 const server = app.listen(PORT, '0.0.0.0', () => {
